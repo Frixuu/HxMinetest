@@ -7,7 +7,7 @@
     "classPath": "src/",
     "releasenote": "Initial release.",
     "contributors": [
-        "Frixuu"
+        "frixuu"
     ],
     "main": "minetest.lib.Main",
     "dependencies": {},
