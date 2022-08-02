@@ -5,7 +5,8 @@ Haxe externs for the game Minetest.
 
 ## Install
 
-- ~~from Haxelib (not submitted yet),~~
+- from Haxelib (may be outdated):
+  - ```haxelib install hxminetest```
 - from source (latest):
   - ```git clone``` this repo
   - run ```haxelib dev hxminetest /path/to/cloned/repo```
