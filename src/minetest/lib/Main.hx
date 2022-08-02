@@ -21,7 +21,7 @@ class Main {
 
 		final subcommand = args[0];
 		switch (subcommand) {
-			case "create-mod":
+			case "create-mod", "init", "new":
 				var modName = "my_awesome_mod";
 				if (args.length != 2) {
 					Sys.println('No mod name given: using "$modName"');
