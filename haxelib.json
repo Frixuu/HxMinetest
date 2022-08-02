@@ -1,0 +1,18 @@
+{
+    "name": "hxminetest",
+    "url": "https://github.com/Frixuu/HxMinetest/",
+    "description": "Externs for modding of the game Minetest.",
+    "license": "Public",
+    "version": "0.0.1",
+    "classPath": "src/",
+    "releasenote": "Initial release.",
+    "contributors": [
+        "Frixuu"
+    ],
+    "dependencies": {},
+    "tags": [
+        "extern",
+        "game",
+        "lua"
+    ]
+}

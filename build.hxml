@@ -1,0 +1,3 @@
+-cp src
+-lua init.lua
+--no-output
