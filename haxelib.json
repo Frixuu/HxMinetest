@@ -9,6 +9,7 @@
     "contributors": [
         "Frixuu"
     ],
+    "main": "minetest.lib.Main",
     "dependencies": {},
     "tags": [
         "extern",
