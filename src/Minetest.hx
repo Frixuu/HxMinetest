@@ -1,3 +1,4 @@
+import minetest.metadata.StorageRef;
 import minetest.data.ObjectRef;
 
 typedef PlayerJoinCallback = (player:ObjectRef, lastLogin:Null<Int>) -> Void;
@@ -20,4 +21,12 @@ extern class Minetest {
 	static function registerOnPlayerJoin(callback:PlayerJoinCallback):Void;
 	@:native("chat_send_all")
 	static function chatSendAll(text:String):Void;
+
+	/**
+		Gets the mod storage associated with this mod.
+
+		NOTE: This method is safe to call only during load time (in main).
+	**/
+	@:native("get_mod_storage")
+	static function getModStorage():StorageRef;
 }
