@@ -1,0 +1,27 @@
+{
+    "indentation": {
+        "character": "    "
+    },
+    "lineEnds": {
+        "leftCurly": "after",
+        "emptyCurly": "noBreak"
+    },
+    "whitespace": {
+        "typeHintColonPolicy": "after",
+        "typeCheckColonPolicy": "after",
+        "objectFieldColonPolicy": "after",
+        "ternaryPolicy": "around",
+        "parenConfig": {
+            "anonFuncParamParens": {
+                "openingPolicy": "none",
+                "closingPolicy": "none",
+                "removeInnerWhenEmpty": true
+            },
+            "funcParamParens": {
+                "openingPolicy": "none",
+                "closingPolicy": "none",
+                "removeInnerWhenEmpty": true
+            }
+        }
+    }
+}
