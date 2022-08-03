@@ -1,12 +1,15 @@
 package minetest.text;
 
+import minetest.colors.ColorString;
+import minetest.colors.Color;
+
 /**
 	A mutable chunk of text and its decorations,
 	forming a whole text message.
 **/
 class Component {
 	private var content(default, null):String;
-	private var colorText(default, null):Null<String>;
+	private var colorText(default, null):Null<ColorString>;
 	private var children(default, null):Array<Component>;
 
 	private function new(content:String) {
@@ -25,7 +28,14 @@ class Component {
 	/**
 		Sets this `Component`'s text color.
 	**/
-	public inline function color(textColor:String):Component {
+	public inline function color(textColor:Color):Component {
+		return this.colorStr(textColor);
+	}
+
+	/**
+		Sets this `Component`'s text color.
+	**/
+	public inline function colorStr(textColor:ColorString):Component {
 		this.colorText = textColor;
 		return this;
 	}
@@ -41,14 +51,18 @@ class Component {
 		return this;
 	}
 
-	private function buildNode(buffer:StringBuf):Void {
+	/**
+		Pushes this node's contents to the buffer,
+		and then does the same with it's children.
+	**/
+	private function buildSubtree(buffer:StringBuf):Void {
 		if (this.colorText == null) {
 			buffer.add(this.content);
 		} else {
 			buffer.add(Escape.colorize(this.colorText, this.content));
 		}
 		for (child in this.children) {
-			child.buildNode(buffer);
+			child.buildSubtree(buffer);
 		}
 	}
 
@@ -57,7 +71,7 @@ class Component {
 	**/
 	public function build():String {
 		final message = new StringBuf();
-		this.buildNode(message);
+		this.buildSubtree(message);
 		return message.toString();
 	}
 }

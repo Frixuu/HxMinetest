@@ -1,15 +1,17 @@
 package minetest.text;
 
+import minetest.colors.ColorString;
+
 class Escape {
-	public static inline function getColorSequence(color:String):String {
+	public static inline function getColorSequence(color:ColorString):String {
 		return Externs.getColorEscapeSequence(color);
 	}
 
-	public static inline function getBackgroundColorSequence(color:String):String {
+	public static inline function getBackgroundColorSequence(color:ColorString):String {
 		return Externs.getBackgroundEscapeSequence(color);
 	}
 
-	public static inline function colorize(color:String, message:String):String {
+	public static inline function colorize(color:ColorString, message:String):String {
 		return Externs.colorize(color, message);
 	}
 
