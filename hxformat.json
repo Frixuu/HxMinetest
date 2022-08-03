@@ -1,4 +1,9 @@
 {
+    "emptyLines": {
+        "beforeDocCommentEmptyLines": "one",
+        "maxAnywhereInFile": 1,
+        "afterFieldsWithDocComments": "none"
+    },
     "indentation": {
         "character": "    "
     },
@@ -22,6 +27,13 @@
                 "closingPolicy": "none",
                 "removeInnerWhenEmpty": true
             }
+        }
+    },
+    "wrapping": {
+        "maxLineLength": 100,
+        "functionSignature": {
+            "defaultWrap": "keep",
+            "defaultLocation": "afterLast"
         }
     }
 }
