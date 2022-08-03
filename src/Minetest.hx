@@ -31,12 +31,4 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
-
-    /**
-        Runs a specified piece of code later.
-        @param delay The delay after which the calback should be run, in seconds.
-        @param callback The function to be run.
-    **/
-    @:native("after")
-    public static function runAfter(delay: Float, callback: () -> Void): Void;
 }
