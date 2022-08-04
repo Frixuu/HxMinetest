@@ -1,7 +1,11 @@
 package minetest.audio;
 
 class SoundHandleExtensions {
-    public static inline function stopPlaying(handle: SoundHandle): Void {
+    /**
+        If this handle refers to a sound that is currently playing,
+        stops that sound.
+    **/
+    public static inline function stop(handle: SoundHandle): Void {
         Sounds.stop(handle);
     }
 }
