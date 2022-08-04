@@ -31,4 +31,10 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
+
+    /**
+        Prepares a string for client-side translation.
+    **/
+    @:native("translate")
+    static function translate(domain: String, text: String, ...args: Any): String;
 }

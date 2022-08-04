@@ -3,6 +3,8 @@ package minetest.text;
 import minetest.colors.ColorString;
 import minetest.colors.Color;
 
+typedef TranslatableComponentPartial = (text: String, ...args: Any) -> Component;
+
 /**
     A mutable chunk of text and its decorations,
     forming a whole text message.
@@ -23,6 +25,34 @@ class Component {
     **/
     public static inline function text(content: String) {
         return new Component(content);
+    }
+
+    /**
+        Returns a function that creates translatable `Component`s.
+
+        This is similar to Minetest's documentation's own `local S = minetest.get_translator()`.
+
+        Usage:
+        ```
+        final tr = Component.getTranslator("mymod");
+        player.sendChatMessage(tr("This is very cool!")
+            .color(Color.rgb(255, 132, 87))
+            .build());
+        ```
+    **/
+    public static inline function getTranslator(domain: String): TranslatableComponentPartial {
+        // translate.bind(domain) had a weird codegen issue
+        // where a table.unpack operation created arguments that did not exist
+        return function(text: String, ...args: Any): Component {
+            return Component.translate(domain, text, ...args);
+        };
+    }
+
+    /**
+        Creates a new `Component` with a client-side translatable text content.
+    **/
+    public static inline function translate(domain: String, text: String, ...args: Any) {
+        return new Component(Minetest.translate(domain, text, ...args));
     }
 
     /**
