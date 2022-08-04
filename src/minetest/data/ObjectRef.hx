@@ -1,5 +1,8 @@
 package minetest.data;
 
+import minetest.hud.NativeHudDefinition;
+import minetest.hud.HudHandle;
+
 /**
     A reference to some ServerActiveObject.
 
@@ -13,10 +16,15 @@ extern abstract class ObjectRef extends lua.UserData {
     **/
     @:native("get_player_name")
     function getPlayerName(): String;
-
     @:native("get_breath")
     function getBreath(): UInt;
 
     @:native("set_breath")
     function setBreath(value: UInt): Void;
+
+    @:native("hud_add")
+    function hudAddRaw(definition: NativeHudDefinition): Null<HudHandle>;
+
+    @:native("hud_remove")
+    function hudRemoveRaw(handle: HudHandle): Void;
 }
