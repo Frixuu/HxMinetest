@@ -1,3 +1,8 @@
 package minetest.metadata;
 
-extern abstract class PlayerMetaRef extends MetaDataRef {}
+/**
+    Metadata of a specific player.
+
+    Note: Uses the same method of storage as the deprecated attribute API.
+**/
+extern interface PlayerMetaRef extends MetaDataRef {}

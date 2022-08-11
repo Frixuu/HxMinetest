@@ -1,9 +1,17 @@
 package minetest.metadata;
 
-extern abstract class MetaDataRef extends lua.UserData {
+import lua.Table.AnyTable;
+
+/**
+    A generic key-value storage.
+
+    In Minetest, this is a base for mod storage;
+    player, itemstack and node metadata handling.
+**/
+extern interface MetaDataRef {
     /**
         Returns true if key is present, otherwise false.
-        Returns null when the metadata is inexistent.
+        Can return null when the metadata is inexistent.
     **/
     @:native("contains")
     function contains(key: String): Null<Bool>;
@@ -60,17 +68,18 @@ extern abstract class MetaDataRef extends lua.UserData {
         Returns an object representation of the storage.
     **/
     @:native("to_table")
-    function toTable(): Null<Any>;
+    function toTable(): Null<AnyTable>;
 
     /**
         Loads metadata in-place from an object.
-        Returns true on success.
+        @return True on success.
     **/
     @:native("from_table")
-    function loadFromTable(table: Null<Any>): Bool;
+    function loadFromTable(table: Null<AnyTable>): Bool;
 
     /**
         Checks if both metadata objects have the same key-value pairs.
+        @return True if both objects are equal.
     **/
     @:native("equals")
     function equals(other: MetaDataRef): Bool;

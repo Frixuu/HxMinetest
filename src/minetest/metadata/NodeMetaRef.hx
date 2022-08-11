@@ -1,11 +1,23 @@
 package minetest.metadata;
 
+import haxe.extern.EitherType;
 import minetest.item.InventoryRef;
 
-extern abstract class NodeMetaRef extends MetaDataRef {
+/**
+    Metadata available on a singular node.
+**/
+extern interface NodeMetaRef extends MetaDataRef {
+    /**
+        Gets a reference to a single inventory associated with the node.
+    **/
     @:native("get_inventory")
-    function get_inventory(): InventoryRef;
+    function getInventory(): InventoryRef;
+
+    /**
+        Marks specific keys as private, preventing them from being sent to the client.
+
+        Note: the private status will only be remembered if a key-value pair exists.
+    **/
     @:native("mark_as_private")
-    @:overload(function(name: String): Void {})
-    function markAsPrivate(names: Array<String>): Void;
+    function markAsPrivate(keys: EitherType<String, Array<String>>): Void;
 }

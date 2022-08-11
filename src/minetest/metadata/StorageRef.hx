@@ -1,3 +1,6 @@
 package minetest.metadata;
 
-extern abstract class StorageRef extends MetaDataRef {}
+/**
+    Generic storage associated with a single mod. Saves automatically.
+**/
+extern interface StorageRef extends MetaDataRef {}
