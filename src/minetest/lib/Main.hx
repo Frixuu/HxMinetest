@@ -35,8 +35,8 @@ class Main {
                 File.saveContent(Path.join([modDirPath, "build.hxml"]), [
                     "-cp src",
                     "--lua init.lua",
-                    "-D lua_ver 5.1",
-                    "-D lua_vanilla",
+                    "-D lua-ver 5.1",
+                    "-D lua-vanilla",
                     "-D lua_jit",
                     "-D analyzer-optimize",
                     "-dce full",
@@ -46,8 +46,7 @@ class Main {
 
                 File.saveContent(Path.join([modDirPath, "mod.conf"]), [
                     'name = $modName',
-                    "description = This is my awesome mod using Haxe!",
-                    "depends = default"
+                    "description = This is a description of my super awesome mod using Haxe!"
                 ].join("\n"));
 
                 File.saveContent(Path.join([modDirPath, ".gitignore"]), "init.lua");
