@@ -1,6 +1,6 @@
 package minetest.data;
 
-import minetest.hud.NativeHudDefinition;
+import minetest.hud.HudDefinition;
 import minetest.hud.HudHandle;
 
 /**
@@ -23,8 +23,8 @@ extern abstract class ObjectRef extends lua.UserData {
     function setBreath(value: UInt): Void;
 
     @:native("hud_add")
-    function hudAddRaw(definition: NativeHudDefinition): Null<HudHandle>;
+    function hudAdd(definition: HudDefinition): Null<HudHandle>;
 
     @:native("hud_remove")
-    function hudRemoveRaw(handle: HudHandle): Void;
+    function hudRemove(handle: HudHandle): Void;
 }

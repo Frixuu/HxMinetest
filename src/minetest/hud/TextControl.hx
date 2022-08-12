@@ -50,8 +50,8 @@ class TextControl extends Control {
         return this;
     }
 
-    public function buildNativeDefinition(): NativeHudDefinition {
-        final def: NativeHudDefinition = {hud_elem_type: "text"};
+    public function buildNativeDefinition(): HudDefinition {
+        final def: HudDefinition = {hud_elem_type: Text};
         def.position = this._position;
         def.offset = this._offset;
         def.text = this._text;
@@ -64,7 +64,7 @@ class TextControl extends Control {
             def.size = {x: this._fontSizeMultiplier, y: 0};
         }
         if (this._color != null) {
-            def.number = this._color.toInt();
+            def.number = this._color.toIntRgb();
         }
         return def;
     }
