@@ -28,9 +28,9 @@ class Component {
     }
 
     /**
-        Returns a function that creates translatable `Component`s.
+        Returns a function that creates client-side translatable `Component`s.
 
-        This is similar to Minetest's documentation's own `local S = minetest.get_translator()`.
+        This is similar to Minetest's idiom of `local S = minetest.get_translator()`.
 
         Usage:
         ```
@@ -89,7 +89,7 @@ class Component {
         if (this.colorText == null) {
             buffer.add(this.content);
         } else {
-            buffer.add(Escape.colorize(this.colorText, this.content));
+            buffer.add(Minetest.colorize(this.colorText, this.content));
         }
         for (child in this.children) {
             child.buildSubtree(buffer);

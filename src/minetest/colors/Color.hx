@@ -67,7 +67,7 @@ class Color {
         Converts this `Color` object to a 32-bit integer
         representing the ARGB value of this color.
     **/
-    public inline function toIntRgba(): Int {
+    public inline function toIntArgb(): Int {
         return this._reprRgb + ((this._alpha & 255) << 24);
     }
 

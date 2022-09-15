@@ -1,10 +1,21 @@
+import minetest.colors.ColorString;
+import haxe.extern.EitherType;
+import minetest.audio.SoundHandle;
+import minetest.audio.SoundParams;
 import minetest.Events.ChatMessageCallback;
 import minetest.Events.PlayerJoinCallback;
 import minetest.data.PlayerRef;
 import minetest.metadata.StorageRef;
 
+/**
+    The main namespace of the Minetest game engine.
+**/
 @:native("minetest")
 extern class Minetest {
+    @:native("after")
+    static function after(delay: Float, callback: () -> Void): Void;
+    @:native("log")
+    static function log(level: LogLevel, message: String): Void;
     @:native("register_on_joinplayer")
     static function registerOnPlayerJoin(callback: PlayerJoinCallback): Void;
     @:native("register_on_chat_message")
@@ -37,4 +48,35 @@ extern class Minetest {
     **/
     @:native("translate")
     static function translate(domain: String, text: String, ...args: Any): String;
+    @:native("sound_play")
+    static function soundPlay(spec: Any,
+        parameters: NativeSoundParams,
+        ephemeral: Bool = false): EitherType<Void, SoundHandle>;
+
+    @:native("sound_stop")
+    static function soundStop(handle: SoundHandle): Void;
+
+    @:native("sound_fade")
+    static function soundFade(handle: SoundHandle, step: Float, gain: Float): Void;
+    @:native("get_color_escape_sequence")
+    static function getColorEscapeSequence(color: ColorString): String;
+    @:native("get_background_escape_sequence")
+    static function getBackgroundEscapeSequence(color: ColorString): String;
+    @:native("colorize")
+    static function colorize(color: ColorString, message: String): String;
+    @:native("strip_foreground_colors")
+    static function stripForegroundColors(message: String): String;
+    @:native("strip_background_colors")
+    static function stripBackgroundColors(message: String): String;
+    @:native("strip_colors")
+    static function stripColors(message: String): String;
+}
+@:enum
+abstract LogLevel(String) {
+    var None = "none";
+    var Error = "error";
+    var Warning = "warning";
+    var Action = "action";
+    var Info = "info";
+    var Verbose = "verbose";
 }
