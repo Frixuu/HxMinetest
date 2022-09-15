@@ -3,7 +3,7 @@
     "url": "https://github.com/Frixuu/HxMinetest/",
     "description": "Externs for modding of the game Minetest.",
     "license": "Public",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "classPath": "src/",
     "releasenote": "Initial release.",
     "contributors": [
