@@ -1,10 +1,12 @@
-import minetest.colors.ColorString;
 import haxe.extern.EitherType;
 import minetest.audio.SoundHandle;
 import minetest.audio.SoundParams;
+import minetest.colors.ColorString;
+import minetest.data.PlayerRef;
 import minetest.Events.ChatMessageCallback;
 import minetest.Events.PlayerJoinCallback;
-import minetest.data.PlayerRef;
+import minetest.insecure.InsecureEnvironment;
+import minetest.LogLevel;
 import minetest.metadata.StorageRef;
 
 /**
@@ -34,6 +36,10 @@ extern class Minetest {
     **/
     @:native("chat_send_player")
     static function chatSendPlayer(name: String, text: String): Void;
+    @:native("get_current_modname")
+    static function getCurrentModName(): Null<String>;
+    @:native("get_modpath")
+    static function getModPath(modName: String): Null<String>;
 
     /**
         Gets the mod storage associated with this mod.
@@ -42,6 +48,8 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
+    @:native("request_insecure_environment")
+    static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
 
     /**
         Prepares a string for client-side translation.
@@ -70,13 +78,4 @@ extern class Minetest {
     static function stripBackgroundColors(message: String): String;
     @:native("strip_colors")
     static function stripColors(message: String): String;
-}
-@:enum
-abstract LogLevel(String) {
-    var None = "none";
-    var Error = "error";
-    var Warning = "warning";
-    var Action = "action";
-    var Info = "info";
-    var Verbose = "verbose";
 }
