@@ -1,3 +1,4 @@
+import minetest.Settings;
 import haxe.extern.EitherType;
 import minetest.audio.SoundHandle;
 import minetest.audio.SoundParams;
@@ -14,6 +15,9 @@ import minetest.metadata.StorageRef;
 **/
 @:native("minetest")
 extern class Minetest {
+    @:native("settings")
+    static var settings: Settings;
+
     @:native("after")
     static function after(delay: Float, callback: () -> Void): Void;
     @:native("log")
@@ -36,6 +40,7 @@ extern class Minetest {
     **/
     @:native("chat_send_player")
     static function chatSendPlayer(name: String, text: String): Void;
+
     @:native("get_current_modname")
     static function getCurrentModName(): Null<String>;
     @:native("get_modpath")
@@ -48,6 +53,7 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
+
     @:native("request_insecure_environment")
     static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
 
@@ -56,6 +62,7 @@ extern class Minetest {
     **/
     @:native("translate")
     static function translate(domain: String, text: String, ...args: Any): String;
+
     @:native("sound_play")
     static function soundPlay(spec: Any,
         parameters: NativeSoundParams,
