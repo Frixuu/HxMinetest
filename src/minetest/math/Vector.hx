@@ -6,11 +6,10 @@ import haxe.extern.EitherType;
     A vector of 3 floats.
     @since Minetest 5.5.0
 **/
-extern class Vector {}
 @:native("vector")
-private extern class Externs {
+extern class Vector {
     @:native("new")
-    public static function create(x: Float, y: Float, z: Float): Vector;
+    public function new(x: Float, y: Float, z: Float);
 
     @:native("zero")
     public static function zero(): Vector;

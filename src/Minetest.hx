@@ -1,3 +1,4 @@
+import minetest.auth.AuthHandler;
 import minetest.Settings;
 import haxe.extern.EitherType;
 import minetest.audio.SoundHandle;
@@ -26,6 +27,8 @@ extern class Minetest {
     static function registerOnPlayerJoin(callback: PlayerJoinCallback): Void;
     @:native("register_on_chat_message")
     static function registerOnChatMessage(callback: ChatMessageCallback): Void;
+    @:native("unregister_chatcommand")
+    static function unregisterChatCommand(name: String): Void;
     @:native("get_player_by_name")
     static function getPlayerByName(name: String): Null<PlayerRef>;
 
@@ -40,7 +43,6 @@ extern class Minetest {
     **/
     @:native("chat_send_player")
     static function chatSendPlayer(name: String, text: String): Void;
-
     @:native("get_current_modname")
     static function getCurrentModName(): Null<String>;
     @:native("get_modpath")
@@ -53,16 +55,19 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
-
     @:native("request_insecure_environment")
     static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
+
+    @:native("get_auth_handler")
+    static function getAuthHandler(): AuthHandler;
+    @:native("register_authentication_handler")
+    static function registerAuthHandler(handler: AuthHandler): Void;
 
     /**
         Prepares a string for client-side translation.
     **/
     @:native("translate")
     static function translate(domain: String, text: String, ...args: Any): String;
-
     @:native("sound_play")
     static function soundPlay(spec: Any,
         parameters: NativeSoundParams,
