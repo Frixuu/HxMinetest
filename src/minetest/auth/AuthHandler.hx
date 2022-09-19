@@ -2,7 +2,8 @@ package minetest.auth;
 
 import lua.Table;
 
-extern class AuthHandler {
+@:native("({})")
+extern abstract class AuthHandler {
     @:native("mod_origin")
     public var modOrigin: Null<String>;
 
