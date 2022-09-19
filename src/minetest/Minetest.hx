@@ -1,3 +1,5 @@
+package minetest;
+
 import minetest.auth.AuthHandler;
 import minetest.Settings;
 import haxe.extern.EitherType;
