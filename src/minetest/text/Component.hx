@@ -23,7 +23,7 @@ class Component {
     /**
         Creates a new `Component` with provided text contents.
     **/
-    public static inline function text(content: String) {
+    public static inline function text(content: String): Component {
         return new Component(content);
     }
 

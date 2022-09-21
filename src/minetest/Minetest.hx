@@ -1,5 +1,7 @@
 package minetest;
 
+import lua.Table;
+import haxe.extern.Rest;
 import minetest.auth.AuthHandler;
 import minetest.Settings;
 import haxe.extern.EitherType;
@@ -66,14 +68,33 @@ extern class Minetest {
     static function registerAuthHandler(handler: AuthHandler): Void;
 
     /**
+        Checks whether an object represents a player.
+    **/
+    @:native("is_player")
+    public static function isPlayer(obj: Any): Bool;
+
+    /**
+        Tests whether a player has certain privileges (ie. can perform some operation).
+        @param player Either a player object or a player username.
+        @param privs List (or a table) of the privileges to check.
+    **/
+    @:native("check_player_privs")
+    public static function checkPlayerPrivs(
+        player: EitherType<String, PlayerRef>,
+        privs: EitherType<Rest<String>, Table<String, Bool>>
+    ): CheckPlayerPrivsResult;
+
+    /**
         Prepares a string for client-side translation.
     **/
     @:native("translate")
     static function translate(domain: String, text: String, ...args: Any): String;
     @:native("sound_play")
-    static function soundPlay(spec: Any,
+    static function soundPlay(
+        spec: Any,
         parameters: NativeSoundParams,
-        ephemeral: Bool = false): EitherType<Void, SoundHandle>;
+        ephemeral: Bool = false
+    ): EitherType<Void, SoundHandle>;
 
     @:native("sound_stop")
     static function soundStop(handle: SoundHandle): Void;
