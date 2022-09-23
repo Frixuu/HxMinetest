@@ -67,6 +67,11 @@ extern class Minetest {
     @:native("register_authentication_handler")
     static function registerAuthHandler(handler: AuthHandler): Void;
 
+    @:native("register_on_prejoinplayer")
+    public static function registerOnPreJoinPlayer(
+        handler: (name: String, ip: String) -> Null<String>
+    ): Void;
+
     /**
         Checks whether an object represents a player.
     **/
