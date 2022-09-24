@@ -1,7 +1,7 @@
 package minetest;
 
 import lua.Table;
-import haxe.extern.Rest;
+import haxe.Rest;
 import minetest.auth.AuthHandler;
 import minetest.Settings;
 import haxe.extern.EitherType;
@@ -14,6 +14,7 @@ import minetest.Events.PlayerJoinCallback;
 import minetest.insecure.InsecureEnvironment;
 import minetest.LogLevel;
 import minetest.metadata.StorageRef;
+import tink.core.Future;
 
 /**
     The main namespace of the Minetest game engine.
@@ -71,6 +72,23 @@ extern class Minetest {
     public static function registerOnPreJoinPlayer(
         handler: (name: String, ip: String) -> Null<String>
     ): Void;
+
+    @:native("notify_authentication_modified")
+    public static function notifyAuthModified(?name: String): Void;
+
+    @:native("handle_async")
+    public static function handleAsync(func: Any, callback: Any, ...args: Dynamic): Bool;
+
+    /**
+        Runs `handleAsync`, but wraps the result in a `Future`.
+        @param func The function to be run in the async environment.
+        @param state The object to be re-serialized and passed to the provided function.
+    **/
+    public static inline function runAsync<S, R>(func: (S) -> R, state: S): Future<R> {
+        final trigger: FutureTrigger<R> = Future.trigger();
+        Minetest.handleAsync(func, data -> trigger.trigger(data), state);
+        return trigger.asFuture();
+    }
 
     /**
         Checks whether an object represents a player.
