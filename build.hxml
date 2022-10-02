@@ -1,5 +1,4 @@
 --class-path src
---library tink_core
 --lua init.lua
 --no-output
 --xml docs/hxminetest.xml

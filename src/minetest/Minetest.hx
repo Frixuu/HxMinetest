@@ -1,5 +1,6 @@
 package minetest;
 
+import minetest.async.Future;
 import lua.Table;
 import haxe.Rest;
 import minetest.auth.AuthHandler;
@@ -14,7 +15,6 @@ import minetest.Events.PlayerJoinCallback;
 import minetest.insecure.InsecureEnvironment;
 import minetest.LogLevel;
 import minetest.metadata.StorageRef;
-import tink.core.Future;
 
 /**
     The main namespace of the Minetest game engine.
@@ -85,9 +85,9 @@ extern class Minetest {
         @param state The object to be re-serialized and passed to the provided function.
     **/
     public static inline function runAsync<S, R>(func: (S) -> R, state: S): Future<R> {
-        final trigger: FutureTrigger<R> = Future.trigger();
-        Minetest.handleAsync(func, data -> trigger.trigger(data), state);
-        return trigger.asFuture();
+        final future: Future<R> = new Future();
+        Minetest.handleAsync(func, data -> future.complete(data), state);
+        return future;
     }
 
     /**
