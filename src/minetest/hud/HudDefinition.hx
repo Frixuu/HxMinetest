@@ -23,8 +23,7 @@ typedef HudDefinition = {
 /**
     Direction.
 **/
-@:enum
-abstract Direction(Int) {
+enum abstract Direction(Int) {
     var LeftRight = 0;
     var RightLeft = 1;
     var TopBottom = 2;
@@ -34,8 +33,7 @@ abstract Direction(Int) {
 /**
     Type of the HUD element.
 **/
-@:enum
-abstract ElementType(String) {
+enum abstract ElementType(String) {
     var Image = "image";
     var Text = "text";
     var Statbar = "statbar";
@@ -49,9 +47,9 @@ abstract ElementType(String) {
 /**
     Style of the text.
 **/
-enum abstract TextStyle(Int) from Int to Int {
+enum abstract TextStyle(Int) {
     var None = 0;
-    var Bold = 1 << 0;
-    var Italic = 1 << 1;
-    var Monospace = 1 << 2;
+    var Bold = 1;
+    var Italic = 2;
+    var Monospace = 4;
 }

@@ -1,5 +1,7 @@
 package minetest.async;
 
+import haxe.Exception;
+
 class Future<T> {
     var callbacks: Array<(T) -> Void>;
     var state: State<T>;
@@ -9,7 +11,7 @@ class Future<T> {
         state = Waiting;
     }
 
-    public function handle(callback: (T) -> Void): Void {
+    public function thenAccept(callback: (T) -> Void): Void {
         switch state {
             case Ready(result):
                 callback(result);
@@ -21,7 +23,7 @@ class Future<T> {
     public function complete(result: T): Void {
         switch state {
             case Ready(_):
-                throw "This future has already been completed";
+                throw new Exception("This future has already been completed");
             default:
                 state = Ready(result);
                 for (callback in callbacks) {

@@ -9,22 +9,22 @@ import minetest.hud.HudHandle;
     The reference can become invalid when an object it is refering to
     gets unloaded or removed.
 **/
-extern abstract class ObjectRef extends lua.UserData {
+extern abstract class ObjectRef {
     /**
         If the object is a player, returns that player's name.
         Otherwise returns an empty string.
     **/
     @:native("get_player_name")
-    function getPlayerName(): String;
+    public function getPlayerName(): String;
     @:native("get_breath")
-    function getBreath(): UInt;
+    public function getBreath(): UInt;
 
     @:native("set_breath")
-    function setBreath(value: UInt): Void;
+    public function setBreath(value: UInt): Void;
 
     @:native("hud_add")
-    function hudAdd(definition: HudDefinition): Null<HudHandle>;
+    public function hudAdd(definition: HudDefinition): Null<HudHandle>;
 
     @:native("hud_remove")
-    function hudRemove(handle: HudHandle): Void;
+    public function hudRemove(handle: HudHandle): Void;
 }

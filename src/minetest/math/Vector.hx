@@ -8,6 +8,10 @@ import haxe.extern.EitherType;
 **/
 @:native("vector")
 extern class Vector {
+    var x: Float;
+    var y: Float;
+    var z: Float;
+
     @:native("new")
     public function new(x: Float, y: Float, z: Float);
 

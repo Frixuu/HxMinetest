@@ -76,15 +76,26 @@ extern class Minetest {
     @:native("notify_authentication_modified")
     public static function notifyAuthModified(?name: String): Void;
 
+    /**
+        Runs a piece of code in the async environment.
+
+        If this function looks ugly to you, you can use the `Minetest.runAsync` wrapper.
+        @param func The function to be run in the async environment.
+        @param callback A function to be run in "server" thread, accepting the result of `func`.
+        @param args Arguments passed to `func`.
+        NOTE: they will be re-serialized at the async barrier.
+        @since Minetest 5.6.0
+    **/
     @:native("handle_async")
     public static function handleAsync(func: Any, callback: Any, ...args: Dynamic): Bool;
 
     /**
         Runs `handleAsync`, but wraps the result in a `Future`.
-        @param func The function to be run in the async environment.
         @param state The object to be re-serialized and passed to the provided function.
+        @param func The function to be run in the async environment.
+        @since Minetest 5.6.0
     **/
-    public static inline function runAsync<S, R>(func: (S) -> R, state: S): Future<R> {
+    public static inline function runAsync<S, R>(state: S, func: (S) -> R): Future<R> {
         final future: Future<R> = new Future();
         Minetest.handleAsync(func, data -> future.complete(data), state);
         return future;

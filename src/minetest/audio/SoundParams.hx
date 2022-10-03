@@ -1,5 +1,6 @@
 package minetest.audio;
 
+import minetest.math.Vector;
 import minetest.data.ObjectRef;
 
 class SoundParams {
@@ -12,7 +13,6 @@ class SoundParams {
 
     /** Uses Euclidean metric. **/
     private var _maxDistance: Float = 32.0;
-
     public function new() {}
 
     public inline function gain(value: Float): SoundParams {
@@ -50,7 +50,7 @@ class SoundParams {
         return this;
     }
 
-    @:allow(minetest.audio.Sounds)
+    @:allow(minetest.data.PlayerRefExtensions)
     private function toNative(): NativeSoundParams {
         final params: NativeSoundParams = {};
         if (_gain != 1.0) {
@@ -93,7 +93,7 @@ enum Location {
     Global;
 
     /** Positional.**/
-    AtPosition(pos: {x: Float, y: Float, z: Float});
+    AtPosition(pos: Vector);
 
     /** The sound location is bound to a specific object. **/
     ObjectBound(object: ObjectRef);
