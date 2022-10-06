@@ -1,5 +1,6 @@
 package minetest;
 
+import minetest.craft.Recipe;
 import minetest.async.Future;
 import lua.Table;
 import haxe.Rest;
@@ -21,8 +22,12 @@ import minetest.metadata.StorageRef;
 **/
 @:native("minetest")
 extern class Minetest {
+
+    /**
+        Settings object containing configuration from `minetest.conf`, the main config file.
+    **/
     @:native("settings")
-    static var settings: Settings;
+    public static var settings(default, null): Settings;
 
     @:native("after")
     static function after(delay: Float, callback: () -> Void): Void;
@@ -147,4 +152,22 @@ extern class Minetest {
     static function stripBackgroundColors(message: String): String;
     @:native("strip_colors")
     static function stripColors(message: String): String;
+
+    @:native("register_craft")
+    public static function registerCraft(recipe: Recipe): Void;
+
+    /**
+        Registers a function to be called on every server step.
+
+        (By default 0.09s, but it is variable and configurable by the administrator.)
+    **/
+    @:native("register_globalstep")
+    public static function registerOnGlobalstep(callback: (delta: Float) -> Void): Void;
+
+    /**
+        Registers a function to be run on normal server shutdown.
+        Will likely not be called if a server crashes.
+    **/
+    @:native("register_on_shutdown")
+    public static function registerOnShutdown(callback: () -> Void): Void;
 }
