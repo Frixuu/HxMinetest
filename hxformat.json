@@ -1,8 +1,9 @@
 {
     "emptyLines": {
+        "afterLeftCurly": "keep",
         "beforeDocCommentEmptyLines": "one",
         "maxAnywhereInFile": 1,
-        "afterFieldsWithDocComments": "none"
+        "afterFieldsWithDocComments": "ignore"
     },
     "indentation": {
         "character": "    "
