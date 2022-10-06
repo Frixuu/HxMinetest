@@ -24,7 +24,7 @@ final class FuelRecipe extends Recipe {
         Creates a new fuel recipe.
     **/
     public function new(itemName: String, burnTime: Float = 1.0) {
-        this.type = Fuel;
+        super(Fuel);
         this.burnTime = burnTime;
         this.itemName = itemName;
         this.replacements = null;
