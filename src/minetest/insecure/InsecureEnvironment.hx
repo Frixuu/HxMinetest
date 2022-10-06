@@ -21,6 +21,6 @@ extern final class InsecureEnvironment {
     private function requireRaw(module: String): Dynamic;
 
     public inline function require(module: String): Dynamic {
-        return cast EnvironmentExtensions.run(this, module, m -> this.requireRaw(m));
+        return cast EnvironmentTools.run(this, module, m -> this.requireRaw(m));
     }
 }
