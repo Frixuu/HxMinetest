@@ -7,7 +7,8 @@ import minetest.audio.SoundHandle;
     These extensions provide idiomatic functions for the player object
     that should be easier to use than their plain Lua counterparts.
 **/
-class PlayerRefExtensions {
+class PlayerTools {
+
     /**
         Plays a sound for that player only.
 

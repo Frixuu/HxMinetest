@@ -13,6 +13,7 @@ class SoundParams {
 
     /** Uses Euclidean metric. **/
     private var _maxDistance: Float = 32.0;
+
     public function new() {}
 
     public inline function gain(value: Float): SoundParams {
@@ -50,7 +51,7 @@ class SoundParams {
         return this;
     }
 
-    @:allow(minetest.data.PlayerRefExtensions)
+    @:allow(minetest.data.PlayerTools)
     private function toNative(): NativeSoundParams {
         final params: NativeSoundParams = {};
         if (_gain != 1.0) {
@@ -89,6 +90,7 @@ class SoundParams {
 
 /** Describes where the played sound can be heard from. **/
 enum Location {
+
     /** The sound is locationless. **/
     Global;
 
@@ -101,6 +103,7 @@ enum Location {
 
 /** The target audience for the sound being played. **/
 enum Audience {
+
     /** The sound should play on all clients. **/
     AllPlayers;
 

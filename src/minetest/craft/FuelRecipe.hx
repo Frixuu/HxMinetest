@@ -1,5 +1,8 @@
 package minetest.craft;
 
+import lua.Table;
+import minetest.util.Pair;
+
 final class FuelRecipe extends Recipe {
 
     /**
@@ -15,14 +18,15 @@ final class FuelRecipe extends Recipe {
     var itemName: String;
 
     @:native("replacements")
-    var replacements: Null<Any>;
+    var replacements: Null<Table<Int, Pair<String, String>>>;
 
     /**
         Creates a new fuel recipe.
     **/
-    public function new(itemName: String, ?burnTime: Float) {
+    public function new(itemName: String, burnTime: Float = 1.0) {
         this.type = Fuel;
-        this.burnTime = if (burnTime != null) burnTime; else 1.0;
+        this.burnTime = burnTime;
         this.itemName = itemName;
+        this.replacements = null;
     }
 }
