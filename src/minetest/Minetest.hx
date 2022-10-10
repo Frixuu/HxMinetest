@@ -1,5 +1,6 @@
 package minetest;
 
+import minetest.node.NodeDefinition;
 import minetest.craft.Recipe;
 import minetest.async.Future;
 import lua.Table;
@@ -29,10 +30,152 @@ extern class Minetest {
     @:native("settings")
     public static var settings(default, null): Settings;
 
-    @:native("after")
-    static function after(delay: Float, callback: () -> Void): Void;
+    /**
+        Feature flags available for scripting.
+    **/
+    @:native("features")
+    public static var features(default, null): Table<String, Bool>;
+
+    /*******************/
+    /*    UTILITIES    */
+    /*******************/
+    // line 4854
+
+    /**
+        If loading a mod, returns the currently loading mod's name.
+    **/
+    @:native("get_current_modname")
+    public static function getCurrentModName(): Null<String>;
+
+    /**
+        Returns the directory path for a mod.
+
+        Returns null if the mod does not esist or is disabled,
+        but does not require the mod to be loaded yet.
+    **/
+    @:native("get_modpath")
+    public static function getModPath(modName: String): Null<String>;
+
+    /**
+        Returns "a list of enabled mods, sorted alphabetically."
+    **/
+    @:native("get_modnames")
+    public static function getModNames(): Dynamic;
+
+    /**
+        Returns a path of the currently loaded world.
+    **/
+    @:native("get_worldpath")
+    public static function getWorldPath(): Null<String>;
+
+    @:native("is_singleplayer")
+    public static function isSingleplayer(): Bool;
+
+    @:native("has_feature")
+    public static function hasFeature(
+        feature: EitherType<String, Table<String, Bool>>
+    ): HasFeatureResult;
+
+    /**
+        Returns information about the player's connection.
+    **/
+    @:native("get_player_information")
+    public static function getPlayerInformation(name: String): Table<String, Any>;
+
+    /**
+        Recursively creates a directory specified by `path`.
+    **/
+    @:native("mkdir")
+    public static function directoryCreate(path: String): Bool;
+
+    /**
+        Removes a directory specified by `path`.
+    **/
+    @:native("rmdir")
+    public static function directoryRemove(path: String, recursive: Bool): Bool;
+
+    /**
+        Copies a directory specified by `source` to `destination`.
+
+        Any existing files will be overwritten.
+    **/
+    @:native("cpdir")
+    public static function directoryCopy(source: String, destination: String): Bool;
+
+    /**
+        Moves a directory specified by `source` to `destination`.
+
+        The move will fail if the `destination` is not empty.
+    **/
+    @:native("mvdir")
+    public static function directoryMove(source: String, destination: String): Bool;
+
+    /**
+        Returns a "list of entry names".
+    **/
+    @:native("get_dir_list")
+    public static function directoryList(path: String, option: ListEntries = All): Dynamic;
+
+    /**
+        Atomically replaces contents of a file.
+    **/
+    @:native("safe_file_write")
+    public static function safeFileWrite(path: String, content: Any): Bool;
+
+    /**
+        Returns "a table containing components of the engine version".
+    **/
+    @:native("get_version")
+    public static function getVersion(): VersionInfo;
+
+    /**
+        Returns "the SHA1 hash of the data".
+    **/
+    @:native("sha1")
+    public static function sha1(data: String, rawBytes: Bool = false): Dynamic;
+
+    @:native("colorspec_to_colorstring")
+    public static function colorspecToColorstring(colorspec: Dynamic): Null<Dynamic>;
+
+    @:native("colorspec_to_bytes")
+    public static function colorspecToBytes(colorspec: Dynamic): Null<Dynamic>;
+
+    @:native("encode_png")
+    public static function encodePng(
+        width: Int,
+        height: Int,
+        data: EitherType<Table<Dynamic, Dynamic>, String>,
+        ?compression: Int
+    ): Null<Dynamic>;
+
+    /*******************/
+    /*     LOGGING     */
+    /*******************/
+    // line 5030
+
+    /**
+        Prints debug info.
+    **/
+    @:native("debug")
+    public static function debug(...args: Dynamic): Void;
+
     @:native("log")
-    static function log(level: LogLevel, message: String): Void;
+    public static function log(level: LogLevel, message: String): Void;
+
+    /************************/
+    /*     REGISTRATION     */
+    /************************/
+    // line 5039
+
+    /**
+        Registers a node.
+    **/
+    @:native("register_node")
+    public static function registerNode(name: String, definition: NodeDefinition): Void;
+
+    /*************************/
+    /*     UNCATEGORIZED     */
+    /*************************/
     @:native("register_on_joinplayer")
     static function registerOnPlayerJoin(callback: PlayerJoinCallback): Void;
     @:native("register_on_chat_message")
@@ -53,10 +196,6 @@ extern class Minetest {
     **/
     @:native("chat_send_player")
     static function chatSendPlayer(name: String, text: String): Void;
-    @:native("get_current_modname")
-    static function getCurrentModName(): Null<String>;
-    @:native("get_modpath")
-    static function getModPath(modName: String): Null<String>;
 
     /**
         Gets the mod storage associated with this mod.
@@ -170,4 +309,7 @@ extern class Minetest {
     **/
     @:native("register_on_shutdown")
     public static function registerOnShutdown(callback: () -> Void): Void;
+
+    @:native("after")
+    static function after(delay: Float, callback: () -> Void): Void;
 }

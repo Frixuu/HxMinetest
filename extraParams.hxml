@@ -1,3 +1,2 @@
---define lua_ver 5.1
---define lua_vanilla
---define lua_jit
+--define lua-ver=5.1
+--define lua-vanilla
