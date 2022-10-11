@@ -1,22 +1,25 @@
 package minetest;
 
-import minetest.node.NodeDefinition;
-import minetest.craft.Recipe;
-import minetest.async.Future;
-import lua.Table;
 import haxe.Rest;
-import minetest.auth.AuthHandler;
-import minetest.Settings;
 import haxe.extern.EitherType;
+import lua.Table;
+import minetest.LogLevel;
+import minetest.Settings;
+import minetest.async.Future;
 import minetest.audio.SoundHandle;
 import minetest.audio.SoundParams;
+import minetest.auth.AuthHandler;
 import minetest.colors.ColorString;
+import minetest.craft.Recipe;
+import minetest.data.ObjectRef;
+import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
-import minetest.Events.ChatMessageCallback;
-import minetest.Events.PlayerJoinCallback;
 import minetest.insecure.InsecureEnvironment;
-import minetest.LogLevel;
 import minetest.metadata.StorageRef;
+import minetest.node.NodeDefinition;
+import minetest.worldgen.BiomeHandle;
+import minetest.worldgen.DecorationHandle;
+import minetest.worldgen.SchematicHandle;
 
 /**
     The main namespace of the Minetest game engine.
@@ -35,11 +38,6 @@ extern class Minetest {
     **/
     @:native("features")
     public static var features(default, null): Table<String, Bool>;
-
-    /*******************/
-    /*    UTILITIES    */
-    /*******************/
-    // line 4854
 
     /**
         If loading a mod, returns the currently loading mod's name.
@@ -148,11 +146,6 @@ extern class Minetest {
         ?compression: Int
     ): Null<Dynamic>;
 
-    /*******************/
-    /*     LOGGING     */
-    /*******************/
-    // line 5030
-
     /**
         Prints debug info.
     **/
@@ -162,26 +155,303 @@ extern class Minetest {
     @:native("log")
     public static function log(level: LogLevel, message: String): Void;
 
-    /************************/
-    /*     REGISTRATION     */
-    /************************/
-    // line 5039
-
     /**
         Registers a node.
     **/
     @:native("register_node")
     public static function registerNode(name: String, definition: NodeDefinition): Void;
 
+    /**
+        Registers a craftitem.
+    **/
+    @:native("register_craftitem")
+    public static function registerCraftitem(name: String, definition: Dynamic): Void;
+
+    /**
+        Registers a tool.
+    **/
+    @:native("register_tool")
+    public static function registerTool(name: String, definition: Dynamic): Void;
+
+    /**
+        Overrides fields of an item definition.
+
+        Note: Item must be already defined to use it.
+        If the item comes from another mod, your mod should (soft-)depend on it.
+    **/
+    @:native("override_item")
+    public static function overrideItem(name: String, redefinition: Dynamic): Void;
+
+    /**
+        Unregisters an item.
+    **/
+    @:native("unregister_item")
+    public static function unregisterItem(name: String): Void;
+
+    /**
+        Registers an entity.
+    **/
+    @:native("register_entity")
+    public static function registerEntity(name: String, definition: Dynamic): Void;
+
+    @:native("register_abm")
+    public static function registerAbm(name: String, definition: Dynamic): Void;
+
+    @:native("register_lbm")
+    public static function registerLbm(name: String, definition: Dynamic): Void;
+
+    @:native("register_alias")
+    public static function registerAlias(alias: String, original: String): Void;
+
+    @:native("register_alias_force")
+    public static function registerAliasForce(alias: String, original: String): Void;
+
+    @:native("register_ore")
+    public static function registerOre(definition: Dynamic): Void;
+
+    @:native("register_biome")
+    public static function registerBiome(definition: Dynamic): BiomeHandle;
+
+    /**
+        Unregisters a biome.
+
+        Warning: This alters biome IDs.
+        Any decorations or ores using the 'biomes' field
+        must afterwards be cleared and re-registered.
+    **/
+    @:native("unregister_biome")
+    public static function unregisterBiome(name: String): Void;
+
+    @:native("register_decoration")
+    public static function registerDecoration(definition: Dynamic): DecorationHandle;
+
+    @:native("register_schematic")
+    public static function registerSchematic(definition: Dynamic): SchematicHandle;
+
+    /**
+        Clears all currently registered biomes.
+
+        Warning: This alters biome IDs.
+        Any decorations or ores using the 'biomes' field
+        must afterwards be cleared and re-registered.
+    **/
+    @:native("clear_registered_biomes")
+    public static function clearRegisteredBiomes(): Void;
+
+    @:native("clear_registered_decorations")
+    public static function clearRegisteredDecorations(): Void;
+
+    @:native("clear_registered_ores")
+    public static function clearRegisteredOres(): Void;
+
+    @:native("clear_registered_schematics")
+    public static function clearRegisteredSchematics(): Void;
+
+    @:native("register_craft")
+    public static function registerCraft(recipe: Recipe): Void;
+
+    @:native("clear_craft")
+    public static function clearCraft(recipe: Dynamic): Void;
+
+    @:native("register_chatcommand")
+    public static function registerChatCommand(name: String, definition: Dynamic): Void;
+
+    @:native("override_chatcommand")
+    public static function overrideChatCommand(name: String, redefinition: Dynamic): Void;
+
+    @:native("unregister_chatcommand")
+    public static function unregisterChatCommand(name: String): Void;
+
+    @:native("register_privilege")
+    public static function registerPrivilege(name: String, definition: Dynamic): Void;
+
+    /**
+        Registers an auth handler that overrides the built-in one.
+
+        This function can be called "by a single mod once only".
+    **/
+    @:native("register_authentication_handler")
+    public static function registerAuthHandler(handler: AuthHandler): Void;
+
+    /**
+        Registers a function to be called on every server step.
+
+        (By default 0.09s, but it is variable and configurable by the administrator.)
+    **/
+    @:native("register_globalstep")
+    public static function registerOnGlobalstep(callback: (delta: Float) -> Void): Void;
+
+    @:native("register_on_mods_loaded")
+    public static function registerOnModsLoaded(callback: () -> Void): Void;
+
+    /**
+        Registers a function to be run on normal server shutdown.
+        Will likely not be called if a server crashes.
+    **/
+    @:native("register_on_shutdown")
+    public static function registerOnShutdown(callback: () -> Void): Void;
+
+    /**
+        Not recommended; use `on_construct` or `after_place_node` in node
+        definition whenever possible.
+    **/
+    @:deprecated
+    @:native("register_on_placenode")
+    public static function registerOnPlaceNode(
+        callback: (
+            pos: Any,
+            newnode: Any,
+            placer: Any,
+            oldnode: Any,
+            itemstack: Any,
+            pointedThing: Any
+        ) -> Void
+    ): Void;
+
+    /**
+        Not recommended; use `on_destruct` or `after_dig_node` in node
+        definition whenever possible.
+    **/
+    @:deprecated
+    @:native("register_on_dignode")
+    public static function registerOnDigNode(
+        callback: (
+            pos: Any,
+            oldnode: Any,
+            digger: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_punchnode")
+    public static function registerOnNodePunched(
+        callback: (
+            pos: Any,
+            node: Any,
+            puncher: Any,
+            pointedThing: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_generated")
+    public static function registerOnGenerated(
+        callback: (
+            minp: Any,
+            maxp: Any,
+            blockSeed: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_newplayer")
+    public static function registerOnNewPlayer(
+        callback: (player: PlayerRef) -> Void
+    ): Void;
+
+    @:native("register_on_punchplayer")
+    public static function registerOnPlayerPunched(
+        callback: (
+            player: PlayerRef,
+            hitter: PlayerRef,
+            timeFromLastPunch: Null<Any>,
+            toolCapabilities: Null<AnyTable>,
+            dir: Any,
+            damage: Any
+        ) -> Bool
+    ): Void;
+
+    @:native("register_on_rightclickplayer")
+    public static function registerOnPlayerRightClicked(
+        callback: (
+            player: PlayerRef,
+            clicker: ObjectRef
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_player_hpchange")
+    public static function registerOnPlayerHealthChange(
+        callback: (
+            player: PlayerRef,
+            hpChange: Float,
+            reason: PlayerHealthChangeReason
+        ) -> Void,
+        modifier: Bool
+    ): Void;
+
+    @:native("register_on_dieplayer")
+    public static function registerOnPlayerDeath(
+        callback: (
+            player: PlayerRef,
+            reason: PlayerHealthChangeReason
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_respawnplayer")
+    public static function registerOnPlayerRespawning(
+        callback: (player: PlayerRef) -> Bool
+    ): Void;
+
+    @:native("register_on_prejoinplayer")
+    public static function registerOnPlayerPreJoin(
+        handler: (name: String, ip: String) -> Null<String>
+    ): Void;
+
+    @:native("register_on_joinplayer")
+    public static function registerOnPlayerJoin(
+        callback: (player: PlayerRef, lastLogin: Null<Int>) -> Void
+    ): Void;
+
+    @:native("register_on_leaveplayer")
+    public static function registerOnPlayerLeave(
+        callback: (player: PlayerRef, timedOut: Bool) -> Void
+    ): Void;
+
+    @:native("register_on_authplayer")
+    public static function registerOnPlayerAuth(
+        callback: (name: String, ip: Any, isSuccess: Bool) -> Void
+    ): Void;
+
+    @:native("register_on_cheat")
+    public static function registerOnCheatDetected(
+        callback: (player: PlayerRef, cheat: AnyTable) -> Void
+    ): Void;
+
+    @:native("register_on_chat_message")
+    public static function registerOnChatMessage(
+        callback: (name: String, message: String) -> Bool
+    ): Void;
+
+    @:native("register_on_chatcommand")
+    public static function registerOnChatCommand(
+        callback: (name: String, command: Any, params: Any) -> Bool
+    ): Void;
+
+    @:native("register_on_player_receive_fields")
+    public static function registerOnPlayerReceiveFields(
+        callback: (player: Any, formName: Any, fields: Any) -> Bool
+    ): Void;
+
+    @:native("register_on_craft")
+    public static function registerOnCraft(
+        callback: (
+            itemStack: Any,
+            player: Any,
+            oldCraftGrid: Any,
+            craftInv: Any
+        ) -> Null<Any>
+    ): Void;
+
+    @:native("register_craft_predict")
+    public static function registerOnCraftPredict(
+        callback: (
+            itemStack: Any,
+            player: Any,
+            oldCraftGrid: Any,
+            craftInv: Any
+        ) -> Null<Any>
+    ): Void;
+
     /*************************/
     /*     UNCATEGORIZED     */
     /*************************/
-    @:native("register_on_joinplayer")
-    static function registerOnPlayerJoin(callback: PlayerJoinCallback): Void;
-    @:native("register_on_chat_message")
-    static function registerOnChatMessage(callback: ChatMessageCallback): Void;
-    @:native("unregister_chatcommand")
-    static function unregisterChatCommand(name: String): Void;
     @:native("get_player_by_name")
     static function getPlayerByName(name: String): Null<PlayerRef>;
 
@@ -209,13 +479,6 @@ extern class Minetest {
 
     @:native("get_auth_handler")
     static function getAuthHandler(): AuthHandler;
-    @:native("register_authentication_handler")
-    static function registerAuthHandler(handler: AuthHandler): Void;
-
-    @:native("register_on_prejoinplayer")
-    public static function registerOnPreJoinPlayer(
-        handler: (name: String, ip: String) -> Null<String>
-    ): Void;
 
     @:native("notify_authentication_modified")
     public static function notifyAuthModified(?name: String): Void;
@@ -291,24 +554,6 @@ extern class Minetest {
     static function stripBackgroundColors(message: String): String;
     @:native("strip_colors")
     static function stripColors(message: String): String;
-
-    @:native("register_craft")
-    public static function registerCraft(recipe: Recipe): Void;
-
-    /**
-        Registers a function to be called on every server step.
-
-        (By default 0.09s, but it is variable and configurable by the administrator.)
-    **/
-    @:native("register_globalstep")
-    public static function registerOnGlobalstep(callback: (delta: Float) -> Void): Void;
-
-    /**
-        Registers a function to be run on normal server shutdown.
-        Will likely not be called if a server crashes.
-    **/
-    @:native("register_on_shutdown")
-    public static function registerOnShutdown(callback: () -> Void): Void;
 
     @:native("after")
     static function after(delay: Float, callback: () -> Void): Void;
