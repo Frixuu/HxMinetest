@@ -15,6 +15,7 @@ import minetest.data.ObjectRef;
 import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
 import minetest.insecure.InsecureEnvironment;
+import minetest.math.Vector;
 import minetest.metadata.StorageRef;
 import minetest.node.NodeDefinition;
 import minetest.worldgen.BiomeHandle;
@@ -390,6 +391,7 @@ extern class Minetest {
     ): Void;
 
     @:native("register_on_prejoinplayer")
+    @:overload(function(handler: (name: String, ip: String) -> Void): Void {})
     public static function registerOnPlayerPreJoin(
         handler: (name: String, ip: String) -> Null<String>
     ): Void;
@@ -449,23 +451,199 @@ extern class Minetest {
         ) -> Null<Any>
     ): Void;
 
-    /*************************/
-    /*     UNCATEGORIZED     */
-    /*************************/
-    @:native("get_player_by_name")
-    static function getPlayerByName(name: String): Null<PlayerRef>;
+    @:native("register_allow_player_inventory_action")
+    public static function registerAllowPlayerInventoryAction(
+        callback: (
+            player: Any,
+            action: Any,
+            inventory: Any,
+            inventoryInfo: Any
+        ) -> Null<Int>
+    ): Void;
+
+    @:native("register_onw_player_inventory_action")
+    public static function registerOnPlayerInventoryAction(
+        callback: (
+            player: Any,
+            action: Any,
+            inventory: Any,
+            inventoryInfo: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_protection_violation")
+    public static function registerOnProtectionViolation(
+        callback: (
+            pos: Any,
+            name: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_item_eat")
+    public static function registerOnItemEat(
+        callback: (
+            hpChange: Any,
+            replaceWithItem: Any,
+            itemStack: Any,
+            user: Any,
+            pointedThing: Any
+        ) -> Null<Any>
+    ): Void;
+
+    @:native("register_on_item_pickup")
+    public static function registerOnItemPickup(
+        callback: (
+            itemstack: Any,
+            picker: Any,
+            pointedThing: Any,
+            timeFromLastPunch: Any,
+            ...args: Any
+        ) -> Null<Any>
+    ): Void;
+
+    @:native("register_on_priv_grant")
+    public static function registerOnPrivGrant(
+        callback: (
+            name: Any,
+            granter: Any,
+            priv: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_priv_revoke")
+    public static function registerOnPrivRevoke(
+        callback: (
+            name: Any,
+            revoker: Any,
+            priv: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_can_bypass_userlimit")
+    public static function registerCanBypassUserLimit(
+        callback: (
+            name: Any,
+            ip: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_modchannel_message")
+    public static function registerOnModChannelMessage(
+        callback: (
+            channelName: Any,
+            sender: Null<Any>,
+            message: Any
+        ) -> Void
+    ): Void;
+
+    @:native("register_on_liquid_transformed")
+    public static function registerOnLiquidTransformed(
+        callback: (
+            posList: Any,
+            nodeList: Any
+        ) -> Void
+    ): Void;
+
+    @:native("setting_get_pos")
+    public static function settingGetPos(key: String): Null<Any>;
+
+    @:native("string_to_privs")
+    public static function stringToPrivs(
+        str: String, ?delimiter: String = ","
+    ): Table<String, Bool>;
+
+    @:native("privs_to_string")
+    public static function privsToString(
+        privs: Table<String, Bool>, ?delimiter: String = ","
+    ): String;
+
+    @:native("get_player_privs")
+    public static function getPlayerPrivs(name: String): Table<String, Bool>;
+
+    /**
+        Tests whether a player has certain privileges (ie. can perform some operation).
+        @param player Either a player object or a player username.
+        @param privs List (or a table) of the privileges to check.
+    **/
+    @:native("check_player_privs")
+    public static function checkPlayerPrivs(
+        player: EitherType<String, PlayerRef>,
+        privs: EitherType<Rest<String>, Table<String, Bool>>
+    ): CheckPlayerPrivsResult;
+
+    @:native("check_password_entry")
+    public static function checkPasswordEntry(name: String, entry: Any, password: Any): Bool;
+
+    @:native("get_password_hash")
+    public static function getPasswordHash(name: String, rawPassword: Any): Any;
+
+    @:native("get_player_ip")
+    public static function getPlayerIp(name: String): Null<String>;
+
+    @:native("get_auth_handler")
+    public static function getAuthHandler(): AuthHandler;
+
+    @:native("notify_authentication_modified")
+    public static function notifyAuthModified(?name: String): Void;
+
+    @:native("set_player_password")
+    public static function setPlayerPassword(name: String, hash: Any): Void;
+
+    @:native("set_player_privs")
+    public static function setPlayerPrivs(name: String, privs: Table<String, Bool>): Void;
+
+    @:native("auth_reload")
+    public static function authReload(): Void;
 
     /**
         Sends a chat message to all online players.
     **/
     @:native("chat_send_all")
-    static function chatSendAll(text: String): Void;
+    public static function chatSendAll(message: String): Void;
 
     /**
         Sends a chat message to a player with a specified name.
     **/
     @:native("chat_send_player")
-    static function chatSendPlayer(name: String, text: String): Void;
+    public static function chatSendPlayer(name: String, message: String): Void;
+
+    @:native("format_chat_message")
+    public static function formatChatMessage(name: String, message: String): String;
+
+    @:native("set_node")
+    public static function setNode(pos: Vector, node: AnyTable): Void;
+
+    @:native("bulk_set_node")
+    public static function bulkSetNode(pos: Table<Int, Vector>, node: AnyTable): Void;
+
+    @:native("swap_node")
+    public static function swapNode(pos: Vector, node: AnyTable): Void;
+
+    @:native("remove_node")
+    public static function removeNode(pos: Vector): Void;
+
+    /**
+        Returns the node at the given position.
+
+        Can return null if the area is unloaded.
+    **/
+    @:native("get_node_or_nil")
+    public static function getNode(pos: Vector): Null<Dynamic>;
+
+    @:native("get_node_light")
+    public static function getNodeLight(pos: Vector, ?timeOfDay: Float): Null<Int>;
+
+    @:native("get_natural_light")
+    public static function getNaturalLight(pos: Vector, ?timeOfDay: Float): Null<Int>;
+
+    @:native("get_artificial_light")
+    public static function getArtificialLight(param: Dynamic): Int;
+
+    /*************************/
+    /*     UNCATEGORIZED     */
+    /*************************/
+    @:native("get_player_by_name")
+    public static function getPlayerByName(name: String): Null<PlayerRef>;
 
     /**
         Gets the mod storage associated with this mod.
@@ -476,12 +654,6 @@ extern class Minetest {
     static function getModStorage(): StorageRef;
     @:native("request_insecure_environment")
     static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
-
-    @:native("get_auth_handler")
-    static function getAuthHandler(): AuthHandler;
-
-    @:native("notify_authentication_modified")
-    public static function notifyAuthModified(?name: String): Void;
 
     /**
         Runs a piece of code in the async environment.
@@ -515,33 +687,25 @@ extern class Minetest {
     public static function isPlayer(obj: Any): Bool;
 
     /**
-        Tests whether a player has certain privileges (ie. can perform some operation).
-        @param player Either a player object or a player username.
-        @param privs List (or a table) of the privileges to check.
-    **/
-    @:native("check_player_privs")
-    public static function checkPlayerPrivs(
-        player: EitherType<String, PlayerRef>,
-        privs: EitherType<Rest<String>, Table<String, Bool>>
-    ): CheckPlayerPrivsResult;
-
-    /**
         Prepares a string for client-side translation.
     **/
     @:native("translate")
-    static function translate(domain: String, text: String, ...args: Any): String;
+    public static function translate(domain: String, text: String, ...args: Any): String;
+
+    @:native("get_translator")
+    public static function getTranslator(domain: String): (text: String, ...args: Any) -> String;
     @:native("sound_play")
-    static function soundPlay(
+    public static function soundPlay(
         spec: Any,
         parameters: NativeSoundParams,
         ephemeral: Bool = false
     ): EitherType<Void, SoundHandle>;
 
     @:native("sound_stop")
-    static function soundStop(handle: SoundHandle): Void;
+    public static function soundStop(handle: SoundHandle): Void;
 
     @:native("sound_fade")
-    static function soundFade(handle: SoundHandle, step: Float, gain: Float): Void;
+    public static function soundFade(handle: SoundHandle, step: Float, targetGain: Float): Void;
     @:native("get_color_escape_sequence")
     static function getColorEscapeSequence(color: ColorString): String;
     @:native("get_background_escape_sequence")

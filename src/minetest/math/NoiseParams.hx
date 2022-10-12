@@ -1,6 +1,6 @@
 package minetest.math;
 
-extern class NoiseParams {
+interface NoiseParams {
     @:native("offset")
     var offset: Float;
     @:native("scale")

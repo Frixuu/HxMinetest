@@ -9,7 +9,7 @@ import minetest.hud.HudHandle;
     The reference can become invalid when an object it is refering to
     gets unloaded or removed.
 **/
-extern final class ObjectRef {
+extern interface ObjectRef {
 
     /**
         If the object is a player, returns that player's name.

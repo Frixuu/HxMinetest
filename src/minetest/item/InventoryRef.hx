@@ -1,3 +1,3 @@
 package minetest.item;
 
-extern abstract class InventoryRef {}
+extern final class InventoryRef {}
