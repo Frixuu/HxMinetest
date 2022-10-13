@@ -6,7 +6,12 @@ import lua.Table;
 /**
     An interface to load and save .conf config files.
 **/
+@:native("Settings")
 extern class Settings {
+
+    /**
+        Reads the contents of a file.
+    **/
     @:selfCall
     public function new(path: String);
 
@@ -14,10 +19,12 @@ extern class Settings {
     public function get(key: String): Null<String>;
     @:native("get_bool")
     public function getBool(key: String, ?def: Bool): Null<Bool>;
+    #if !csm
     @:native("get_np_group")
     public function getNoiseParamsGroup(key: String): NoiseParams;
     @:native("get_flags")
     public function getFlags(key: String): Table<String, Bool>;
+    #end
 
     /**
         Keys cannot contain whitespace or any of `="{}#`.
@@ -27,10 +34,12 @@ extern class Settings {
     **/
     @:native("set")
     public function set(key: String, value: Any): Void;
+    #if !csm
     @:native("set_bool")
     public function setBool(key: String, value: Bool): Void;
     @:native("set_np_group")
     public function setNoiseParamsGroup(key: String, value: NoiseParams): Void;
+    #end
     @:native("remove")
     public function remove(key: String): Bool;
     @:native("get_names")
@@ -38,5 +47,5 @@ extern class Settings {
     @:native("write")
     public function write(): Bool;
     @:native("to_table")
-    public function toTable(): AnyTable;
+    public function toTable(): Table<String, Dynamic>;
 }

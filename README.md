@@ -21,6 +21,7 @@ Minetest.registerOnPlayerJoin((player, _) -> {
 
 - [Installation](#installation)
 - [Quick start](#quick-start)
+- [Client-side modding (experimental)](#client-side-modding-experimental)
 - [Extra APIs](#extra-apis)
   - [Text components](#text-components)
 
@@ -45,6 +46,13 @@ haxelib run hxminetest new my_awesome_mod
 cd my_awesome_mod
 haxe build.hxml
 ```
+
+## Client-side modding (experimental)
+
+HxMinetest can also be used with CSMs.  
+Adding ```--define csm``` to your ```build.hxml``` file
+will enable client-specific externs (e.g. ```Minetest.localPlayer```)
+while disabling the server-specific ones.
 
 ## Extra APIs
 

@@ -21,6 +21,11 @@ import minetest.node.NodeDefinition;
 import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
 import minetest.worldgen.SchematicHandle;
+#if csm
+import minetest.client.Camera;
+import minetest.client.LocalPlayer;
+import minetest.client.ServerInfo;
+#end
 
 /**
     The main namespace of the Minetest game engine.
@@ -39,6 +44,20 @@ extern class Minetest {
     **/
     @:native("features")
     public static var features(default, null): Table<String, Bool>;
+
+    #if csm
+    /**
+        A reference to the local player object.
+    **/
+    @:native("localplayer")
+    public static var localPlayer(default, null): LocalPlayer;
+
+    /**
+        A reference to the camera object.
+    **/
+    @:native("camera")
+    public static var camera(default, null): Camera;
+    #end
 
     /**
         If loading a mod, returns the currently loading mod's name.
@@ -721,4 +740,21 @@ extern class Minetest {
 
     @:native("after")
     static function after(delay: Float, callback: () -> Void): Void;
+
+    #if csm
+    /**
+        Disconnects from the server and exists to the main menu.
+    **/
+    @:native("disconnect")
+    public static function disconnect(): Bool;
+
+    /**
+        Requests a respawn from the server.
+    **/
+    @:native("send_respawn")
+    public static function sendRespawnRequest(): Void;
+
+    @:native("get_server_info")
+    public static function getServerInfo(): ServerInfo;
+    #end
 }

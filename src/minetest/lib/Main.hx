@@ -64,12 +64,12 @@ class Main {
         FileSystem.createDirectory(modDirPath);
 
         File.saveContent(Path.join([modDirPath, "build.hxml"]), [
-            "-cp src",
+            "--class-path src",
             "--lua init.lua",
-            "-D analyzer-optimize",
-            "-dce full",
-            "-L hxminetest",
-            "-m Mod"
+            "--define analyzer-optimize",
+            "--dce full",
+            "--library hxminetest",
+            "--main Mod"
         ].join("\n"));
 
         File.saveContent(Path.join([modDirPath, "mod.conf"]), [
