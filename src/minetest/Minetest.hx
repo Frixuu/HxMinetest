@@ -1,5 +1,6 @@
 package minetest;
 
+import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
 import lua.Table;
@@ -15,6 +16,7 @@ import minetest.data.ObjectRef;
 import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
 import minetest.insecure.InsecureEnvironment;
+import minetest.insecure.http.HttpApi;
 import minetest.math.Vector;
 import minetest.metadata.StorageRef;
 import minetest.node.NodeDefinition;
@@ -665,6 +667,13 @@ extern class Minetest {
     public static function getPlayerByName(name: String): Null<PlayerRef>;
 
     /**
+        If the calling mod is trusted or otherwise has access to it,
+        returns an object containing HTTP functions.
+    **/
+    @:native("request_http_api")
+    public static function requestHttpApi(): Null<HttpApi>;
+
+    /**
         Gets the mod storage associated with this mod.
 
         NOTE: This method is safe to call only during load time (in main).
@@ -738,8 +747,15 @@ extern class Minetest {
     @:native("strip_colors")
     static function stripColors(message: String): String;
 
+    /**
+        Runs a callback not earlier than after the specified amount of time has passed.
+        @param delay The minimum amount of time the callback should wait, expressed in seconds.
+        @param callback The function that should be called shortly after the delay ends.
+        @return A handle to a cancellable job.
+    **/
     @:native("after")
-    static function after(delay: Float, callback: () -> Void): Void;
+    @:overload(function(delay: Float, callback: Function, ...args: Any): ScheduledJobHandle {})
+    public static function after(delay: Float, callback: () -> Void): ScheduledJobHandle;
 
     #if csm
     /**
