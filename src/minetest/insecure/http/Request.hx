@@ -28,12 +28,12 @@ class Request {
 
     public function new(
         url: String,
-        ?method: HttpMethod = HttpMethod.Get,
-        ?timeout: Int = 10,
-        ?multipart: Bool = false,
-        ?data: EitherType<String, Table<String, Any>> = null,
-        ?headers: Table<Int, String> = null,
-        ?userAgent: String = null
+        method: HttpMethod = HttpMethod.Get,
+        timeout: Int = 10,
+        multipart: Bool = false,
+        ?data: EitherType<String, Table<String, Any>>,
+        ?headers: Table<Int, String>,
+        ?userAgent: String
     ) {
         this.url = url;
         this.method = method;

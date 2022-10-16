@@ -1,5 +1,9 @@
 package minetest;
 
+import minetest.math.NoiseParams;
+import minetest.math.PerlinNoise;
+import minetest.math.VoxelManip;
+import minetest.metadata.NodeMetaRef;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -658,14 +662,139 @@ extern class Minetest {
     public static function getNaturalLight(pos: Vector, ?timeOfDay: Float): Null<Int>;
 
     @:native("get_artificial_light")
-    public static function getArtificialLight(param: Dynamic): Int;
+    public static function getArtificialLight(param1: Dynamic): Int;
+
+    @:native("place_node")
+    public static function placeNode(pos: Vector, node: Any): Void;
+
+    /**
+        Digs a node with the same effects that a player would cause.
+        @return True if successful, false on failure (e.g. protected location).
+    **/
+    @:native("dig_node")
+    public static function digNode(pos: Vector): Bool;
+
+    @:native("punch_node")
+    public static function punchNode(pos: Vector): Void;
+
+    @:native("spawn_falling_node")
+    public static function spawnFallingNode(pos: Vector): SpawnFallingNodeResult;
+
+    @:native("find_nodes_with_meta")
+    public static function findNodesWithMeta(pos1: Vector, pos2: Vector): AnyTable;
+
+    @:native("get_meta")
+    public static function getMeta(pos: Vector): NodeMetaRef;
+
+    @:native("get_node_timer")
+    public static function getNodeTimer(pos: Vector): NodeTimerRef;
+
+    @:native("add_entity")
+    public static function addEntity(pos: Vector, name: String, ?staticData: Any): Null<ObjectRef>;
+
+    @:native("add_item")
+    public static function addItem(pos: Vector, item: Any): Null<ObjectRef>;
+
+    @:native("get_player_by_name")
+    public static function getPlayerByName(name: String): Null<PlayerRef>;
+
+    @:native("get_objects_inside_radius")
+    public static function getObjectsInsideRadius(pos: Vector, radius: Any): AnyTable;
+
+    @:native("get_objects_in_area")
+    public static function getObjectsInArea(pos1: Vector, pos2: Vector): AnyTable;
+
+    @:native("set_timeofday")
+    public static function setTimeOfDay(val: Float): Void;
+
+    @:native("get_timeofday")
+    public static function getTimeOfDay(): Float;
+
+    @:native("get_gametime")
+    public static function getGameTime(): Float;
+
+    @:native("get_day_count")
+    public static function getDayCount(): Int;
+
+    @:native("find_node_near")
+    public static function findNodeNear(
+        pos: Any,
+        radius: Any,
+        nodeNames: Any,
+        ?searchCenter: Bool = false
+    ): Null<Vector>;
+
+    @:native("find_nodes_in_area")
+    public static function findNodesInArea(
+        pos1: Vector,
+        pos2: Vector,
+        nodeNames: Any,
+        grouped: Bool = false
+    ): Dynamic;
+
+    @:native("find_nodes_in_area_under_air")
+    public static function findNodesInAreaUnderAir(
+        pos1: Vector,
+        pos2: Vector,
+        nodeNames: Any
+    ): Dynamic;
+
+    @:native("get_perlin")
+    public static function getPerlin(noiseParams: Any): PerlinNoise;
+
+    @:native("get_voxel_manip")
+    public static function getVoxelManip(pos1: Any, pos2: Any): VoxelManip;
+
+    @:native("set_gen_notify")
+    public static function setGenNotify(flags: Any, decorationIds: Any): Void;
+
+    @:native("get_gen_notify")
+    public static function getGenNotify(): Dynamic;
+
+    @:native("get_decoration_id")
+    public static function getDecorationId(name: String): Null<Dynamic>;
+
+    @:native("get_mapgen_object")
+    public static function getMapgenObject(name: String): Null<Dynamic>;
+
+    @:native("get_heat")
+    public static function getHeat(pos: Vector): Null<Dynamic>;
+
+    @:native("get_humidity")
+    public static function getHumidity(pos: Vector): Null<Dynamic>;
+
+    @:native("get_biome_data")
+    public static function getBiomeData(pos: Vector): Null<AnyTable>;
+
+    @:native("get_biome_id")
+    public static function getBiomeId(name: String): Null<Dynamic>;
+
+    @:native("get_biome_name")
+    public static function getBiomeName(id: Any): Null<String>;
+
+    @:native("get_mapgen_setting")
+    public static function getMapgenSetting(name: String): Null<String>;
+
+    @:native("get_mapgen_setting_noiseparams")
+    public static function getMapgenSettingNoiseParams(name: String): Null<NoiseParams>;
+
+    @:native("set_mapgen_setting")
+    public static function setMapgenSetting(
+        name: String,
+        value: Any,
+        overrideMeta: Bool = false
+    ): Void;
+
+    @:native("set_mapgen_setting_noiseparams")
+    public static function setMapgenSettingNoiseParams(
+        name: String,
+        value: Any,
+        overrideMeta: Bool = false
+    ): Void;
 
     /*************************/
     /*     UNCATEGORIZED     */
     /*************************/
-    @:native("get_player_by_name")
-    public static function getPlayerByName(name: String): Null<PlayerRef>;
-
     /**
         If the calling mod is trusted or otherwise has access to it,
         returns an object containing HTTP functions.
@@ -694,7 +823,7 @@ extern class Minetest {
         @since Minetest 5.6.0
     **/
     @:native("handle_async")
-    public static function handleAsync(func: Any, callback: Any, ...args: Dynamic): Bool;
+    public static function handleAsync(func: Function, callback: Function, ...args: Dynamic): Bool;
 
     /**
         Runs `handleAsync`, but wraps the result in a `Future`.

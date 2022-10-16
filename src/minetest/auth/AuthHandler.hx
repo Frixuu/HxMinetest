@@ -2,8 +2,7 @@ package minetest.auth;
 
 import lua.Table;
 
-@:native("({})")
-extern abstract class AuthHandler {
+extern interface AuthHandler {
     @:native("mod_origin")
     public var modOrigin: Null<String>;
 
@@ -17,6 +16,7 @@ extern abstract class AuthHandler {
     @:luaDotMethod
     @:native("create_auth")
     public dynamic function createAuth(name: String, passwordRepr: Any): Void;
+
     @:luaDotMethod
     @:native("delete_auth")
     public dynamic function deleteAuth(name: String): Bool;
@@ -27,6 +27,7 @@ extern abstract class AuthHandler {
     @:luaDotMethod
     @:native("set_password")
     public dynamic function setPassword(name: String, passwordRepr: String): Bool;
+
     @:luaDotMethod
     @:native("set_privileges")
     public dynamic function setPrivileges(name: String, privs: Table<String, Bool>): Void;
