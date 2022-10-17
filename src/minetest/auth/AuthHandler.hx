@@ -2,7 +2,11 @@ package minetest.auth;
 
 import lua.Table;
 
-extern interface AuthHandler {
+interface AuthHandler {
+
+    /**
+        The mod this auth handler comes from.
+    **/
     @:native("mod_origin")
     public var modOrigin: Null<String>;
 

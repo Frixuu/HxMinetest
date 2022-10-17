@@ -51,6 +51,39 @@ extern class Minetest {
     @:native("features")
     public static var features(default, null): Table<String, Bool>;
 
+    @:native("registered_items")
+    public static var registeredItems(default, null): Table<String, Dynamic>;
+
+    @:native("registered_nodes")
+    public static var registeredNodes(default, null): Table<String, Dynamic>;
+
+    @:native("registered_craftitems")
+    public static var registeredCraftitems(default, null): Table<String, Dynamic>;
+
+    @:native("registered_tools")
+    public static var registeredTools(default, null): Table<String, Dynamic>;
+
+    @:native("registered_entities")
+    public static var registeredEntities(default, null): Table<String, Dynamic>;
+
+    @:native("object_refs")
+    public static var objectRefs(default, null): Table<Dynamic, Dynamic>;
+
+    @:native("luaentities")
+    public static var luaEntities(default, null): Table<Dynamic, Dynamic>;
+
+    @:native("registered_abms")
+    public static var registeredAbms(default, null): Dynamic;
+
+    @:native("registered_lbms")
+    public static var registeredLbms(default, null): Dynamic;
+
+    @:native("registered_aliases")
+    public static var registeredAliases(default, null): Table<String, Dynamic>;
+
+    @:native("registered_ores")
+    public static var registeredOres(default, null): Table<String, Dynamic>;
+
     #if csm
     /**
         A reference to the local player object.
@@ -809,8 +842,24 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     static function getModStorage(): StorageRef;
+
+    /**
+        If the calling mod is listed as trusted or security is disabled,
+        returns an environment containing unsafe functions.
+
+        Note: Works only at init time.
+
+        WARNING: Do not expose this environment to anyone.
+        Rogue mods may use it to escape sandbox. You have been warned.
+    **/
     @:native("request_insecure_environment")
-    static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
+    public static function requestInsecureEnvironment(): Null<InsecureEnvironment>;
+
+    /**
+        Checks if a global Lua variable has been set.
+    **/
+    @:native("global_exists")
+    public static function globalExists(name: String): Bool;
 
     /**
         Runs a piece of code in the async environment.
