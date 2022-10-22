@@ -12,41 +12,41 @@ interface AuthHandler {
 
     @:luaDotMethod
     @:native("get_auth")
-    public dynamic function getAuth(name: String): Null<AuthData>;
+    public var getAuth(default, null): (name: String) -> Null<AuthData>;
 
     /**
         @param passwordRepr An engine-defined representation of the password.
     **/
     @:luaDotMethod
     @:native("create_auth")
-    public dynamic function createAuth(name: String, passwordRepr: Any): Void;
+    public var createAuth(default, null): (name: String, passwordRepr: Any) -> Void;
 
     @:luaDotMethod
     @:native("delete_auth")
-    public dynamic function deleteAuth(name: String): Bool;
+    public var deleteAuth(default, null): (name: String) -> Bool;
 
     /**
         @param passwordRepr An engine-defined representation of the password.
     **/
     @:luaDotMethod
     @:native("set_password")
-    public dynamic function setPassword(name: String, passwordRepr: String): Bool;
+    public var setPassword(default, null): (name: String, passwordRepr: String) -> Bool;
 
     @:luaDotMethod
     @:native("set_privileges")
-    public dynamic function setPrivileges(name: String, privs: Table<String, Bool>): Void;
+    public var setPrivileges(default, null): (name: String, privs: Table<String, Bool>) -> Void;
 
     @:luaDotMethod
     @:native("reload")
-    public dynamic function reload(): Bool;
+    public var reload(default, null): () -> Bool;
 
     @:luaDotMethod
     @:native("record_login")
-    public dynamic function recordLogin(name: String): Void;
+    public var recordLogin(default, null): (name: String) -> Void;
 
     @:luaDotMethod
     @:native("iterate")
-    public dynamic function iterate(): (() -> IterateResult);
+    public var iterate(default, null): () -> (() -> IterateResult);
 }
 
 @:multiReturn extern class IterateResult {
