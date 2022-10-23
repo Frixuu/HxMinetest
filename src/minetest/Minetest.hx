@@ -1,5 +1,6 @@
 package minetest;
 
+import minetest.privilege.PrivilegeDefinition;
 import minetest.math.NoiseParams;
 import minetest.math.PerlinNoise;
 import minetest.math.VoxelManip;
@@ -83,6 +84,21 @@ extern class Minetest {
 
     @:native("registered_ores")
     public static var registeredOres(default, null): Table<String, Dynamic>;
+
+    @:native("registered_biomes")
+    public static var registeredBiomes(default, null): Table<String, Dynamic>;
+
+    @:native("registered_decorations")
+    public static var registeredDecorations(default, null): Table<String, Dynamic>;
+
+    @:native("registered_schematics")
+    public static var registeredSchematics(default, null): Table<String, Dynamic>;
+
+    @:native("registered_chatcommands")
+    public static var registeredChatCommands(default, null): Table<String, Dynamic>;
+
+    @:native("registered_privileges")
+    public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
 
     #if csm
     /**
@@ -322,7 +338,7 @@ extern class Minetest {
     public static function unregisterChatCommand(name: String): Void;
 
     @:native("register_privilege")
-    public static function registerPrivilege(name: String, definition: Dynamic): Void;
+    public static function registerPrivilege(name: String, definition: PrivilegeDefinition): Void;
 
     /**
         Registers an auth handler that overrides the built-in one.
