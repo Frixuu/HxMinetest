@@ -1,5 +1,6 @@
 package minetest;
 
+import minetest.data.CompressionMethod;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.math.NoiseParams;
 import minetest.math.PerlinNoise;
@@ -950,6 +951,10 @@ extern class Minetest {
     @:native("after")
     @:overload(function(delay: Float, callback: Function, ...args: Any): ScheduledJobHandle {})
     public static function after(delay: Float, callback: () -> Void): ScheduledJobHandle;
+
+    @:native("compress")
+    @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})
+    public static function compress(data: String, method: CompressionMethod, ?level: Int): Dynamic;
 
     #if csm
     /**
