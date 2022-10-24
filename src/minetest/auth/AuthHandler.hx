@@ -1,5 +1,6 @@
 package minetest.auth;
 
+import lua.Lua.PairsResult;
 import lua.Table;
 
 interface AuthHandler {
@@ -46,10 +47,5 @@ interface AuthHandler {
 
     @:luaDotMethod
     @:native("iterate")
-    public var iterate(default, null): () -> (() -> IterateResult);
-}
-
-@:multiReturn extern class IterateResult {
-    var currentName: Null<String>;
-    var exists: Bool;
+    public var iterate(default, null): () -> PairsResult<String, Bool>;
 }

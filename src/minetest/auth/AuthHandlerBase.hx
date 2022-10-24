@@ -1,5 +1,6 @@
 package minetest.auth;
 
+import lua.Lua.PairsResult;
 import lua.Table;
 import minetest.auth.AuthHandler;
 
@@ -40,7 +41,7 @@ abstract class AuthHandlerBase implements AuthHandler {
 
     @:luaDotMethod
     @:native("iterate")
-    public var iterate(default, null): () -> (() -> IterateResult);
+    public var iterate(default, null): () -> PairsResult<String, Bool>;
 
     public function new() {
         // Assigning function to fields/dot methods currently does not work correctly
@@ -81,5 +82,5 @@ abstract class AuthHandlerBase implements AuthHandler {
 
     @:keep
     @:native("_iterate_impl")
-    private abstract function iterateImpl(): (() -> IterateResult);
+    private abstract function iterateImpl(): Dynamic;
 }
