@@ -1,5 +1,9 @@
 package minetest;
 
+import minetest.macro.Snippets;
+import haxe.macro.Context;
+import haxe.macro.Compiler;
+import lua.Lua;
 import minetest.item.ItemStack;
 import minetest.item.InventoryLocation;
 import minetest.item.InventoryRef;
@@ -1112,8 +1116,10 @@ extern class Minetest {
         If the calling mod is trusted or otherwise has access to it,
         returns an object containing HTTP functions.
     **/
-    @:native("request_http_api")
-    public static function requestHttpApi(): Null<HttpApi>;
+    public static inline function requestHttpApi(): Null<HttpApi> {
+        Snippets.includeFile("insecure/http/_request_http_api.lua");
+        return untyped __lua__("__hxminetest_http_api");
+    }
 
     /**
         Gets the mod storage associated with this mod.
@@ -1165,6 +1171,12 @@ extern class Minetest {
         Minetest.handleAsync(func, data -> future.complete(data), state);
         return future;
     }
+
+    @:native("parse_json")
+    public static function parseJson(text: String, ?nullReplacement: Any): Null<Any>;
+
+    @:native("write_json")
+    public static function writeJson(data: Any, fancy: Bool = false): WriteJsonResult;
 
     /**
         Checks whether an object represents a player.

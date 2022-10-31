@@ -1,0 +1,6 @@
+--class-path .
+--lua init.lua
+--define analyzer-optimize
+--dce full
+--library hxminetest
+--main ExampleHttp

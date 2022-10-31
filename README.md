@@ -17,6 +17,13 @@ Minetest.registerOnPlayerJoin((player, _) -> {
 });
 ```
 
+Are you new to Minetest modding?
+The following resources assume you're writing Lua,
+but are a great help in learning the ropes:
+
+- [Minetest Modding Book](https://rubenwardy.com/minetest_modding_book/en/index.html), by rubenwardy
+- [Lua Modding API reference](https://minetest.gitlab.io/minetest/)
+
 ## Contents
 
 - [Installation](#installation)
@@ -24,10 +31,11 @@ Minetest.registerOnPlayerJoin((player, _) -> {
 - [Client-side modding (experimental)](#client-side-modding-experimental)
 - [Extra APIs](#extra-apis)
   - [Text components](#text-components)
+  - [Futures](#futures)
 
 ## Installation
 
-Assuming you [already have Haxe installed](https://haxe.org/download/),
+Assuming you already have a [recent version of Haxe installed](https://haxe.org/download/),
 you can download HxMinetest:
 
 - from [Haxelib](https://lib.haxe.org/p/hxminetest/) (may be outdated):
@@ -47,9 +55,11 @@ cd my_awesome_mod
 haxe build.hxml
 ```
 
+Looking for inspirations? Check out provided `examples`.
+
 ## Client-side modding (experimental)
 
-HxMinetest can also be used with CSMs.  
+If you're adventurous enough to write CSMs, HxMinetest can help you too!  
 Adding ```--define csm``` to your ```build.hxml``` file
 will enable client-specific externs (e.g. ```Minetest.localPlayer```)
 while disabling the server-specific ones.
@@ -75,4 +85,18 @@ player.sendChatMessage(tr("[Villager]")
             .color(Color.rgb(255, 132, 87))
             .build()))
     .build());
+```
+
+### Futures
+
+Getting lost in the callback hell? Certain operations now return Futures to make your code cleaner:
+
+```haxe
+final httpApi = Minetest.requestHttpApi();
+if (httpApi != null) {
+    httpApi.fetch(Request.GET("https://example.com/"))
+        .thenAccept(response -> {
+            // ...
+        });
+}
 ```
