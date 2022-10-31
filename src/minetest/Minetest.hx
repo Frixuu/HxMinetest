@@ -1,5 +1,11 @@
 package minetest;
 
+import minetest.item.ItemStack;
+import minetest.item.InventoryLocation;
+import minetest.item.InventoryRef;
+import minetest.pathfinding.PathAlgorithm;
+import minetest.math.Raycast;
+import minetest.worldgen.EmergeType;
 import minetest.data.CompressionMethod;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.math.NoiseParams;
@@ -34,6 +40,8 @@ import minetest.client.Camera;
 import minetest.client.LocalPlayer;
 import minetest.client.ServerInfo;
 #end
+
+using minetest.item.InventoryLocation;
 
 /**
     The main namespace of the Minetest game engine.
@@ -841,6 +849,261 @@ extern class Minetest {
         value: Any,
         overrideMeta: Bool = false
     ): Void;
+
+    @:native("set_noiseparams")
+    public static function setNoiseParams(
+        name: String,
+        noiseParams: NoiseParams,
+        setDefault: Bool = false
+    ): Void;
+
+    @:native("get_noiseparams")
+    public static function getNoiseParams(name: String): NoiseParams;
+
+    @:native("generate_ores")
+    public static function generateOres(
+        vm: VoxelManip,
+        ?pos1: Vector,
+        ?pos2: Vector
+    ): Void;
+
+    @:native("generate_decorations")
+    public static function generateDecorations(
+        vm: VoxelManip,
+        ?pos1: Vector,
+        ?pos2: Vector
+    ): Void;
+
+    /**
+        Clears all objects in the environment.
+    **/
+    @:native("clear_objects")
+    public static function clearObjects(?options: {
+        mode: String,
+    }): Void;
+
+    /**
+        Loads mapblocks containing the area from `pos1` to `pos2`
+        without triggering map generation.
+    **/
+    @:native("load_area")
+    public static function loadArea(
+        pos1: Vector,
+        ?pos2: Vector
+    ): Void;
+
+    /**
+        Queues all block in the area from `pos1` to `pos2`, inclusive,
+        to be asynchronously fetched from memory, loaded from disk, or generated.
+    **/
+    @:native("emerge_area")
+    public static function emergeArea<T>(
+        pos1: Vector,
+        pos2: Vector,
+        ?callback: (blockPos: Vector, type: EmergeType, remaining: Int, param: Null<T>) -> Void,
+        ?param: T
+    ): Void;
+
+    /**
+        Deletes all mapblocks in the area from `pos1` to `pos2`, inclusive.
+    **/
+    @:native("delete_area")
+    public static function deleteArea(
+        pos1: Vector,
+        pos2: Vector
+    ): Void;
+
+    /**
+        Checks if there is something other than air between `pos1` and `pos2`.
+    **/
+    @:native("line_of_sight")
+    public static function checkLineOfSight(
+        pos1: Vector,
+        pos2: Vector
+    ): LosCheckResult;
+
+    @:native("raycast")
+    public static function raycast(
+        pos1: Vector,
+        pos2: Vector,
+        includeObjects: Bool = true,
+        includeLiquids: Bool = false
+    ): Raycast;
+
+    @:native("find_path")
+    public static function findPath(
+        pos1: Vector,
+        pos2: Vector,
+        maxDistance: Float,
+        maxJump: Float,
+        maxDrop: Float,
+        algorithm: PathAlgorithm
+    ): Null<AnyTable>;
+
+    /**
+        Spawns an L-system tree at given location.
+    **/
+    @:native("spawn_tree")
+    public static function spawnTree(
+        pos: Vector,
+        definition: AnyTable
+    ): Void;
+
+    @:native("transforming_liquid_add")
+    public static function transformingLiquidAdd(
+        pos: Vector
+    ): Void;
+
+    @:native("get_node_max_level")
+    public static function getNodeMaxLevel(
+        pos: Vector
+    ): Dynamic;
+
+    /**
+        Gets level of a leveled node (water, snow etc.)
+    **/
+    @:native("get_node_level")
+    public static function getNodeLevel(
+        pos: Vector
+    ): Dynamic;
+
+    @:native("set_node_level")
+    public static function setNodeLevel(
+        pos: Vector,
+        level: Int
+    ): Dynamic;
+
+    @:native("add_node_level")
+    public static function addNodeLevel(
+        pos: Vector,
+        increment: Int
+    ): Dynamic;
+
+    /**
+        Resets the light in a cuboid-shaped part of the map,
+        hopefully resolving lighting bugs.
+
+        If the area is not loaded yet, loads it.
+
+        @return True if the area is fully generated.
+    **/
+    @:native("fix_light")
+    public static function fixLight(pos1: Vector, pos2: Vector): Bool;
+
+    /**
+        Causes an unsupported "falling node" or an unattached "attached node" to fall.
+
+        Does not update the node's neighbors.
+    **/
+    @:native("check_single_for_falling")
+    public static function checkSingleForFalling(
+        pos: Vector
+    ): Dynamic;
+
+    /**
+        Causes an unsupported "falling node" or an unattached "attached node" to fall.
+
+        Spreads node updates to neighbors, can cause a cascade.
+    **/
+    @:native("check_for_falling")
+    public static function checkForFalling(
+        pos: Vector
+    ): Dynamic;
+
+    /**
+        Given a pair of (X, Z) coordinates, returns a player spawn Y coordinate.
+
+        Can return null if a place is deemed unsuitable to spawn by the map generator.
+    **/
+    @:native("get_spawn_level")
+    public static function getSpawnLevel(
+        x: Float,
+        z: Float
+    ): Null<Float>;
+
+    /**
+        The server joins channel named `name`, creating it if necessary.
+    **/
+    @:native("mod_channel_join")
+    public static function modChannelJoin(
+        name: String
+    ): Void;
+
+    @:native("get_inventory")
+    private static function getInventoryRaw(location: Table<String, Any>): InventoryRef;
+
+    public static inline function getInventory(location: InventoryLocation): InventoryRef {
+        return getInventoryRaw(location.toNative());
+    }
+
+    /**
+        Creates a detached inventory.
+
+        If an inventory of that name already exists, clears it.
+    **/
+    @:native("create_detached_inventory")
+    public static function createDetachedInventory(
+        name: String,
+        callbacks: Any,
+        ?visibleOnlyTo: String
+    ): InventoryRef;
+
+    /**
+        Removes a detached inventory.
+
+        @return True if the removal succeeded.
+    **/
+    @:native("remove_detached_inventory")
+    public static function removeDetachedInventory(
+        name: String
+    ): Bool;
+
+    /**
+        @return Leftover `ItemStack` or null, if the inventory has not changed.
+    **/
+    @:native("do_item_eat")
+    public static function doItemEat(
+        hpChange: Float,
+        replaceWithItem: Any,
+        itemStack: Any,
+        user: Any,
+        pointedThing: Any
+    ): Null<ItemStack>;
+
+    @:native("show_formspec")
+    public static function showFormspec(
+        playerName: String,
+        formName: String,
+        formSpec: String
+    ): Void;
+
+    @:native("close_formspec")
+    public static function closeFormspec(
+        playerName: String,
+        whenFormNameIs: String
+    ): Void;
+
+    /**
+        Escapes characters that cannot be used in formspecs,
+        e.g. brackets, commas, semicolons.
+    **/
+    @:native("formspec_escape")
+    public static function formspecEscape(text: String): String;
+
+    @:native("explode_table_event")
+    public static function explodeTableEvent(
+        text: String
+    ): AnyTable;
+
+    @:native("explode_textlist_event")
+    public static function explodeTextListEvent(
+        text: String
+    ): AnyTable;
+
+    @:native("explode_scrollbar_event")
+    public static function explodeScrollbarEvent(
+        text: String
+    ): AnyTable;
 
     /*************************/
     /*     UNCATEGORIZED     */

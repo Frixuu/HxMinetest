@@ -1,23 +1,37 @@
 package minetest.data;
 
-interface PlayerHealthChangeReason {
-    @:native("type")
-    var type: Reason;
-    var object: Null<Any>;
-    var from: From;
-    var node: Null<Any>;
+typedef PlayerHealthChangeReason = {
+    var type: ChangeType;
+    var from: InvokedFrom;
+    @:optional var object: Any;
+    @:optional var node: Any;
 }
 
-enum abstract From(String) {
-    var Mod = "mod";
-    var Engine = "engine";
+enum abstract InvokedFrom(String) {
+    public var Mod = "mod";
+    public var Engine = "engine";
 }
 
-enum abstract Reason(String) {
-    var SetHp = "set_hp";
-    var Punch = "punch";
-    var Fall = "fall";
-    var NodeDamage = "node_damage";
-    var Drown = "drown";
-    var Respawn = "respawn";
+enum abstract ChangeType(String) {
+
+    /**
+        The health change was not given a type.
+        This usually means this is a custom damage type.
+    **/
+    public var Custom = "set_hp";
+
+    /**
+        The player was punched.
+        The `object` field should hold the puncher.
+    **/
+    public var Punch = "punch";
+    public var Fall = "fall";
+
+    /**
+        Damage taken from a neighboring node.
+        The `node` field should hold the node name.
+    **/
+    public var NodeDamage = "node_damage";
+    public var Drown = "drown";
+    public var Respawn = "respawn";
 }
