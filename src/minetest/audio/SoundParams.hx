@@ -51,7 +51,7 @@ class SoundParams {
         return this;
     }
 
-    @:allow(minetest.data.PlayerTools)
+    @:allow(minetest.Minetest)
     private function toNative(): NativeSoundParams {
         final params: NativeSoundParams = {};
         if (_gain != 1.0) {
@@ -124,7 +124,7 @@ typedef NativeSoundParams = {
     @:optional var loop: Bool;
     @:optional var to_player: String;
     @:optional var exclude_player: String;
-    @:optional var pos: {x: Float, y: Float, z: Float};
+    @:optional var pos: Vector;
     @:optional var max_hear_distance: Float;
     @:optional var object: ObjectRef;
 }

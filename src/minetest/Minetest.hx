@@ -1,5 +1,8 @@
 package minetest;
 
+import minetest.node.PlaceResult;
+import minetest.node.RevertActionsResult;
+import minetest.craft.CraftResult;
 import minetest.macro.Snippets;
 import haxe.macro.Context;
 import haxe.macro.Compiler;
@@ -1109,6 +1112,329 @@ extern class Minetest {
         text: String
     ): AnyTable;
 
+    @:native("inventorycube")
+    public static function makeInventoryCubeImage(
+        img1: Any,
+        img2: Any,
+        img3: Any
+    ): String;
+
+    @:native("get_pointed_thing_position")
+    public static function getPointedThingPosition(
+        pointedThing: Any,
+        above: Bool
+    ): Null<Vector>;
+
+    @:native("dir_to_facedir")
+    public static function dirToFacedir(
+        dir: Vector,
+        ?is6d: Any
+    ): Dynamic;
+
+    @:native("facedir_to_dir")
+    public static function facedirToDir(
+        facedir: Any
+    ): Vector;
+
+    @:native("dir_to_fourdir")
+    public static function dirToFourdir(
+        dir: Vector
+    ): Dynamic;
+
+    @:native("fourdir_to_dir")
+    public static function fourdirToDir(
+        fourdir: Any
+    ): Vector;
+
+    @:native("dir_to_wallmounted")
+    public static function dirToWallmounted(
+        dir: Vector
+    ): Dynamic;
+
+    @:native("wallmounted_to_dir")
+    public static function wallmountedToDir(
+        wallmounted: Any
+    ): Vector;
+
+    @:native("dir_to_yaw")
+    public static function dirToYaw(
+        dir: Vector
+    ): Float;
+
+    @:native("yaw_to_dir")
+    public static function yawToDir(
+        yaw: Float
+    ): Vector;
+
+    @:native("is_colored_paramtype")
+    public static function isColoredParamType(
+        ptype: Any
+    ): Bool;
+
+    @:native("strip_param2_color")
+    public static function stripParam2Color(
+        param2: Any,
+        paramType2: Any
+    ): Dynamic;
+
+    @:native("get_node_drops")
+    public static function getNodeDrops(
+        node: Any,
+        toolName: Null<String>
+    ): Dynamic;
+
+    @:native("get_craft_result")
+    public static function getCraftResult(
+        input: Any
+    ): CraftResult;
+
+    @:native("get_craft_recipe")
+    public static function getCraftRecipe(
+        output: Any
+    ): AnyTable;
+
+    @:native("get_all_craft_recipes")
+    public static function getAllCraftRecipes(
+        queryItem: Any
+    ): Null<AnyTable>;
+
+    @:native("handle_node_drops")
+    public static dynamic function handleNodeDrops(
+        pos: Vector,
+        drops: Any,
+        digger: Any
+    ): Dynamic;
+
+    /**
+        Creates "an item string which contains
+        information for hardware colorization".
+        @param item The item stack which becomes colored.
+        @param paletteIndex Index to be added to the stack.
+    **/
+    @:native("itemstring_with_palette")
+    public static function itemStringWithPalette(
+        item: Any,
+        paletteIndex: Any
+    ): String;
+
+    @:native("itemstring_with_color")
+    public static function itemStringWithColor(
+        item: Any,
+        colorString: Any
+    ): String;
+
+    @:native("rollback_get_node_actions")
+    public static function rollbackGetNodeActions(
+        pos: Any,
+        range: Any,
+        seconds: Any,
+        limit: Any
+    ): Table<Int, Dynamic>;
+
+    @:native("rollback_revert_actions_by")
+    public static function rollbackRevertActionsBy(
+        actor: Any,
+        seconds: Any
+    ): RevertActionsResult;
+
+    /**
+        Places an item as a node.
+    **/
+    @:native("item_place_node")
+    public static function itemPlaceNode(
+        itemstack: Any,
+        placer: Any,
+        pointedThing: Any,
+        ?param2: Any,
+        ?preventAfterPlace: Bool
+    ): PlaceResult;
+
+    @:native("item_place")
+    public static function itemPlace(
+        itemstack: Any,
+        placer: Any,
+        pointedThing: Any,
+        ?param2: Any
+    ): PlaceResult;
+
+    @:native("item_pickup")
+    public static function itemPickup(
+        itemstack: Any,
+        picker: Any,
+        pointedThing: Any,
+        timeFromLastPunch: Any,
+        ...args: Any
+    ): Dynamic;
+
+    @:native("item_drop")
+    public static function itemDrop(
+        itemstack: Any,
+        dropper: Any,
+        pos: Vector
+    ): Dynamic;
+
+    @:native("item_eat")
+    public static function itemEat(
+        hpChange: Any,
+        ?replaceWithItem: Any
+    ): ((itemStack: Dynamic, user: Dynamic, pointedThing: Dynamic) -> Void);
+
+    @:native("node_punch")
+    public static function nodePunch(
+        pos: Vector,
+        node: Any,
+        puncher: Any,
+        pointedThing: Any
+    ): Dynamic;
+
+    @:native("node_dig")
+    public static function nodeDig(
+        pos: Vector,
+        node: Any,
+        digger: Any
+    ): Dynamic;
+
+    @:native("sound_play")
+    private static function soundPlayRaw(
+        spec: Any,
+        parameters: NativeSoundParams,
+        ?ephemeral: Bool = false
+    ): EitherType<Void, SoundHandle>;
+
+    public static inline function soundPlay(
+        spec: Any,
+        parameters: SoundParams,
+        ephemeral: Bool = false
+    ): EitherType<Void, SoundHandle> {
+        return soundPlayRaw(spec, parameters.toNative(), ephemeral);
+    }
+
+    @:native("sound_stop")
+    public static function soundStop(handle: SoundHandle): Void;
+
+    @:native("sound_fade")
+    public static function soundFade(handle: SoundHandle, step: Float, targetGain: Float): Void;
+
+    /**
+        Runs a callback not earlier than after the specified amount of time has passed.
+        @param delay The minimum amount of time the callback should wait, expressed in seconds.
+        @param callback The function that should be called shortly after the delay ends.
+        @return A handle to a cancellable job.
+    **/
+    @:native("after")
+    @:overload(function(delay: Float, callback: Function, ...args: Any): ScheduledJobHandle {})
+    public static function after(delay: Float, callback: () -> Void): ScheduledJobHandle;
+
+    /**
+        Runs a piece of code in the async environment.
+
+        @param func The function to be run in the async environment.
+        @param callback A function to be run in "server" thread, accepting the result of `func`.
+        @param args Arguments passed to `func`.
+        NOTE: they will be re-serialized at the async barrier.
+        @since Minetest 5.6.0
+    **/
+    @:native("handle_async")
+    private static function handleAsyncRaw(func: Function, callback: Function, ...args: Dynamic): Bool;
+
+    /**
+        Runs a piece of code in the async environment.
+        @param state The object to be re-serialized and passed to the provided function.
+        @param func The function to be run in the async environment.
+        @since Minetest 5.6.0
+    **/
+    public static inline function handleAsync<S, R>(state: S, func: (S) -> R): Future<R> {
+        final future: Future<R> = new Future();
+        Minetest.handleAsyncRaw(func, data -> future.complete(data), state);
+        return future;
+    }
+
+    /**
+        Registers a path to a Lua file.
+
+        When the async environment is initialized, this file will be imported.
+    **/
+    @:native("register_async_dofile")
+    public static function registerAsyncDofile(path: String): Void;
+
+    /**
+        Requests a server shutdown.
+
+        @param clientMessage Message sent to clients.
+        @param suggestReconnect If true, clients will display a reconnect button.
+        @param delay Optional delay, in seconds, before shutdown.
+        Subsequent calls with a negative delay will cancel the currently scheduled shutdown.
+    **/
+    @:native("request_shutdown")
+    public static function requestShutdown(
+        ?clientMessage: String,
+        ?suggestReconnect: Bool,
+        ?delay: Float
+    ): Void;
+
+    @:native("cancel_shutdown_requests")
+    public static function cancelShutdownRequests(): Void;
+
+    @:native("get_server_status")
+    public static dynamic function getServerStatus(name: String, joined: Bool): Null<String>;
+
+    @:native("get_server_uptime")
+    public static function getServerUptime(): Float;
+
+    @:native("get_server_max_lag")
+    public static function getServerMaxLag(): Null<Float>;
+
+    @:native("remove_player")
+    public static function removePlayer(name: String): RemovePlayerResult;
+
+    @:native("remove_player_auth")
+    public static function removePlayerAuth(name: String): Bool;
+
+    @:native("dynamic_add_media")
+    public static function dynamicAddMedia(options: Any, callback: (String) -> Void): Bool;
+
+    @:native("get_ban_list")
+    public static function getBanList(): Dynamic;
+
+    @:native("get_ban_description")
+    public static function getBanDescription(ipOrName: String): String;
+
+    @:native("ban_player")
+    public static function banPlayer(name: String): Bool;
+
+    @:native("unban_player_or_ip")
+    public static function unbanPlayerOrIp(ipOrName: String): Void;
+
+    @:native("kick_player")
+    public static function kickPlayer(name: String, ?reason: String): Bool;
+
+    @:native("disconnect_player")
+    public static function disconnectPlayer(name: String, ?reason: String): Bool;
+
+    @:native("add_particle")
+    public static function addParticle(definition: Any): Void;
+
+    @:native("add_particlespawner")
+    public static function addParticleSpawner(definition: Any): Int;
+
+    @:native("delete_particlespawner")
+    public static function deleteParticleSpawner(id: Int, ?playerName: String): Void;
+
+    @:native("create_schematic")
+    public static function createSchematic(
+        p1: Vector,
+        p2: Vector,
+        probabilityList: Null<Table<Int, {
+            pos: Any,
+            prob: Int
+        }>>,
+        fileName: String,
+        sliceProbList: Null<Table<Int, {
+            ypos: Int,
+            prob: Int
+        }>>
+    ): Void;
+
     /*************************/
     /*     UNCATEGORIZED     */
     /*************************/
@@ -1127,7 +1453,7 @@ extern class Minetest {
         NOTE: This method is safe to call only during load time (in main).
     **/
     @:native("get_mod_storage")
-    static function getModStorage(): StorageRef;
+    public static function getModStorage(): StorageRef;
 
     /**
         If the calling mod is listed as trusted or security is disabled,
@@ -1147,36 +1473,17 @@ extern class Minetest {
     @:native("global_exists")
     public static function globalExists(name: String): Bool;
 
-    /**
-        Runs a piece of code in the async environment.
-
-        If this function looks ugly to you, you can use the `Minetest.runAsync` wrapper.
-        @param func The function to be run in the async environment.
-        @param callback A function to be run in "server" thread, accepting the result of `func`.
-        @param args Arguments passed to `func`.
-        NOTE: they will be re-serialized at the async barrier.
-        @since Minetest 5.6.0
-    **/
-    @:native("handle_async")
-    public static function handleAsync(func: Function, callback: Function, ...args: Dynamic): Bool;
-
-    /**
-        Runs `handleAsync`, but wraps the result in a `Future`.
-        @param state The object to be re-serialized and passed to the provided function.
-        @param func The function to be run in the async environment.
-        @since Minetest 5.6.0
-    **/
-    public static inline function runAsync<S, R>(state: S, func: (S) -> R): Future<R> {
-        final future: Future<R> = new Future();
-        Minetest.handleAsync(func, data -> future.complete(data), state);
-        return future;
-    }
-
     @:native("parse_json")
-    public static function parseJson(text: String, ?nullReplacement: Any): Null<Any>;
+    public static function parseJson(
+        text: String,
+        ?nullReplacement: Any
+    ): Null<Any>;
 
     @:native("write_json")
-    public static function writeJson(data: Any, fancy: Bool = false): WriteJsonResult;
+    public static function writeJson(
+        data: Any,
+        fancy: Bool = false
+    ): WriteJsonResult;
 
     /**
         Checks whether an object represents a player.
@@ -1188,44 +1495,34 @@ extern class Minetest {
         Prepares a string for client-side translation.
     **/
     @:native("translate")
-    public static function translate(domain: String, text: String, ...args: Any): String;
+    public static function translate(
+        domain: String,
+        text: String,
+        ...args: Any
+    ): String;
 
     @:native("get_translator")
-    public static function getTranslator(domain: String): (text: String, ...args: Any) -> String;
-    @:native("sound_play")
-    public static function soundPlay(
-        spec: Any,
-        parameters: NativeSoundParams,
-        ephemeral: Bool = false
-    ): EitherType<Void, SoundHandle>;
+    public static function getTranslator(
+        domain: String
+    ): (text: String, ...args: Any) -> String;
 
-    @:native("sound_stop")
-    public static function soundStop(handle: SoundHandle): Void;
-
-    @:native("sound_fade")
-    public static function soundFade(handle: SoundHandle, step: Float, targetGain: Float): Void;
     @:native("get_color_escape_sequence")
-    static function getColorEscapeSequence(color: ColorString): String;
-    @:native("get_background_escape_sequence")
-    static function getBackgroundEscapeSequence(color: ColorString): String;
-    @:native("colorize")
-    static function colorize(color: ColorString, message: String): String;
-    @:native("strip_foreground_colors")
-    static function stripForegroundColors(message: String): String;
-    @:native("strip_background_colors")
-    static function stripBackgroundColors(message: String): String;
-    @:native("strip_colors")
-    static function stripColors(message: String): String;
+    public static function getColorEscapeSequence(color: ColorString): String;
 
-    /**
-        Runs a callback not earlier than after the specified amount of time has passed.
-        @param delay The minimum amount of time the callback should wait, expressed in seconds.
-        @param callback The function that should be called shortly after the delay ends.
-        @return A handle to a cancellable job.
-    **/
-    @:native("after")
-    @:overload(function(delay: Float, callback: Function, ...args: Any): ScheduledJobHandle {})
-    public static function after(delay: Float, callback: () -> Void): ScheduledJobHandle;
+    @:native("get_background_escape_sequence")
+    public static function getBackgroundEscapeSequence(color: ColorString): String;
+
+    @:native("colorize")
+    public static function colorize(color: ColorString, message: String): String;
+
+    @:native("strip_foreground_colors")
+    public static function stripForegroundColors(message: String): String;
+
+    @:native("strip_background_colors")
+    public static function stripBackgroundColors(message: String): String;
+
+    @:native("strip_colors")
+    public static function stripColors(message: String): String;
 
     @:native("compress")
     @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})

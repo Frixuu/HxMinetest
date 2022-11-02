@@ -1,11 +1,11 @@
 package minetest;
 
-extern interface ScheduledJobHandle {
+interface ScheduledJobHandle {
 
     /**
         Attempts to cancel a scheduled job.
     **/
     @:native("cancel")
     @:luaDotMethod
-    function cancel(): Void;
+    public function cancel(): Void;
 }

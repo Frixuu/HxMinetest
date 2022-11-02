@@ -19,7 +19,7 @@ class PlayerTools {
     public static function playSound(player: PlayerRef, soundName: String, ?params: SoundParams): SoundHandle {
         params = params != null ? params : new SoundParams();
         params = params.audience(OnePlayer(player.getPlayerName()));
-        return cast Minetest.soundPlay(soundName, params.toNative(), false);
+        return cast Minetest.soundPlay(soundName, params, false);
     }
 
     /**
@@ -34,7 +34,7 @@ class PlayerTools {
     ): Void {
         params = params != null ? params : new SoundParams();
         params = params.audience(OnePlayer(player.getPlayerName()));
-        Minetest.soundPlay(soundName, params.toNative(), true);
+        Minetest.soundPlay(soundName, params, true);
     }
 
     /**
