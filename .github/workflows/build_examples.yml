@@ -4,10 +4,12 @@ on:
   push:
     paths:
       - "**.hx"
+      - "**.ps1"
       - ".github/workflows/**.yml"
   pull_request:
     paths:
       - "**.hx"
+      - "**.ps1"
       - ".github/workflows/**.yml"
 
 jobs:
