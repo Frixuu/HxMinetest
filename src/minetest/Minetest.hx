@@ -1,5 +1,8 @@
 package minetest;
 
+import minetest.worldgen.VoxelManipResult;
+import minetest.worldgen.BiomeDefinition;
+import minetest.util.LuaArray;
 import minetest.node.PlaceResult;
 import minetest.node.RevertActionsResult;
 import minetest.craft.CraftResult;
@@ -138,18 +141,16 @@ extern class Minetest {
 
     /**
         Returns the directory path for a mod.
-
-        Returns null if the mod does not esist or is disabled,
-        but does not require the mod to be loaded yet.
+        @return The mod directory if the mod exists and is enabled, null otherwise.
     **/
     @:native("get_modpath")
     public static function getModPath(modName: String): Null<String>;
 
     /**
-        Returns "a list of enabled mods, sorted alphabetically."
+        Returns a list of enabled mods, sorted alphabetically.
     **/
     @:native("get_modnames")
-    public static function getModNames(): Dynamic;
+    public static function getModNames(): LuaArray<String>;
 
     /**
         Returns a path of the currently loaded world.
@@ -301,7 +302,7 @@ extern class Minetest {
     public static function registerOre(definition: Dynamic): Void;
 
     @:native("register_biome")
-    public static function registerBiome(definition: Dynamic): BiomeHandle;
+    public static function registerBiome(definition: BiomeDefinition): BiomeHandle;
 
     /**
         Unregisters a biome.
@@ -426,9 +427,9 @@ extern class Minetest {
     @:native("register_on_generated")
     public static function registerOnGenerated(
         callback: (
-            minp: Any,
-            maxp: Any,
-            blockSeed: Any
+            minp: Vector,
+            maxp: Vector,
+            blockSeed: Dynamic
         ) -> Void
     ): Void;
 
@@ -821,6 +822,10 @@ extern class Minetest {
 
     @:native("get_mapgen_object")
     public static function getMapgenObject(name: String): Null<Dynamic>;
+
+    public static inline function getMapgenVoxelManipObject(): Dynamic {
+        return untyped __lua__("{minetest.get_mapgen_object(\"VoxelManip\")}");
+    }
 
     @:native("get_heat")
     public static function getHeat(pos: Vector): Null<Dynamic>;
@@ -1528,6 +1533,12 @@ extern class Minetest {
     @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})
     public static function compress(data: String, method: CompressionMethod, ?level: Int): Dynamic;
 
+    @:native("get_content_id")
+    public static function getContentId(name: String): Any;
+
+    @:native("get_connected_players")
+    public static function getConnectedPlayers(): LuaArray<PlayerRef>;
+
     #if csm
     /**
         Disconnects from the server and exists to the main menu.
@@ -1540,7 +1551,6 @@ extern class Minetest {
     **/
     @:native("send_respawn")
     public static function sendRespawnRequest(): Void;
-
     @:native("get_server_info")
     public static function getServerInfo(): ServerInfo;
     #end

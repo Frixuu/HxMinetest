@@ -1,20 +1,29 @@
 package minetest.math;
 
-interface NoiseParams {
+class NoiseParams {
     @:native("offset")
-    var offset: Float;
+    public var offset: Float = 0.0;
+
     @:native("scale")
-    var scale: Float;
+    public var scale: Float = 0.0;
+
     @:native("persist")
-    var persist: Float;
+    public var persist: Float = 0.0;
+
     @:native("lacunarity")
-    var lacunarity: Float;
+    public var lacunarity: Float = 0.0;
+
     @:native("seed")
-    var seed: Int;
+    public var seed: Int = 0;
+
     @:native("octaves")
-    var octaves: UInt;
+    public var octaves: UInt = 0;
+
     @:native("flags")
-    var flags: UInt;
+    public var flags: UInt = 0;
+
     @:native("spread")
-    var spread: Vector;
+    public var spread: Vector = Vector.zero();
+
+    public function new() {}
 }

@@ -19,8 +19,15 @@ extern class Vector {
     public static function zero(): Vector;
 
     @:native("offset")
-    public static function offset(v: Vector, x: Float, y: Float, z: Float): Vector;
+    public function offset(x: Float, y: Float, z: Float): Vector;
 
     @:native("add")
-    public static function add(a: Vector, b: EitherType<Vector, Float>): Vector;
+    public function add(other: EitherType<Vector, Float>): Vector;
+
+    @:native("distance")
+    private static function distanceRaw(p1: Vector, p2: Vector): Float;
+
+    public inline function distance(other: Vector): Float {
+        return distanceRaw(this, other);
+    }
 }
