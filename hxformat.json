@@ -32,6 +32,10 @@
     },
     "wrapping": {
         "maxLineLength": 100,
+        "methodChain": {
+            "defaultWrap": "keep",
+            "defaultLocation": "afterLast"
+        },
         "functionSignature": {
             "defaultWrap": "keep",
             "defaultLocation": "afterLast"

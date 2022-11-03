@@ -6,6 +6,7 @@ import minetest.math.Vector;
 import minetest.util.Pair;
 
 using Lambda;
+using lua.Table;
 
 class ExampleLuckyNode {
 
@@ -35,11 +36,13 @@ class ExampleLuckyNode {
         } else if (randomValue < 0.9) {
             Minetest.addEntity(pos.offset(0, 1.5, 0), "carts:cart");
         } else {
-            final closestPlayer = Minetest.getConnectedPlayers()
-                .copyToArray()
+
+            final onlinePlayers = Minetest.getConnectedPlayers().toArray();
+            final closestPlayer = onlinePlayers
                 .map(player -> new Pair(player, player.getPosition().distance(pos)))
-                .fold((item, min: Pair<PlayerRef, Float>) -> (item.right < min.right) ? item : min,
-                    new Pair(null, 999999999.9))
+                .fold((item, min: Pair<PlayerRef, Float>) -> {
+                    return (item.right < min.right) ? item : min;
+                }, new Pair(null, 999999999.9))
                 .left;
 
             if (closestPlayer != null) {

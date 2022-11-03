@@ -20,18 +20,19 @@ class ExampleHttp {
         final request = Request.GET("https://animechan.vercel.app/api/random"); // not affiliated
         request.userAgent = "HxMinetest/Example";
         request.timeout = 5;
-        httpApi.fetch(request).thenAccept(response -> {
-            if (response.succeeded) {
-                try {
-                    final body: Quote = cast Minetest.parseJson(response.data);
-                    Minetest.log(Action, 'As ${body.character} from ${body.anime} once said:');
-                    Minetest.log(Action, body.quote);
-                } catch (e:Dynamic) {
-                    Minetest.log(Error, 'Could not parse response body: $e');
+        httpApi.fetch(request)
+            .thenAccept(response -> {
+                if (response.succeeded) {
+                    try {
+                        final body: Quote = cast Minetest.parseJson(response.data);
+                        Minetest.log(Action, 'As ${body.character} from ${body.anime} once said:');
+                        Minetest.log(Action, body.quote);
+                    } catch (e:Dynamic) {
+                        Minetest.log(Error, 'Could not parse response body: $e');
+                    }
+                } else {
+                    Minetest.log(Warning, "HTTP request failed");
                 }
-            } else {
-                Minetest.log(Warning, "HTTP request failed");
-            }
-        });
+            });
     }
 }
