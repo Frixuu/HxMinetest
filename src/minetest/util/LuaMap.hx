@@ -9,6 +9,6 @@ abstract LuaMap<K, V>(Table<K, V>) from Table<K, V> to Table<K, V> {
     **/
     @:from
     public static function fromMap<K, V>(map: Map<K, V>): LuaMap<K, V> {
-        return Table.fromMap(map);
+        @:nullSafety(Off) return Table.fromMap(map);
     }
 }
