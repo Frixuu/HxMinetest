@@ -1,27 +1,5 @@
 package minetest;
 
-import minetest.worldgen.VoxelManipResult;
-import minetest.worldgen.BiomeDefinition;
-import minetest.util.LuaArray;
-import minetest.node.PlaceResult;
-import minetest.node.RevertActionsResult;
-import minetest.craft.CraftResult;
-import minetest.macro.Snippets;
-import haxe.macro.Context;
-import haxe.macro.Compiler;
-import lua.Lua;
-import minetest.item.ItemStack;
-import minetest.item.InventoryLocation;
-import minetest.item.InventoryRef;
-import minetest.pathfinding.PathAlgorithm;
-import minetest.math.Raycast;
-import minetest.worldgen.EmergeType;
-import minetest.data.CompressionMethod;
-import minetest.privilege.PrivilegeDefinition;
-import minetest.math.NoiseParams;
-import minetest.math.PerlinNoise;
-import minetest.math.VoxelManip;
-import minetest.metadata.NodeMetaRef;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -32,26 +10,46 @@ import minetest.async.Future;
 import minetest.audio.SoundHandle;
 import minetest.audio.SoundParams;
 import minetest.auth.AuthHandler;
+import minetest.chat.ChatCommandDefinition;
 import minetest.colors.ColorString;
+import minetest.craft.CraftResult;
 import minetest.craft.Recipe;
+import minetest.data.CompressionMethod;
 import minetest.data.ObjectRef;
 import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
 import minetest.insecure.InsecureEnvironment;
 import minetest.insecure.http.HttpApi;
+import minetest.item.InventoryRef;
+import minetest.item.ItemStack;
+import minetest.macro.Snippets;
+import minetest.math.NoiseParams;
+import minetest.math.PerlinNoise;
+import minetest.math.Raycast;
 import minetest.math.Vector;
+import minetest.math.VoxelManip;
+import minetest.metadata.NodeMetaRef;
 import minetest.metadata.StorageRef;
 import minetest.node.NodeDefinition;
+import minetest.node.PlaceResult;
+import minetest.node.RevertActionsResult;
+import minetest.pathfinding.PathAlgorithm;
+import minetest.player.PlayerLike;
+import minetest.privilege.PrivilegeDefinition;
+import minetest.util.LuaArray;
+import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
+import minetest.worldgen.EmergeType;
 import minetest.worldgen.SchematicHandle;
+
+using minetest.item.InventoryLocation;
+
 #if csm
 import minetest.client.Camera;
 import minetest.client.LocalPlayer;
 import minetest.client.ServerInfo;
 #end
-
-using minetest.item.InventoryLocation;
 
 /**
     The main namespace of the Minetest game engine.
@@ -346,10 +344,16 @@ extern class Minetest {
     public static function clearCraft(recipe: Dynamic): Void;
 
     @:native("register_chatcommand")
-    public static function registerChatCommand(name: String, definition: Dynamic): Void;
+    public static function registerChatCommand(
+        name: String,
+        definition: ChatCommandDefinition
+    ): Void;
 
     @:native("override_chatcommand")
-    public static function overrideChatCommand(name: String, redefinition: Dynamic): Void;
+    public static function overrideChatCommand(
+        name: String,
+        redefinition: ChatCommandDefinition
+    ): Void;
 
     @:native("unregister_chatcommand")
     public static function unregisterChatCommand(name: String): Void;
@@ -658,7 +662,7 @@ extern class Minetest {
     **/
     @:native("check_player_privs")
     public static function checkPlayerPrivs(
-        player: EitherType<String, PlayerRef>,
+        player: PlayerLike,
         privs: EitherType<Rest<String>, Table<String, Bool>>
     ): CheckPlayerPrivsResult;
 
