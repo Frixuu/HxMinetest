@@ -1308,13 +1308,13 @@ extern class Minetest {
         spec: Any,
         parameters: NativeSoundParams,
         ?ephemeral: Bool = false
-    ): EitherType<Void, SoundHandle>;
+    ): Null<SoundHandle>;
 
     public static inline function soundPlay(
         spec: Any,
         parameters: SoundParams,
         ephemeral: Bool = false
-    ): EitherType<Void, SoundHandle> {
+    ): Null<SoundHandle> {
         return soundPlayRaw(spec, parameters.toNative(), ephemeral);
     }
 

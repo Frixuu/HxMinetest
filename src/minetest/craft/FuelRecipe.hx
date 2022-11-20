@@ -1,6 +1,6 @@
 package minetest.craft;
 
-import lua.Table;
+import minetest.util.LuaArray;
 import minetest.util.Pair;
 
 final class FuelRecipe extends Recipe {
@@ -18,7 +18,7 @@ final class FuelRecipe extends Recipe {
     var itemName: String;
 
     @:native("replacements")
-    var replacements: Null<Table<Int, Pair<String, String>>>;
+    var replacements: Null<LuaArray<Pair<String, String>>>;
 
     /**
         Creates a new fuel recipe.
