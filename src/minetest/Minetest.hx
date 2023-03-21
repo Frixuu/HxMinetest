@@ -1,5 +1,9 @@
 package minetest;
 
+import minetest.hud.HudDefinition;
+import minetest.worldgen.SchematicData;
+import minetest.worldgen.SchematicSerializationFormat;
+import minetest.worldgen.Schematic;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -35,6 +39,7 @@ import minetest.node.PlaceResult;
 import minetest.node.RevertActionsResult;
 import minetest.pathfinding.PathAlgorithm;
 import minetest.player.PlayerLike;
+import minetest.player.WindowInfo;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.util.LuaArray;
 import minetest.worldgen.BiomeDefinition;
@@ -42,6 +47,7 @@ import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
 import minetest.worldgen.EmergeType;
 import minetest.worldgen.SchematicHandle;
+import minetest.worldgen.SchematicRotation;
 
 using minetest.item.InventoryLocation;
 
@@ -169,6 +175,12 @@ extern class Minetest {
     **/
     @:native("get_player_information")
     public static function getPlayerInformation(name: String): Table<String, Any>;
+
+    /**
+        @since Minetest 5.7.0
+    **/
+    @:native("get_player_window_information")
+    public static function getPlayerWindowInformation(name: String): WindowInfo;
 
     /**
         Recursively creates a directory specified by `path`.
@@ -675,6 +687,9 @@ extern class Minetest {
     @:native("get_player_ip")
     public static function getPlayerIp(name: String): Null<String>;
 
+    /**
+        Returns the currently active auth handler.
+    **/
     @:native("get_auth_handler")
     public static function getAuthHandler(): AuthHandler;
 
@@ -1442,11 +1457,42 @@ extern class Minetest {
             ypos: Int,
             prob: Int
         }>>
-    ): Void;
+    ): Dynamic;
 
-    /*************************/
-    /*     UNCATEGORIZED     */
-    /*************************/
+    @:native("place_schematic")
+    public static function placeSchematic(
+        pos: Vector,
+        schematic: Schematic,
+        rotation: Null<SchematicRotation>,
+        replacements: Any,
+        forceReplacement: Bool,
+        flags: Any
+    ): Dynamic;
+
+    @:native("place_schematic_on_vmanip")
+    public static function placeSchematicOnVManip(
+        vmanip: VoxelManip,
+        pos: Vector,
+        schematic: Schematic,
+        rotation: Null<SchematicRotation>,
+        replacements: Any,
+        forceReplacement: Bool,
+        flags: Any
+    ): Dynamic;
+
+    @:native("serialize_schematic")
+    public static function serializeSchematic(
+        schematic: Schematic,
+        format: SchematicSerializationFormat,
+        options: Any
+    ): String;
+
+    @:native("read_schematic")
+    public static function readSchematic(
+        schematicName: String,
+        options: Any
+    ): SchematicData;
+
     /**
         If the calling mod is trusted or otherwise has access to it,
         returns an object containing HTTP functions.
@@ -1463,6 +1509,150 @@ extern class Minetest {
     **/
     @:native("get_mod_storage")
     public static function getModStorage(): StorageRef;
+
+    @:native("get_connected_players")
+    public static function getConnectedPlayers(): LuaArray<PlayerRef>;
+
+    /**
+        Checks whether an object represents a player.
+    **/
+    @:native("is_player")
+    public static function isPlayer(obj: Any): Bool;
+
+    @:native("player_exists")
+    public static function playerExists(name: String): Bool;
+
+    @:native("hud_replace_builtin")
+    public static function hudReplaceBuiltin(
+        name: String,
+        definition: HudDefinition
+    ): Void;
+
+    @:native("parse_relative_number")
+    public static function parseRelativeNumber(arg: String, relativeTo: Float): Null<Float>;
+
+    @:native("send_join_message")
+    public static dynamic function sendJoinMessage(playerName: String): Void;
+
+    @:native("send_leave_message")
+    public static dynamic function sendLeaveMessage(playerName: String, timedOut: Bool): Void;
+
+    @:native("hash_node_position")
+    public static function hashNodePosition(pos: Vector): Int;
+
+    @:native("get_position_from_hash")
+    public static function getPositionFromHash(hash: Int): Vector;
+
+    @:native("get_item_group")
+    public static function getItemGroup(name: String, group: Any): Dynamic;
+
+    @:native("raillike_group")
+    public static function raillikeGroup(name: String): Dynamic;
+
+    @:native("get_content_id")
+    public static function getContentId(name: String): Int;
+
+    @:native("get_name_from_content_id")
+    public static function getNameFromContentId(id: Int): String;
+
+    @:native("parse_json")
+    public static function parseJson(
+        text: String,
+        ?nullReplacement: Any
+    ): Null<Any>;
+
+    @:native("write_json")
+    public static function writeJson(
+        data: Any,
+        fancy: Bool = false
+    ): WriteJsonResult;
+
+    @:native("serialize")
+    public static function serialize(table: AnyTable): String;
+
+    @:native("deserialize")
+    public static function deserialize(str: String, ?safe: Bool): AnyTable;
+
+    @:native("compress")
+    @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})
+    public static function compress(data: String, method: CompressionMethod, ?level: Int): Dynamic;
+
+    @:native("decompress")
+    @:overload(function(data: Any, method: CompressionMethod): Dynamic {})
+    public static function decompress(data: Any, method: CompressionMethod, ...args: Any): Dynamic;
+
+    @:native("rgba")
+    public static function rgba(red: Int, green: Int, blue: Int, ?alpha: Int): ColorString;
+
+    @:native("encode_base64")
+    public static function encodeBase64(str: String): String;
+
+    @:native("decode_base64")
+    public static function decodeBase64(str: String): Null<String>;
+
+    @:native("is_protected")
+    public static function isProtected(pos: Vector, name: String): Bool;
+
+    @:native("record_protection_violation")
+    public static function recordProtectionViolation(pos: Vector, name: String): Void;
+
+    @:native("is_creative_enabled")
+    public static function isCreativeEnabled(name: String): Bool;
+
+    @:native("is_area_protected")
+    public static function isAreaProtected(
+        pos1: Vector,
+        pos2: Vector,
+        name: String,
+        interval: Int
+    ): Bool;
+
+    @:native("rotate_and_place")
+    public static function rotateAndPlace(
+        itemstack: ItemStack,
+        placer: Any,
+        pointedThing: Any,
+        ?infinitestacks: Bool,
+        ?orientFlags: Table<String, Bool>,
+        ?preventAfterPlace: Any
+    ): ItemStack;
+
+    @:native("rotate_node")
+    public static function rotateNode(
+        itemstack: ItemStack,
+        placer: Any,
+        pointedThing: Any
+    ): Dynamic;
+
+    @:native("calculate_knockback")
+    public static dynamic function calculateKnockback(
+        player: Any,
+        hitter: Any,
+        timeFromLastPunch: Any,
+        toolCap: Any,
+        dir: Any,
+        distance: Any,
+        damage: Any
+    ): Dynamic;
+
+    @:native("forceload_block")
+    public static dynamic function forceLoadBlock(
+        pos: Vector,
+        ?transient: Bool,
+        ?limit: Int
+    ): Dynamic;
+
+    @:native("forceload_free_block")
+    public static dynamic function forceLoadFreeBlock(
+        pos: Vector,
+        ?transient: Bool
+    ): Dynamic;
+
+    @:native("compare_block_status")
+    public static dynamic function compareBlockStatus(
+        pos: Vector,
+        condition: CompareBlockStatusCondition
+    ): Null<Bool>;
 
     /**
         If the calling mod is listed as trusted or security is disabled,
@@ -1482,24 +1672,9 @@ extern class Minetest {
     @:native("global_exists")
     public static function globalExists(name: String): Bool;
 
-    @:native("parse_json")
-    public static function parseJson(
-        text: String,
-        ?nullReplacement: Any
-    ): Null<Any>;
-
-    @:native("write_json")
-    public static function writeJson(
-        data: Any,
-        fancy: Bool = false
-    ): WriteJsonResult;
-
-    /**
-        Checks whether an object represents a player.
-    **/
-    @:native("is_player")
-    public static function isPlayer(obj: Any): Bool;
-
+    /*************************/
+    /*     UNCATEGORIZED     */
+    /*************************/
     /**
         Prepares a string for client-side translation.
     **/
@@ -1532,16 +1707,6 @@ extern class Minetest {
 
     @:native("strip_colors")
     public static function stripColors(message: String): String;
-
-    @:native("compress")
-    @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})
-    public static function compress(data: String, method: CompressionMethod, ?level: Int): Dynamic;
-
-    @:native("get_content_id")
-    public static function getContentId(name: String): Any;
-
-    @:native("get_connected_players")
-    public static function getConnectedPlayers(): LuaArray<PlayerRef>;
 
     #if csm
     /**

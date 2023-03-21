@@ -11,6 +11,11 @@ interface AuthHandler {
     @:native("mod_origin")
     public var modOrigin: Null<String>;
 
+    /**
+        Gets auth data for an existing player or null, if they do not exist.
+
+        Note: cannot be called during load time. See issue #11956.
+    **/
     @:luaDotMethod
     @:native("get_auth")
     public var getAuth(default, null): (name: String) -> Null<AuthData>;
