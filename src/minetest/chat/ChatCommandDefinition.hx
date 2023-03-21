@@ -9,7 +9,7 @@ class ChatCommandDefinition {
     @:native("description")
     @:optional public var description: Null<String>;
     @:native("privs")
-    @:optional public var privs: Table<String, Bool>;
+    @:optional public var privs: Null<Table<String, Bool>>;
     @:native("func")
     public var func: Dynamic;
 }

@@ -4,7 +4,7 @@ package minetest.colors;
     ColorString is a string
     that represents an RGB or an RGBA color.
 **/
-abstract ColorString(String) to String {
+abstract ColorString(String) from String to String {
     public inline function new(s: String) {
         this = s;
     }
