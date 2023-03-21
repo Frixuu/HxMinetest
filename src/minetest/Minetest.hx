@@ -1,5 +1,6 @@
 package minetest;
 
+import partials.Partial;
 import minetest.hud.HudDefinition;
 import minetest.worldgen.SchematicData;
 import minetest.worldgen.SchematicSerializationFormat;
@@ -48,20 +49,23 @@ import minetest.worldgen.DecorationHandle;
 import minetest.worldgen.EmergeType;
 import minetest.worldgen.SchematicHandle;
 import minetest.worldgen.SchematicRotation;
-
-using minetest.item.InventoryLocation;
-
 #if csm
 import minetest.client.Camera;
 import minetest.client.LocalPlayer;
 import minetest.client.ServerInfo;
 #end
 
+using minetest.item.InventoryLocation;
+
 /**
     The main namespace of the Minetest game engine.
 **/
 @:native("minetest")
-extern class Minetest {
+#if csm
+@:partials(minetest.Minetest_Csm)
+#end
+@:partials(minetest.Minetest_EscapeSequences)
+extern class Minetest implements Partial {
 
     /**
         Settings object containing configuration from `minetest.conf`, the main config file.
@@ -122,20 +126,6 @@ extern class Minetest {
 
     @:native("registered_privileges")
     public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
-
-    #if csm
-    /**
-        A reference to the local player object.
-    **/
-    @:native("localplayer")
-    public static var localPlayer(default, null): LocalPlayer;
-
-    /**
-        A reference to the camera object.
-    **/
-    @:native("camera")
-    public static var camera(default, null): Camera;
-    #end
 
     /**
         If loading a mod, returns the currently loading mod's name.
@@ -1721,39 +1711,4 @@ extern class Minetest {
     public static function getTranslator(
         domain: String
     ): (text: String, ...args: Any) -> String;
-
-    @:native("get_color_escape_sequence")
-    public static function getColorEscapeSequence(color: ColorString): String;
-
-    @:native("get_background_escape_sequence")
-    public static function getBackgroundEscapeSequence(color: ColorString): String;
-
-    @:native("colorize")
-    public static function colorize(color: ColorString, message: String): String;
-
-    @:native("strip_foreground_colors")
-    public static function stripForegroundColors(message: String): String;
-
-    @:native("strip_background_colors")
-    public static function stripBackgroundColors(message: String): String;
-
-    @:native("strip_colors")
-    public static function stripColors(message: String): String;
-
-    #if csm
-    /**
-        Disconnects from the server and exists to the main menu.
-        @return False if the client is already disconnecting.
-    **/
-    @:native("disconnect")
-    public static function disconnect(): Bool;
-
-    /**
-        Requests a respawn from the server.
-    **/
-    @:native("send_respawn")
-    public static function sendRespawnRequest(): Void;
-    @:native("get_server_info")
-    public static function getServerInfo(): ServerInfo;
-    #end
 }
