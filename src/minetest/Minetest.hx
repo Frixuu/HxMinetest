@@ -381,6 +381,11 @@ extern class Minetest {
     @:native("register_authentication_handler")
     public static function registerAuthHandler(handler: AuthHandler): Void;
 
+    /*********
+
+        EVENTS
+
+    *********/
     /**
         Registers a function to be called on every server step.
 
@@ -568,7 +573,7 @@ extern class Minetest {
         ) -> Null<Int>
     ): Void;
 
-    @:native("register_onw_player_inventory_action")
+    @:native("register_on_player_inventory_action")
     public static function registerOnPlayerInventoryAction(
         callback: (
             player: Any,
@@ -651,6 +656,28 @@ extern class Minetest {
         ) -> Void
     ): Void;
 
+    #if csm
+    /**
+        Registers an event handler to be called when server modifies the player's health.
+        @param callback The event handler. Return true to short circuit event handling.
+    **/
+    @:native("register_on_hp_modification")
+    @:overload(function(callback: (newHp: Int) -> Void): Void {})
+    public static function registerOnHpModification(callback: (newHp: Int) -> Bool): Void;
+
+    @:native("register_on_death")
+    public static function registerOnDeath(callback: () -> Void): Void;
+
+    @:native("register_on_damage_taken")
+    public static function registerOnDamageTaken(callback: (amount: Int) -> Void): Void;
+    #else
+    #end
+
+    /*************
+
+        OTHER
+
+    *************/
     @:native("setting_get_pos")
     public static function settingGetPos(key: String): Null<Any>;
 
@@ -719,6 +746,11 @@ extern class Minetest {
 
     @:native("format_chat_message")
     public static function formatChatMessage(name: String, message: String): String;
+
+    #if csm
+    @:native("display_chat_message")
+    public static function displayChatMessage(message: String): Bool;
+    #end
 
     @:native("set_node")
     public static function setNode(pos: Vector, node: AnyTable): Void;
@@ -1711,6 +1743,7 @@ extern class Minetest {
     #if csm
     /**
         Disconnects from the server and exists to the main menu.
+        @return False if the client is already disconnecting.
     **/
     @:native("disconnect")
     public static function disconnect(): Bool;

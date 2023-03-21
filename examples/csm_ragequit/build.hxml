@@ -1,0 +1,7 @@
+--class-path .
+--lua init.lua
+--define analyzer-optimize
+--define csm
+--dce full
+--library hxminetest
+--main RageQuit
