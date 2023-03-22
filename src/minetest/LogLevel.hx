@@ -35,7 +35,17 @@ enum abstract LogLevel(String) {
     var Verbose = "verbose";
 
     /**
-        No log messages should be printed.
+        Detailed logs that should provide additional developer context.
+    **/
+    var Trace = "trace";
+
+    /**
+        Special level that is always printed.
     **/
     var None = "none";
+
+    /**
+        A special case level that makes the log message be treated as a deprecation notice.
+    **/
+    var Deprecated = "deprecated";
 }

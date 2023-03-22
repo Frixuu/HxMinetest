@@ -1,7 +1,6 @@
 package minetest.player;
 
 import minetest.data.PlayerRef;
-import haxe.extern.EitherType;
 
 @:using(minetest.player.PlayerLikeTools)
-typedef PlayerLike = EitherType<PlayerRef, String>;
+abstract PlayerLike(Dynamic) from PlayerRef from String {}

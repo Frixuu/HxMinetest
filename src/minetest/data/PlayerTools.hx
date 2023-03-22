@@ -1,5 +1,6 @@
 package minetest.data;
 
+#if !csm
 import minetest.audio.SoundParams;
 import minetest.audio.SoundHandle;
 
@@ -47,3 +48,4 @@ class PlayerTools {
         }
     }
 }
+#end

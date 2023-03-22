@@ -78,7 +78,9 @@ class Partials {
         // see if it is a partial host
         final meta = localClass.get().meta;
         if (meta.has(":partials")) {
+
             // yup, it is!
+            final currentPos = Context.currentPos();
             for (candidate in meta.extract(":partials").flatMap(e -> e.params)) {
 
                 // force-import the referenced module
@@ -93,9 +95,13 @@ class Partials {
 
                 // ok, now that it's imported, bring in all of its fields
                 final moduleFields: Null<Array<Field>> = partials.get(moduleName);
-                for (field in moduleFields) {
-                    field.pos = Context.currentPos();
-                    localFields.push(field);
+                if (moduleFields == null) {
+                    Context.info('No cached fields for module $moduleName', currentPos);
+                } else {
+                    for (field in moduleFields) {
+                        field.pos = currentPos;
+                        localFields.push(field);
+                    }
                 }
             }
         } else {

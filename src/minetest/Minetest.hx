@@ -9,6 +9,7 @@ import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
 import lua.Table;
+import minetest.DynamicMediaOptions;
 import minetest.LogLevel;
 import minetest.Settings;
 import minetest.async.Future;
@@ -62,9 +63,15 @@ using minetest.item.InventoryLocation;
 **/
 @:native("minetest")
 #if csm
-@:partials(minetest.Minetest_Csm)
+@:partials(minetest.Minetest_Client)
+#else
+@:partials(minetest.Minetest_Server)
 #end
+@:partials(minetest.Minetest_Auth)
+@:partials(minetest.Minetest_Chat)
 @:partials(minetest.Minetest_EscapeSequences)
+@:partials(minetest.Minetest_FileIo)
+@:partials(minetest.Minetest_Logging)
 extern class Minetest implements Partial {
 
     /**
@@ -173,46 +180,6 @@ extern class Minetest implements Partial {
     public static function getPlayerWindowInformation(name: String): WindowInfo;
 
     /**
-        Recursively creates a directory specified by `path`.
-    **/
-    @:native("mkdir")
-    public static function directoryCreate(path: String): Bool;
-
-    /**
-        Removes a directory specified by `path`.
-    **/
-    @:native("rmdir")
-    public static function directoryRemove(path: String, recursive: Bool): Bool;
-
-    /**
-        Copies a directory specified by `source` to `destination`.
-
-        Any existing files will be overwritten.
-    **/
-    @:native("cpdir")
-    public static function directoryCopy(source: String, destination: String): Bool;
-
-    /**
-        Moves a directory specified by `source` to `destination`.
-
-        The move will fail if the `destination` is not empty.
-    **/
-    @:native("mvdir")
-    public static function directoryMove(source: String, destination: String): Bool;
-
-    /**
-        Returns a "list of entry names".
-    **/
-    @:native("get_dir_list")
-    public static function directoryList(path: String, option: ListEntries = All): Dynamic;
-
-    /**
-        Atomically replaces contents of a file.
-    **/
-    @:native("safe_file_write")
-    public static function safeFileWrite(path: String, content: Any): Bool;
-
-    /**
         Returns "a table containing components of the engine version".
     **/
     @:native("get_version")
@@ -237,15 +204,6 @@ extern class Minetest implements Partial {
         data: EitherType<Table<Dynamic, Dynamic>, String>,
         ?compression: Int
     ): Null<Dynamic>;
-
-    /**
-        Prints debug info.
-    **/
-    @:native("debug")
-    public static function debug(...args: Dynamic): Void;
-
-    @:native("log")
-    public static function log(level: LogLevel, message: String): Void;
 
     /**
         Registers a node.
@@ -670,77 +628,6 @@ extern class Minetest implements Partial {
     *************/
     @:native("setting_get_pos")
     public static function settingGetPos(key: String): Null<Any>;
-
-    @:native("string_to_privs")
-    public static function stringToPrivs(
-        str: String, ?delimiter: String = ","
-    ): Table<String, Bool>;
-
-    @:native("privs_to_string")
-    public static function privsToString(
-        privs: Table<String, Bool>, ?delimiter: String = ","
-    ): String;
-
-    @:native("get_player_privs")
-    public static function getPlayerPrivs(name: String): Table<String, Bool>;
-
-    /**
-        Tests whether a player has certain privileges (ie. can perform some operation).
-        @param player Either a player object or a player username.
-        @param privs List (or a table) of the privileges to check.
-    **/
-    @:native("check_player_privs")
-    public static function checkPlayerPrivs(
-        player: PlayerLike,
-        privs: EitherType<Rest<String>, Table<String, Bool>>
-    ): CheckPlayerPrivsResult;
-
-    @:native("check_password_entry")
-    public static function checkPasswordEntry(name: String, entry: Any, password: Any): Bool;
-
-    @:native("get_password_hash")
-    public static function getPasswordHash(name: String, rawPassword: Any): Any;
-
-    @:native("get_player_ip")
-    public static function getPlayerIp(name: String): Null<String>;
-
-    /**
-        Returns the currently active auth handler.
-    **/
-    @:native("get_auth_handler")
-    public static function getAuthHandler(): AuthHandler;
-
-    @:native("notify_authentication_modified")
-    public static function notifyAuthModified(?name: String): Void;
-
-    @:native("set_player_password")
-    public static function setPlayerPassword(name: String, hash: Any): Void;
-
-    @:native("set_player_privs")
-    public static function setPlayerPrivs(name: String, privs: Table<String, Bool>): Void;
-
-    @:native("auth_reload")
-    public static function authReload(): Void;
-
-    /**
-        Sends a chat message to all online players.
-    **/
-    @:native("chat_send_all")
-    public static function chatSendAll(message: String): Void;
-
-    /**
-        Sends a chat message to a player with a specified name.
-    **/
-    @:native("chat_send_player")
-    public static function chatSendPlayer(name: String, message: String): Void;
-
-    @:native("format_chat_message")
-    public static function formatChatMessage(name: String, message: String): String;
-
-    #if csm
-    @:native("display_chat_message")
-    public static function displayChatMessage(message: String): Bool;
-    #end
 
     @:native("set_node")
     public static function setNode(pos: Vector, node: AnyTable): Void;
@@ -1402,42 +1289,6 @@ extern class Minetest implements Partial {
     **/
     @:native("register_async_dofile")
     public static function registerAsyncDofile(path: String): Void;
-
-    /**
-        Requests a server shutdown.
-
-        @param clientMessage Message sent to clients.
-        @param suggestReconnect If true, clients will display a reconnect button.
-        @param delay Optional delay, in seconds, before shutdown.
-        Subsequent calls with a negative delay will cancel the currently scheduled shutdown.
-    **/
-    @:native("request_shutdown")
-    public static function requestShutdown(
-        ?clientMessage: String,
-        ?suggestReconnect: Bool,
-        ?delay: Float
-    ): Void;
-
-    @:native("cancel_shutdown_requests")
-    public static function cancelShutdownRequests(): Void;
-
-    @:native("get_server_status")
-    public static dynamic function getServerStatus(name: String, joined: Bool): Null<String>;
-
-    @:native("get_server_uptime")
-    public static function getServerUptime(): Float;
-
-    @:native("get_server_max_lag")
-    public static function getServerMaxLag(): Null<Float>;
-
-    @:native("remove_player")
-    public static function removePlayer(name: String): RemovePlayerResult;
-
-    @:native("remove_player_auth")
-    public static function removePlayerAuth(name: String): Bool;
-
-    @:native("dynamic_add_media")
-    public static function dynamicAddMedia(options: Any, callback: (String) -> Void): Bool;
 
     @:native("get_ban_list")
     public static function getBanList(): Dynamic;

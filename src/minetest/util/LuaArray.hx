@@ -11,4 +11,8 @@ abstract LuaArray<T>(Table<Int, T>) from Table<Int, T> to Table<Int, T> {
     public static function fromArray<T>(arr: Array<T>): LuaArray<T> {
         return Table.fromArray(arr);
     }
+
+    public inline function toArray(): Array<T> {
+        return Table.toArray(this);
+    }
 }

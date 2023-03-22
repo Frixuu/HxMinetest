@@ -3,7 +3,8 @@ package minetest;
 #if csm
 import partials.Partial;
 
-extern class Minetest_Csm implements Partial {
+@:noCompletion
+extern class Minetest_Client implements Partial {
 
     /**
         A reference to the local player object.
