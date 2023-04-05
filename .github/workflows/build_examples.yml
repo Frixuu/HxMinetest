@@ -16,13 +16,16 @@ jobs:
   build:
     name: "Build included examples"
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        haxe-version: ["4.2.5", "latest"]
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v3"
       - name: "Install Haxe"
         uses: "krdlab/setup-haxe@v1"
         with:
-          haxe-version: "4.2.5"
+          haxe-version: ${{ matrix.haxe-version }}
       - name: "Compile example mods"
         run: |
           haxelib dev hxminetest .
