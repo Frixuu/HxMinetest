@@ -1,20 +1,30 @@
 #Requires -Version 7.0
 
+using namespace System.IO
+
 . (Join-Path $PSScriptRoot "ensure_haxe_exists.ps1")
 
-$projectRoot = $PSScriptRoot | Split-Path -Parent
-$examplesRoot = Join-Path -Path $projectRoot -ChildPath "examples"
-$examplePaths = $examplesRoot | Get-ChildItem -Directory
-Write-Output "Compiling $($examplePaths.Length) examples..."
-foreach ($examplePath in $examplePaths) {
-    Set-Location -Path $examplePath
-    $name = Split-Path -Path $examplePath -Leaf
+[string]$projectRoot = $PSScriptRoot | Split-Path -Parent
+[string]$examplesRoot = Join-Path -Path $projectRoot -ChildPath "examples"
+[DirectoryInfo[]]$examplesDirs = $examplesRoot | Get-ChildItem -Directory
+
+Write-Host "Building $($examplesDirs.Length) examples..."
+
+foreach ($examplePath in $examplesDirs) {
+
+    [string]$name = Split-Path -Path $examplePath -Leaf
+    Write-Host "$($name): " -NoNewline
+
+    Push-Location -Path $examplePath
     haxe build.hxml
-    if ($LASTEXITCODE -eq 0) {
-        Write-Output "$($name): OK"
+    [bool]$success = $LastExitCode -eq 0
+    Pop-Location
+
+    if ($success) {
+        Write-Host "OK"
     }
     else {
-        Write-Output "$($name): FAILED"
+        Write-Host "FAILED"
         throw "Build failed. Check above for details."
     }
 }

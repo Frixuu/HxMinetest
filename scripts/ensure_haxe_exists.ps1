@@ -2,12 +2,12 @@
 
 using namespace System.Management.Automation
 
-$haxe = Get-Command "haxe" -ErrorAction SilentlyContinue
+[ApplicationInfo]$haxe = Get-Command "haxe" -CommandType Application -ErrorAction SilentlyContinue
 if ($haxe) {
     $minVersion = [SemanticVersion]::new(4, 2, 5)
     $version = [SemanticVersion]::new(@(haxe --version)[0]);
     if ($version -lt $minVersion) {
-        throw "Haxe compiler found, but it is too old of a version"
+        throw "Haxe compiler found, but it is too old (have: $version, must be: $minVersion)"
     }
 }
 else {
