@@ -1,6 +1,0 @@
---class-path src
---lua init.lua
---no-output
---xml docs/hxminetest.xml
---macro "include('doctest')"
---macro "include('minetest')"
