@@ -1,5 +1,8 @@
 # HxMinetest
 
+> **Warning**:
+> **Haxe 4.3.0 is now required.** If you're on 4.2.5 or below, please update.
+
 **TL;DR:** HxMinetest allows you to easily develop Minetest mods in Haxe.
 **Heavily WIP.** PRs welcome.
 
