@@ -13,7 +13,7 @@ using namespace System.IO
     # Config files used by Haxe tooling
     "haxelib.json", "*.hxml",
     # Sources
-    "src",
+    "src", "templates",
     # Legal
     "LICENSE.txt",
     # Renders summary on the lib.haxe.org website
