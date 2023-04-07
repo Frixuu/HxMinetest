@@ -1,6 +1,8 @@
+// SPDX-License-Identifier: Zlib
 package minetest;
 
 import partials.Partial;
+import minetest.util.NativeSet;
 
 @:noCompletion
 extern class Minetest_Auth implements Partial {
@@ -12,7 +14,7 @@ extern class Minetest_Auth implements Partial {
     public static function stringToPrivs(
         str: String,
         delimiter: String = ","
-    ): Table<String, Bool>;
+    ): NativeSet<String>;
 
     /**
         Returns the string representation of `privs`.
@@ -24,7 +26,7 @@ extern class Minetest_Auth implements Partial {
     ): String;
 
     @:native("get_player_privs")
-    public static function getPlayerPrivs(name: String): Table<String, Bool>;
+    public static function getPlayerPrivs(name: String): NativeSet<String>;
 
     /**
         Tests whether a player has certain privileges (ie. can perform some operation).

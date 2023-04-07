@@ -1,12 +1,17 @@
+// SPDX-License-Identifier: Zlib
 package minetest.auth;
 
 import lua.Table;
+import minetest.util.NativeSet;
 
-extern class AuthData {
+/**
+    Schema for authentication data returned by native auth handler.
+**/
+interface AuthData {
     @:native("password")
-    var password: String;
+    public var password: String;
     @:native("privileges")
-    var privileges: Table<String, Bool>;
+    public var privileges: NativeSet<String>;
     @:native("last_login")
-    var lastLogin: Null<Float>;
+    public var lastLogin: Null<Int>;
 }

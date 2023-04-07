@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: Zlib
 package minetest;
 
 import minetest.math.NoiseParams;
 import lua.Table;
+import minetest.util.NativeSet;
 
 /**
     An interface to load and save .conf config files.
@@ -23,7 +25,7 @@ extern class Settings {
     @:native("get_np_group")
     public function getNoiseParamsGroup(key: String): NoiseParams;
     @:native("get_flags")
-    public function getFlags(key: String): Table<String, Bool>;
+    public function getFlags(key: String): NativeSet<String>;
     #end
 
     /**
