@@ -18,7 +18,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        haxe-version: ["4.2.5", "latest"]
+        haxe-version: ["4.3.0", "latest"]
     steps:
       - name: "Checkout"
         uses: "actions/checkout@v3"
