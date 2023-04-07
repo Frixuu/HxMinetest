@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Zlib
 package minetest;
 
 import partials.Partial;
@@ -44,6 +45,7 @@ import minetest.player.PlayerLike;
 import minetest.player.WindowInfo;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.util.LuaArray;
+import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
@@ -73,6 +75,10 @@ using minetest.item.InventoryLocation;
 @:partials(minetest.Minetest_FileIo)
 @:partials(minetest.Minetest_Logging)
 extern class Minetest implements Partial {
+    @:keep
+    private static inline function __init__(): Void {
+        Snippets.includeFile("_fix_luv_package_access.lua");
+    }
 
     /**
         Settings object containing configuration from `minetest.conf`, the main config file.
@@ -84,7 +90,7 @@ extern class Minetest implements Partial {
         Feature flags available for scripting.
     **/
     @:native("features")
-    public static var features(default, null): Table<String, Bool>;
+    public static var features(default, null): NativeSet<String>;
 
     @:native("registered_items")
     public static var registeredItems(default, null): Table<String, Dynamic>;
@@ -329,18 +335,14 @@ extern class Minetest implements Partial {
     @:native("register_authentication_handler")
     public static function registerAuthHandler(handler: AuthHandler): Void;
 
-    /*********
-
-        EVENTS
-
-    *********/
     /**
         Registers a function to be called on every server step.
 
-        (By default 0.09s, but it is variable and configurable by the administrator.)
+        Note: By default, the globalstep runs roughly every 90 milliseconds,
+        but this value is configurable by the server administrator/singleplayer user.
     **/
     @:native("register_globalstep")
-    public static function registerOnGlobalstep(callback: (delta: Float) -> Void): Void;
+    public static function registerGlobalstep(callback: (delta: Float) -> Void): Void;
 
     @:native("register_on_mods_loaded")
     public static function registerOnModsLoaded(callback: () -> Void): Void;
