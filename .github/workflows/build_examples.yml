@@ -26,7 +26,13 @@ jobs:
         uses: "krdlab/setup-haxe@v1"
         with:
           haxe-version: ${{ matrix.haxe-version }}
+      - name: "Update Powershell version"
+        run: |
+          wget https://github.com/PowerShell/PowerShell/releases/download/v7.3.3/powershell_7.3.3-1.deb_amd64.deb -O pwsh.deb
+          sudo dpkg -i pwsh.deb
+          sudo apt-get install -f
       - name: "Compile example mods"
         run: |
           haxelib dev hxminetest .
+          haxelib install haxelib.json --always
           pwsh scripts/build_examples.ps1
