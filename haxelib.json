@@ -3,14 +3,16 @@
     "url": "https://github.com/Frixuu/HxMinetest/",
     "description": "Externs for modding of the game Minetest.",
     "license": "Public",
-    "version": "0.3.1",
+    "version": "0.4.0",
     "classPath": "src/",
     "releasenote": "Minor changes and fixes",
     "contributors": [
         "frixuu"
     ],
     "main": "minetest.lib.Main",
-    "dependencies": {},
+    "dependencies": {
+        "partials": "git:https://github.com/Frixuu/Partials"
+    },
     "tags": [
         "externs",
         "extern",
