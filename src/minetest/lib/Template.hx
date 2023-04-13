@@ -3,8 +3,8 @@ package minetest.lib;
 
 #if (interp || eval)
 import haxe.io.Path;
+import minetest.macro.Files;
 import sys.FileSystem;
-import sys.io.File;
 
 enum Entry {
     File(name: String);
@@ -22,7 +22,7 @@ final class Template {
 
     public static function ofName(name: String): Template {
 
-        final templateBasePath = minetest.macro.Files.getPath("../../../templates/");
+        final templateBasePath = Files.getPath("../../../templates/");
         final path = Path.join([templateBasePath, name]);
         if (!FileSystem.exists(path)) {
             throw 'Template directory $name does not exist';
@@ -50,12 +50,19 @@ final class Template {
         return new Template(templateBasePath, tree);
     }
 
+    /**
+        Installs this template to a new directory `parentPath`/`projectName`.
+        Fails, if said directory already exists.
+    **/
     public function installToDir(parentPath: String, projectName: String) {
 
         final targetPath = Path.join([parentPath, projectName]);
         if (FileSystem.exists(targetPath)) {
             throw 'The directory $targetPath already exists';
         }
+
+        final context = {name: projectName};
+        final macros = {};
 
         function copySubdir(
             entry: Entry,
@@ -68,13 +75,13 @@ final class Template {
                     final sourcePath = Path.join([sourceDir, name]);
                     final targetPath = Path.join([targetDir, overrideName ?? name]);
                     final fileContent = sys.io.File.getContent(sourcePath);
-                    final processedContent = ~/\$name/g.replace(fileContent, projectName);
-                    sys.io.File.saveContent(targetPath, processedContent);
+                    final haxeTemplate = new haxe.Template(fileContent);
+                    sys.io.File.saveContent(targetPath, haxeTemplate.execute(context, macros));
                 case Directory(name, contents):
                     final targetPath = Path.join([targetDir, overrideName ?? name]);
                     FileSystem.createDirectory(targetPath);
-                    for (content in contents) {
-                        copySubdir(content, Path.join([sourceDir, name]), targetPath);
+                    for (subEntry in contents) {
+                        copySubdir(subEntry, Path.join([sourceDir, name]), targetPath);
                     }
             }
         }
