@@ -2,8 +2,6 @@
 
 using namespace System.IO
 
-. (Join-Path $PSScriptRoot "ensure_haxe_exists.ps1")
-
 [string]$projectRoot = $PSScriptRoot | Split-Path -Parent
 [string]$now = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd'T'HH-mm-ss'Z'")
 [string]$random = 1..4 | ForEach-Object -Process { '{0:X}' -f (Get-Random -Max 16) } | Join-String -Separator ""
