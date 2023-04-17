@@ -1,4 +1,4 @@
-set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
+set windows-shell := ["powershell.exe", "-ExecutionPolicy", "Unrestricted", "-NoLogo", "-Command"]
 
 default: set-dev build-examples build-docs
 
@@ -15,3 +15,6 @@ build-examples:
 build-docs:
     haxe --class-path src --library partials --macro "include('doctest')" --macro "include('minetest')" --lua not.applicable --xml docs/hxminetest.xml --no-output
     haxelib run dox -i docs -o docs/pages --include "[mM]inetest.*"
+
+submit-haxelib:
+    deno run --allow-run --allow-read --allow-write scripts/submit-to-haxelib-interactive.ts
