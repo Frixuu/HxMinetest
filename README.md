@@ -3,22 +3,11 @@
 > **Warning**:
 > **Haxe 4.3.0 is now required.** If you're on 4.2.5 or below, please update.
 
-**TL;DR:** HxMinetest allows you to easily develop Minetest mods in Haxe.
-**Heavily WIP.** PRs welcome.
+**TL;DR:** HxMinetest is for people who want to make big Minetest mods, but don't enjoy Lua.  
+**Heavily WIP.** Things will be broken. PRs welcome.
 
-If you already know how to make mods for Minetest in pure Lua, great!
-In most cases, you can just swap ```snake_case``` for ```camelCase```:
-
-```haxe
-final storage = Minetest.getModStorage();
-Minetest.registerOnPlayerJoin((player, _) -> {
-    final name = player.getPlayerName();
-    var visits = storage.getInt(name);
-    visits += 1;
-    storage.setInt(name, visits);
-    Minetest.log(Action, 'Hey, $name just joined!');
-});
-```
+Do you already know how to make Minetest mods?
+Check out our [examples](examples) to see how your knowledge will translate.
 
 Are you new to Minetest modding?
 The following resources assume you're writing Lua,
@@ -31,45 +20,68 @@ but are a great help in learning the ropes:
 
 - [Installation](#installation)
 - [Quick start](#quick-start)
-- [Client-side modding (experimental)](#client-side-modding-experimental)
-- [Extra APIs](#extra-apis)
+- [Server-side modding](#server-side-modding)
+- [Client-side modding](#client-side-modding)
+- [Extras](#extras)
   - [Text components](#text-components)
-  - [Futures](#futures)
 
 ## Installation
 
 Assuming you already have a [recent version of Haxe installed](https://haxe.org/download/),
-you can download HxMinetest:
+you can just run:
 
-- from [Haxelib](https://lib.haxe.org/p/hxminetest/) (may be outdated):
-  - ```haxelib install hxminetest```
-- from source (latest):
-  - ```git clone``` this repo,
-  - run ```haxelib dev hxminetest /path/to/cloned/repo```
+```sh
+haxelib git hxminetest https://github.com/Frixuu/HxMinetest.git
+```
+
+_([Haxelib](https://lib.haxe.org/p/hxminetest/) version is outdated and not recommended.)_
 
 ## Quick start
 
-First time using Haxe tooling?
-HxMinetest can generate the "Hello, World!" for you:
+You can bootstrap a new project by running:
 
-```bash
+```sh
 haxelib run hxminetest new my_awesome_mod
+```
+
+This creates a new folder called ```my_awesome_mod``` in your current working directory.  
+Note: Minetest does not understand Haxe natively. To use your mod, you need to build it:
+
+```sh
 cd my_awesome_mod
 haxe build.hxml
 ```
 
-Looking for inspirations? Check out provided `examples`.
+## Server-side modding
 
-## Client-side modding (experimental)
+By default, HxMinetest is set up for server-side mods.
 
-If you're adventurous enough to write CSMs, HxMinetest can help you too!  
-Adding ```--define csm``` to your ```build.hxml``` file
-will enable client-specific externs (e.g. ```Minetest.localPlayer```)
-while disabling the server-specific ones.
+```haxe
+final storage = Minetest.getModStorage();
+Minetest.registerOnPlayerJoin((player, _) -> {
+    final name = player.getPlayerName();
+    final visits = storage.getInt(name);
+    Minetest.log(Action, '$name just joined; been here $visits times already');
+    storage.setInt(name, visits + 1);
+});
+```
 
-## Extra APIs
+## Client-side modding
 
-Common operations can be made easier with the following:
+You can switch HxMinetest to client-side mode.  
+To do that, add ```--define csm``` to your ```build.hxml``` file.
+
+```haxe
+Minetest.registerOnDamageTaken(_ -> Minetest.disconnect());
+```
+
+> **Note**: You cannot be in server- and client-side mode at the same time.
+
+## Extras
+
+Aside from 1:1 externs,
+HxMinetest is bundled with a bunch of other utilities
+that can make your modding journey less painful:
 
 ### Text components
 
@@ -88,18 +100,4 @@ player.sendChatMessage(tr("[Villager]")
             .color(Color.rgb(255, 132, 87))
             .build()))
     .build());
-```
-
-### Futures
-
-Getting lost in the callback hell? Certain operations now return Futures to make your code cleaner:
-
-```haxe
-final httpApi = Minetest.requestHttpApi();
-if (httpApi != null) {
-    httpApi.fetch(Request.GET("https://example.com/"))
-        .thenAccept(response -> {
-            // ...
-        });
-}
 ```
