@@ -1,0 +1,7 @@
+--class-path src
+--define lua-ver=5.1
+--define lua-vanilla
+--macro minetest.macro.CustomHelp.register()
+--macro nullSafety("minetest", StrictThreaded)
+--lua not.applicable
+--no-output
