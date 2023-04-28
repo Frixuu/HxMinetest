@@ -3,11 +3,13 @@ name: "Examples"
 on:
   push:
     paths:
+      - "Justfile"
       - "**.hx"
       - "**.ts"
       - ".github/workflows/**.yml"
   pull_request:
     paths:
+      - "Justfile"
       - "**.hx"
       - "**.ts"
       - ".github/workflows/**.yml"
@@ -31,7 +33,7 @@ jobs:
         with:
           deno-version: "^1.32"
       - name: "Install just"
-        uses: extractions/setup-just@v1
+        uses: "extractions/setup-just@v1"
         with:
           just-version: "^1.13"
       - name: "Build example mods"
