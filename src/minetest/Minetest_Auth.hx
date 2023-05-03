@@ -2,7 +2,6 @@
 package minetest;
 
 import partials.Partial;
-import minetest.util.NativeSet;
 
 @:noCompletion
 extern class Minetest_Auth implements Partial {

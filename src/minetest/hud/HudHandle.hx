@@ -1,3 +1,3 @@
 package minetest.hud;
 
-extern interface HudHandle {}
+abstract HudHandle(UInt) {}

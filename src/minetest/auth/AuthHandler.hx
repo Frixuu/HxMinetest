@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Zlib
 package minetest.auth;
 
 import lua.Lua.PairsResult;

@@ -5,14 +5,14 @@ import lua.Table;
 import minetest.math.Vector;
 
 interface Camera {
-    @:native("set_camera_mode")
-    function setCameraMode(mode: CameraMode): Void;
-
     @:native("get_camera_mode")
-    function getCameraMode(): CameraMode;
+    private function getMode(): CameraMode;
+
+    @:native("set_camera_mode")
+    private function setMode(mode: CameraMode): Void;
 
     @:native("get_fov")
-    function getFov(): Table<String, Float>;
+    function getFov(): FovTable;
 
     @:native("get_pos")
     function getPos(): Vector;

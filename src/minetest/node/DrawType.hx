@@ -1,5 +1,3 @@
 package minetest.node;
 
-enum abstract DrawType(String) {
-
-}
+enum abstract DrawType(String) {}

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Zlib
 package minetest.data;
 
 import minetest.math.Vector;
@@ -10,7 +11,8 @@ import minetest.hud.HudHandle;
     The reference can become invalid when an object it is refering to
     gets unloaded or removed.
 **/
-extern interface ObjectRef {
+@:remove
+interface ObjectRef {
 
     /**
         If the object is a player, returns that player's name.
@@ -24,9 +26,15 @@ extern interface ObjectRef {
     @:native("set_breath")
     public function setBreath(value: UInt): Void;
 
+    /**
+        Adds a defined HUD element.
+    **/
     @:native("hud_add")
-    public function hudAdd(definition: HudDefinition): Null<HudHandle>;
+    public function hudAdd(definition: HudDefinition): HudHandle;
 
+    /**
+        Removes a single HUD element.
+    **/
     @:native("hud_remove")
     public function hudRemove(handle: HudHandle): Void;
 

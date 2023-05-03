@@ -4,11 +4,13 @@ package minetest.colors;
     `Color` represents a 24-bit RGB or a 32-bit RGBA color value.
 **/
 class Color {
+
     /** Represents the RGB part of the value, in the 0xRRGGBB form. **/
     private var _reprRgb: Int;
 
     /** Represents the alpha byte of the color value. **/
     private var _alpha: Int;
+
     private inline function new(rgb: Int, alpha: Int) {
         this._reprRgb = rgb;
         this._alpha = alpha;

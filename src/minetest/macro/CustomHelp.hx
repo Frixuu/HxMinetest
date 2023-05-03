@@ -9,8 +9,8 @@ final class CustomHelp {
             define: "csm",
             doc: "If defined, HxMinetest will try its best to only enable client-side externs. " +
             "If omitted, it will be configured for regular, server-side modding.",
-            platforms: [Lua]
-        }, null);
+            platforms: [Lua],
+        }, "hxminetest");
     }
 }
 #end
