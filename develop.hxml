@@ -1,4 +1,5 @@
 --class-path src
+--library partials:git:https://github.com/Frixuu/Partials
 --define lua-ver=5.1
 --define lua-vanilla
 --macro minetest.macro.CustomHelp.register()
