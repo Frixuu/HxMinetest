@@ -54,10 +54,10 @@ class ExampleVoxelManip {
             vm.getData(dataBuffer);
 
             var noiseIndex = 1;
-            for (z in (cast minp.z)...(cast maxp.z)) {
-                for (y in (cast minp.y)...(cast maxp.y)) {
+            for (z in (cast minp.z)...(cast maxp.z + 1)) {
+                for (y in (cast minp.y)...(cast maxp.y + 1)) {
                     var vmIndex = area.index(cast minp.x, y, z);
-                    for (x in (cast minp.x)...(cast maxp.x)) {
+                    for (x in (cast minp.x)...(cast maxp.x + 1)) {
                         final densityNoise = noiseBuffer[noiseIndex];
                         final densityGradient = (1 - y) / 128.0;
                         if (densityNoise + densityGradient > 0) {
