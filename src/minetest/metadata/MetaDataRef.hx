@@ -9,6 +9,7 @@ import lua.Table.AnyTable;
     player, itemstack and node metadata handling.
 **/
 extern interface MetaDataRef {
+
     /**
         Returns true if key is present, otherwise false.
         Can return null when the metadata is inexistent.

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
+import minetest.worldgen.VoxelManipResult;
+import minetest.node.ContentId;
 import partials.Partial;
 import minetest.hud.HudDefinition;
 import minetest.worldgen.SchematicData;
@@ -139,6 +141,15 @@ extern class Minetest implements Partial {
 
     @:native("registered_privileges")
     public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
+
+    @:native("CONTENT_UNKNOWN")
+    public static var CONTENT_UNKNOWN(default, null): ContentId;
+
+    @:native("CONTENT_AIR")
+    public static var CONTENT_AIR(default, null): ContentId;
+
+    @:native("CONTENT_IGNORE")
+    public static var CONTENT_IGNORE(default, null): ContentId;
 
     /**
         If loading a mod, returns the currently loading mod's name.
@@ -753,8 +764,8 @@ extern class Minetest implements Partial {
     @:native("get_mapgen_object")
     public static function getMapgenObject(name: String): Null<Dynamic>;
 
-    public static inline function getMapgenVoxelManipObject(): Dynamic {
-        return untyped __lua__("{minetest.get_mapgen_object(\"VoxelManip\")}");
+    public static inline function getMapgenObjectVoxelManip(): VoxelManipResult {
+        return untyped __lua__("{minetest.get_mapgen_object(\"voxelmanip\")}");
     }
 
     @:native("get_heat")
@@ -1425,10 +1436,10 @@ extern class Minetest implements Partial {
     public static function raillikeGroup(name: String): Dynamic;
 
     @:native("get_content_id")
-    public static function getContentId(name: String): Int;
+    public static function getContentId(name: String): ContentId;
 
     @:native("get_name_from_content_id")
-    public static function getNameFromContentId(id: Int): String;
+    public static function getNameFromContentId(id: ContentId): String;
 
     @:native("parse_json")
     public static function parseJson(

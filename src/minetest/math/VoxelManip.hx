@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: Zlib
 package minetest.math;
 
 import lua.Table.AnyTable;
@@ -11,17 +12,21 @@ extern final class VoxelManip {
     public function readFromMap(p1: Any, p2: Any): Dynamic;
 
     @:native("write_to_map")
-    public function writeToMap(recalculateLight: Bool): Dynamic;
+    public function writeToMap(recalculateLight: Bool = true): Dynamic;
 
     @:native("update_liquids")
-    public function updateLiquids(): Dynamic;
+    public function updateLiquids(): Void;
 
     @:native("get_data")
     public function getData(?intoBuffer: AnyTable): Null<Dynamic>;
 
     @:native("set_data")
-    public function setData(data: Any): Void;
+    public function setData(dataBuffer: Any): Void;
 
     @:native("calc_lighting")
-    public function calculateLighting(min: Vector, max: Vector): Void;
+    public function calcLighting(
+        ?min: Vector,
+        ?max: Vector,
+        ?propagateShadow: Bool = true
+    ): Void;
 }

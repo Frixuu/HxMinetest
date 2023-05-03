@@ -7,6 +7,7 @@ import minetest.item.InventoryRef;
     Metadata available on a singular node.
 **/
 extern interface NodeMetaRef extends MetaDataRef {
+
     /**
         Gets a reference to a single inventory associated with the node.
     **/

@@ -1,0 +1,6 @@
+--class-path src
+--lua init.lua
+--define analyzer-optimize
+--dce full
+--library hxminetest
+--main ExampleVoxelManip
