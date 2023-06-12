@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
+import minetest.util.LuaArray;
 import lua.Table;
 import minetest.math.NoiseParams;
 import minetest.util.NativeSet;
@@ -18,7 +19,7 @@ import minetest.util.NativeSet;
 extern class Settings {
 
     /**
-        Maps the contents of a file to a new `Settings` object.
+        Creates a new `Settings` object, backed by a provided file.
     **/
     @:selfCall
     public function new(path: String);
@@ -37,14 +38,20 @@ extern class Settings {
 
     /**
         Returns a boolean setting value.
-        @param def The default value, returned if `key` is not found.
+        @param defaultValue The default value, returned if `key` is not found.
     **/
     @:native("get_bool")
-    public overload function getBool(key: String, def: Bool): Bool;
+    public overload function getBool(key: String, defaultValue: Bool): Bool;
 
+    /**
+        Sets a string setting value.
+    **/
     @:native("set")
-    public function set(key: String, value: Any): Void;
+    public function set(key: String, value: String): Void;
 
+    /**
+        Sets a boolean setting value.
+    **/
     @:native("set_bool")
     public function setBool(key: String, value: Bool): Void;
 
@@ -56,7 +63,14 @@ extern class Settings {
     public function remove(key: String): Bool;
 
     @:native("get_names")
-    public function getNames(): Dynamic;
+    private function getNamesRaw(): LuaArray<String>;
+
+    /**
+        Returns an array of all the setting keys.
+    **/
+    public inline function getNames(): Array<String> {
+        return getNamesRaw().toArray();
+    }
 
     /**
         Checks whether a setting `key` exists.
@@ -84,10 +98,10 @@ extern class Settings {
 
     #if !csm
     @:native("get_np_group")
-    public function getNoiseParamsGroup(key: String): NoiseParams;
+    public function getNoiseParamsGroup(key: String): Null<NoiseParams>;
     @:native("set_np_group")
     public function setNoiseParamsGroup(key: String, value: NoiseParams): Void;
     @:native("get_flags")
-    public function getFlags(key: String): NativeSet<String>;
+    public function getFlags(key: String): Null<NativeSet<String>>;
     #end
 }
