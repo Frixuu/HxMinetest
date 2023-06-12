@@ -1,36 +1,40 @@
 // SPDX-License-Identifier: Zlib
 import { path } from "./deps.ts";
 import { assertHaxeExists, pathFromMeta } from "./common.ts";
-const textEncoder = new TextEncoder();
-const textDecoder = new TextDecoder();
 
 await assertHaxeExists();
 
+const textEncoder = new TextEncoder();
+const textDecoder = new TextDecoder();
+
 const examplesDir = path.join(pathFromMeta(import.meta), "..", "..", "examples");
 const examples = Array.from(Deno.readDirSync(examplesDir));
-console.log(`Building ${examples.length} examples...`);
-let success = true;
-for (const example of examples) {
 
-  Deno.stdout.writeSync(textEncoder.encode(`${example.name}: `));
+const countTotal = examples.length;
+let countFailed = 0;
+
+console.log(`Building ${countTotal} examples...`);
+for (const [i, example] of examples.entries()) {
+
+  const index = (i + 1).toString(10).padStart(2);
+  Deno.stdout.writeSync(textEncoder.encode(` ${index}) ${example.name}: `));
 
   const t0 = performance.now();
   const cwd = path.join(examplesDir, example.name);
-  const haxe = Deno.run({ cmd: ["haxe", "build.hxml"], cwd, stderr: "piped" });
-  const [status, stderr] = await Promise.all([haxe.status(), haxe.stderrOutput()]);
-  haxe.close();
+  const command = new Deno.Command("haxe", { args: ["build.hxml"], cwd, stderr: "piped" });
+  const { success, stderr } = await command.output();
   const t1 = performance.now();
 
-  if (status.code == 0) {
+  if (success) {
     console.log(`%cOK %c(${Math.round(t1 - t0)} ms)`, "color: green;", "");
   } else {
     console.log(`%cFAILED %c(${Math.round(t1 - t0)} ms)`, "color: red;", "");
     console.error(textDecoder.decode(stderr));
-    success = false;
+    countFailed += 1;
   }
 }
 
-if (!success) {
-  console.error("%cBuilding some of the examples failed.", "color: red;");
+if (countFailed > 0) {
+  console.error(`%cBuilding ${countFailed} out of ${countTotal} examples failed.`, "color: red;");
   Deno.exit(1);
 }

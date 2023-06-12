@@ -16,4 +16,4 @@ await compress(
 );
 
 console.log(`Created zip file, size is ${Deno.statSync(zipPath).size} bytes`);
-await Deno.run({ cmd: ["haxelib", "submit", zipPath], cwd: root }).status();
+await new Deno.Command("haxelib", { args: ["submit", zipPath], cwd: root }).output();

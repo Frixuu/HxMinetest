@@ -10,9 +10,9 @@ const textDecoder = new TextDecoder();
 export async function assertHaxeExists(minVersion?: string): Promise<void> {
   minVersion = semver.valid(minVersion ?? null) ?? "4.3.0";
   try {
-    const haxe = Deno.run({ cmd: ["haxe", "--version"], stdout: "piped" });
-    const version = textDecoder.decode(await haxe.output()).trim();
-    haxe.close();
+    const command = new Deno.Command("haxe", { args: ["--version"], stdout: "piped" });
+    const { stdout } = await command.output();
+    const version = textDecoder.decode(stdout).trim();
     if (!semver.valid(version)) {
       console.error(
         `%cHaxe exists, but running --version gave unexpected output: "${version}"`,
