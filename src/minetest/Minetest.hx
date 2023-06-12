@@ -46,7 +46,7 @@ import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
-import minetest.worldgen.EmergeType;
+import minetest.worldgen.EmergeStatus;
 import minetest.worldgen.Schematic;
 import minetest.worldgen.SchematicData;
 import minetest.worldgen.SchematicHandle;
@@ -847,7 +847,7 @@ extern class Minetest implements Partial {
     public static function emergeArea<T>(
         pos1: Vector,
         pos2: Vector,
-        ?callback: (blockPos: Vector, type: EmergeType, remaining: Int, param: Null<T>) -> Void,
+        ?callback: (blockPos: Vector, status: EmergeStatus, remaining: Int, param: Null<T>) -> Void,
         ?param: T
     ): Void;
 
