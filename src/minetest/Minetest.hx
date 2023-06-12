@@ -1,13 +1,6 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import minetest.worldgen.VoxelManipResult;
-import minetest.node.ContentId;
-import partials.Partial;
-import minetest.hud.HudDefinition;
-import minetest.worldgen.SchematicData;
-import minetest.worldgen.SchematicSerializationFormat;
-import minetest.worldgen.Schematic;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -27,6 +20,7 @@ import minetest.data.CompressionMethod;
 import minetest.data.ObjectRef;
 import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
+import minetest.hud.HudDefinition;
 import minetest.insecure.InsecureEnvironment;
 import minetest.insecure.http.HttpApi;
 import minetest.item.InventoryRef;
@@ -39,6 +33,7 @@ import minetest.math.Vector;
 import minetest.math.VoxelManip;
 import minetest.metadata.NodeMetaRef;
 import minetest.metadata.StorageRef;
+import minetest.node.ContentId;
 import minetest.node.NodeDefinition;
 import minetest.node.PlaceResult;
 import minetest.node.RevertActionsResult;
@@ -52,8 +47,13 @@ import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
 import minetest.worldgen.DecorationHandle;
 import minetest.worldgen.EmergeType;
+import minetest.worldgen.Schematic;
+import minetest.worldgen.SchematicData;
 import minetest.worldgen.SchematicHandle;
 import minetest.worldgen.SchematicRotation;
+import minetest.worldgen.SchematicSerializationFormat;
+import minetest.worldgen.VoxelManipResult;
+import partials.Partial;
 #if csm
 import minetest.client.Camera;
 import minetest.client.LocalPlayer;
@@ -72,6 +72,7 @@ using minetest.item.InventoryLocation;
 @:partials(minetest.Minetest_Server)
 #end
 @:partials(minetest.Minetest_Auth)
+@:partials(minetest.Minetest_Content)
 @:partials(minetest.Minetest_Chat)
 @:partials(minetest.Minetest_EscapeSequences)
 @:partials(minetest.Minetest_FileIo)
@@ -79,11 +80,13 @@ using minetest.item.InventoryLocation;
 extern class Minetest implements Partial {
     @:keep
     private static inline function __init__(): Void {
-        Snippets.includeFile("_fix_luv_package_access.lua");
+        Snippets.includeFile("runtime/_fix_luv_package_access.lua");
     }
 
     /**
-        Settings object containing configuration from `minetest.conf`, the main config file.
+        The main settings object.
+
+        It contains configuration saved in `minetest.conf`.
     **/
     @:native("settings")
     public static var settings(default, null): Settings;
@@ -141,15 +144,6 @@ extern class Minetest implements Partial {
 
     @:native("registered_privileges")
     public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
-
-    @:native("CONTENT_UNKNOWN")
-    public static var CONTENT_UNKNOWN(default, null): ContentId;
-
-    @:native("CONTENT_AIR")
-    public static var CONTENT_AIR(default, null): ContentId;
-
-    @:native("CONTENT_IGNORE")
-    public static var CONTENT_IGNORE(default, null): ContentId;
 
     /**
         If loading a mod, returns the currently loading mod's name.
@@ -1434,12 +1428,6 @@ extern class Minetest implements Partial {
 
     @:native("raillike_group")
     public static function raillikeGroup(name: String): Dynamic;
-
-    @:native("get_content_id")
-    public static function getContentId(name: String): ContentId;
-
-    @:native("get_name_from_content_id")
-    public static function getNameFromContentId(id: ContentId): String;
 
     @:native("parse_json")
     public static function parseJson(

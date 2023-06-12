@@ -8,4 +8,13 @@ package minetest.node;
 
     To look up the node name string from its ID, use `Minetest.getNameFromContentId`.
 **/
-abstract ContentId(Int) to Int {}
+abstract ContentId(Int) to Int {
+
+    /**
+        Casts an integer to a `ContentId`.
+    **/
+    @:from
+    private static inline function fromInt(i: Int): ContentId {
+        return cast i;
+    }
+}
