@@ -61,6 +61,7 @@ import minetest.client.ServerInfo;
 #end
 
 using minetest.item.InventoryLocation;
+using minetest.util.NativeArrayTools;
 
 /**
     The main namespace of the Minetest game engine.

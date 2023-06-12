@@ -68,7 +68,7 @@ extern class Minetest_FileIo implements Partial {
         path: String,
         include: ListEntries = All
     ): Array<String> {
-        return getDirListRaw(path, include).toArray();
+        return @:privateAccess getDirListRaw(path, include).convertIntoHaxeArray();
     }
 
     /**

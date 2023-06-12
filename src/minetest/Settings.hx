@@ -6,6 +6,8 @@ import lua.Table;
 import minetest.math.NoiseParams;
 import minetest.util.NativeSet;
 
+using minetest.util.NativeArrayTools;
+
 /**
     An interface to load and save .conf config files.
 
@@ -69,7 +71,7 @@ extern class Settings {
         Returns an array of all the setting keys.
     **/
     public inline function getNames(): Array<String> {
-        return getNamesRaw().toArray();
+        return @:privateAccess getNamesRaw().convertIntoHaxeArray();
     }
 
     /**
