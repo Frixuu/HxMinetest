@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest.math;
 
+import minetest.worldgen.NodeContentBuffer;
 import lua.Table.AnyTable;
 
 @:native("VoxelManip")
@@ -21,7 +22,7 @@ extern final class VoxelManip {
     public function getData(?intoBuffer: AnyTable): Null<Dynamic>;
 
     @:native("set_data")
-    public function setData(dataBuffer: Any): Void;
+    public function setData(buffer: NodeContentBuffer): Void;
 
     @:native("calc_lighting")
     public function calcLighting(
