@@ -2,6 +2,7 @@
 package minetest.data;
 
 #if !csm
+import minetest.audio.SoundSpec;
 import minetest.audio.SoundParams;
 import minetest.audio.SoundHandle;
 
@@ -12,28 +13,30 @@ class PlayerTools {
 
     /**
         Plays a sound for that player only.
-        @param soundName Name of the sound to be played (without the `.ogg` suffix).
         @param params (Optional) Parameters of the sound (pitch, location etc.).
     **/
-    public static function playSound(player: PlayerRef, soundName: String, ?params: SoundParams): SoundHandle {
-        params = params ?? new SoundParams();
-        params = params.audience(OnePlayer(player.getPlayerName()));
-        return cast Minetest.soundPlay(soundName, params, false);
+    public static function playSound(
+        player: PlayerRef,
+        spec: SoundSpec,
+        ?params: SoundParams
+    ): SoundHandle {
+        params ??= {};
+        params.audience = OnePlayer(player.getPlayerName());
+        return cast Minetest.soundPlay(spec, params, false);
     }
 
     /**
         Plays a one-shot sound for that player only.
-        @param soundName Name of the sound to be played (without the `.ogg` suffix).
         @param params (Optional) Parameters of the sound (pitch, location etc.).
     **/
     public static function playSoundEphemeral(
         player: PlayerRef,
-        soundName: String,
+        spec: SoundSpec,
         ?params: SoundParams
     ): Void {
-        params = params ?? new SoundParams();
-        params = params.audience(OnePlayer(player.getPlayerName()));
-        Minetest.soundPlay(soundName, params, true);
+        params ??= {};
+        params.audience = OnePlayer(player.getPlayerName());
+        Minetest.soundPlay(spec, params, true);
     }
 
     /**

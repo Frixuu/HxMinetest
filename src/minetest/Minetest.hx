@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
+import minetest.audio.SoundSpec;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -72,6 +73,7 @@ using minetest.util.NativeArrayTools;
 #else
 @:partials(minetest.Minetest_Server)
 #end
+@:partials(minetest.Minetest_Audio)
 @:partials(minetest.Minetest_Auth)
 @:partials(minetest.Minetest_Content)
 @:partials(minetest.Minetest_Chat)
@@ -1234,27 +1236,6 @@ extern class Minetest implements Partial {
         node: Any,
         digger: Any
     ): Dynamic;
-
-    @:native("sound_play")
-    private static function soundPlayRaw(
-        spec: Any,
-        parameters: NativeSoundParams,
-        ?ephemeral: Bool = false
-    ): Null<SoundHandle>;
-
-    public static inline function soundPlay(
-        spec: Any,
-        parameters: SoundParams,
-        ephemeral: Bool = false
-    ): Null<SoundHandle> {
-        return soundPlayRaw(spec, parameters.toNative(), ephemeral);
-    }
-
-    @:native("sound_stop")
-    public static function soundStop(handle: SoundHandle): Void;
-
-    @:native("sound_fade")
-    public static function soundFade(handle: SoundHandle, step: Float, targetGain: Float): Void;
 
     /**
         Runs a callback not earlier than after the specified amount of time has passed.
