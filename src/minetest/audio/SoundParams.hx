@@ -124,6 +124,7 @@ class SoundParams {
     /**
         Creates a new sound parameter table.
     **/
+    @:dox(hide)
     public function new(
         ?gain: Float = 1.0,
         ?pitch: Float,

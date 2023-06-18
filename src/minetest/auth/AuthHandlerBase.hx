@@ -65,19 +65,27 @@ abstract class AuthHandlerBase implements AuthHandler {
         this.iterate = this.iterateImpl;
     }
 
+    @:dox(show)
     private abstract function getAuthImpl(name: String): Null<AuthData>;
 
+    @:dox(show)
     private abstract function createAuthImpl(name: String, passwordRepr: Any): Void;
 
+    @:dox(show)
     private abstract function deleteAuthImpl(name: String): Bool;
 
+    @:dox(show)
     private abstract function setPasswordImpl(name: String, passwordRepr: Any): Bool;
 
+    @:dox(show)
     private abstract function setPrivilegesImpl(name: String, privs: Table<String, Bool>): Void;
 
+    @:dox(show)
     private abstract function reloadImpl(): Bool;
 
+    @:dox(show)
     private abstract function recordLoginImpl(name: String): Void;
 
+    @:dox(show)
     private abstract function iterateImpl(): Dynamic;
 }
