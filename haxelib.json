@@ -3,9 +3,9 @@
     "url": "https://github.com/Frixuu/HxMinetest/",
     "description": "Externs for modding of the game Minetest.",
     "license": "Public",
-    "version": "0.5.0",
+    "version": "0.6.0",
     "classPath": "src/",
-    "releasenote": "Now requires Haxe 4.3.0!",
+    "releasenote": "Many changes were made to help you create even greater mods.",
     "contributors": [
         "frixuu"
     ],
