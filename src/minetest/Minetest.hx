@@ -29,6 +29,7 @@ import minetest.item.ItemStack;
 import minetest.macro.Snippets;
 import minetest.math.NoiseParams;
 import minetest.math.PerlinNoise;
+import minetest.math.PerlinNoiseMap;
 import minetest.math.Raycast;
 import minetest.math.Vector;
 import minetest.math.VoxelManip;
@@ -403,12 +404,15 @@ extern class Minetest implements Partial {
         ) -> Void
     ): Void;
 
+    /**
+        Called after generating a piece of world.
+    **/
     @:native("register_on_generated")
     public static function registerOnGenerated(
         callback: (
-            minp: Vector,
-            maxp: Vector,
-            blockSeed: Dynamic
+            minp: Vector<Int>,
+            maxp: Vector<Int>,
+            blockSeed: UInt
         ) -> Void
     ): Void;
 
@@ -744,7 +748,10 @@ extern class Minetest implements Partial {
     ): Dynamic;
 
     @:native("get_perlin")
-    public static function getPerlin(noiseParams: Any): PerlinNoise;
+    public static function getPerlin(noiseParams: NoiseParams): PerlinNoise;
+
+    @:native("get_perlin_map")
+    public static function getPerlinMap(noiseParams: NoiseParams, size: Vector<Int>): PerlinNoiseMap;
 
     @:native("get_voxel_manip")
     public static function getVoxelManip(pos1: Any, pos2: Any): VoxelManip;

@@ -3,31 +3,29 @@ package minetest.math;
 import haxe.extern.EitherType;
 
 /**
-    A vector of 3 floats.
-    @since Minetest 5.5.0
+    A structure consisting of 3 numbers.
 **/
 @:native("vector")
-extern class Vector {
-    var x: Float;
-    var y: Float;
-    var z: Float;
+extern class Vector<T = Float> {
+    public var x: T;
+    public var y: T;
+    public var z: T;
 
     @:native("new")
-    public function new(x: Float, y: Float, z: Float);
+    public function new(x: T, y: T, z: T);
 
+    /**
+        Returns a new `Vector` (0, 0, 0).
+    **/
     @:native("zero")
-    public static function zero(): Vector;
+    public static function zero<T>(): Vector<T>;
 
     @:native("offset")
-    public function offset(x: Float, y: Float, z: Float): Vector;
+    public function offset(x: T, y: T, z: T): Vector<T>;
 
     @:native("add")
-    public function add(other: EitherType<Vector, Float>): Vector;
+    public function add(other: EitherType<Vector<T>, T>): Vector<T>;
 
     @:native("distance")
-    private static function distanceRaw(p1: Vector, p2: Vector): Float;
-
-    public inline function distance(other: Vector): Float {
-        return distanceRaw(this, other);
-    }
+    public function distance(other: Vector<T>): Float;
 }
