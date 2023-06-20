@@ -43,6 +43,7 @@ import minetest.pathfinding.PathAlgorithm;
 import minetest.player.PlayerLike;
 import minetest.player.WindowInfo;
 import minetest.privilege.PrivilegeDefinition;
+import minetest.runtime.MtBoot;
 import minetest.util.LuaArray;
 import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
@@ -1367,8 +1368,7 @@ extern class Minetest implements Partial {
         returns an object containing HTTP functions.
     **/
     public static inline function requestHttpApi(): Null<HttpApi> {
-        Snippets.includeFile("insecure/http/_request_http_api.lua");
-        return untyped __lua__("__hxminetest_http_api");
+        return MtBoot.httpApi;
     }
 
     /**
