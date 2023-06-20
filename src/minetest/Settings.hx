@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import minetest.util.LuaArray;
+import minetest.util.NativeArray;
 import lua.Table;
 import minetest.math.NoiseParams;
 import minetest.util.NativeSet;
@@ -65,7 +65,7 @@ extern class Settings {
     public function remove(key: String): Bool;
 
     @:native("get_names")
-    private function getNamesRaw(): LuaArray<String>;
+    private function getNamesRaw(): NativeArray<String>;
 
     /**
         Returns an array of all the setting keys.

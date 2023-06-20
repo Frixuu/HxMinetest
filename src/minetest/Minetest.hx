@@ -44,7 +44,7 @@ import minetest.player.PlayerLike;
 import minetest.player.WindowInfo;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.runtime.MtBoot;
-import minetest.util.LuaArray;
+import minetest.util.NativeArray;
 import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
@@ -167,7 +167,7 @@ extern class Minetest implements Partial {
         Returns a list of enabled mods, sorted alphabetically.
     **/
     @:native("get_modnames")
-    public static function getModNames(): LuaArray<String>;
+    public static function getModNames(): NativeArray<String>;
 
     /**
         Returns a path of the currently loaded world.
@@ -1380,7 +1380,7 @@ extern class Minetest implements Partial {
     public static function getModStorage(): StorageRef;
 
     @:native("get_connected_players")
-    public static function getConnectedPlayers(): LuaArray<PlayerRef>;
+    public static function getConnectedPlayers(): NativeArray<PlayerRef>;
 
     /**
         Checks whether an object represents a player.

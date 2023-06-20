@@ -1,7 +1,7 @@
 package minetest.worldgen;
 
 import minetest.math.Vector;
-import minetest.util.LuaArray;
+import minetest.util.NativeArray;
 import haxe.extern.EitherType;
 
 class BiomeDefinition {
@@ -45,7 +45,7 @@ class BiomeDefinition {
     public var depthRiverBed: Null<Int>;
 
     @:native("node_cave_liquid")
-    public var nodeCaveLiquid: Null<EitherType<LuaArray<String>, String>>;
+    public var nodeCaveLiquid: Null<EitherType<NativeArray<String>, String>>;
 
     @:native("node_dungeon")
     public var nodeDungeon: Null<String>;

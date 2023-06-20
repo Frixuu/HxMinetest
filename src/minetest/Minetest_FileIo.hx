@@ -56,7 +56,7 @@ extern class Minetest_FileIo implements Partial {
     public static function directoryMove(source: String, destination: String): Bool;
 
     @:native("get_dir_list")
-    private static function getDirListRaw(path: String, include: ListEntries): LuaArray<String>;
+    private static function getDirListRaw(path: String, include: ListEntries): NativeArray<String>;
 
     /**
         Returns an array of files and/or subfolders in a directory.
