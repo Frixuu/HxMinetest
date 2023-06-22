@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: Zlib
 import { path } from "./deps.ts";
-import { assertHaxeExists, pathFromMeta } from "./common.ts";
+import { abort, assertHaxeExists, pathFromMeta, print } from "./common.ts";
 
 await assertHaxeExists();
 
-const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 const examplesDir = path.join(pathFromMeta(import.meta), "..", "..", "examples");
@@ -16,25 +15,23 @@ let countFailed = 0;
 console.log(`Building ${countTotal} examples...`);
 for (const [i, example] of examples.entries()) {
 
-  const index = (i + 1).toString(10).padStart(2);
-  Deno.stdout.writeSync(textEncoder.encode(` ${index}) ${example.name}: `));
+  print(` ${(i + 1).toString(10).padStart(2)}) ${example.name}: `);
 
-  const t0 = performance.now();
+  const timeStart = performance.now();
   const cwd = path.join(examplesDir, example.name);
   const command = new Deno.Command("haxe", { args: ["build.hxml"], cwd, stderr: "piped" });
   const { success, stderr } = await command.output();
-  const t1 = performance.now();
+  const timeSpent = Math.round(performance.now() - timeStart);
 
   if (success) {
-    console.log(`%cOK %c(${Math.round(t1 - t0)} ms)`, "color: green;", "");
+    console.log(`%cOK %c(${timeSpent} ms)`, "color: green;", "");
   } else {
-    console.log(`%cFAILED %c(${Math.round(t1 - t0)} ms)`, "color: red;", "");
+    console.log(`%cFAILED %c(${timeSpent} ms)`, "color: red;", "");
     console.error(textDecoder.decode(stderr));
     countFailed += 1;
   }
 }
 
 if (countFailed > 0) {
-  console.error(`%cBuilding ${countFailed} out of ${countTotal} examples failed.`, "color: red;");
-  Deno.exit(1);
+  abort(`Building ${countFailed} out of ${countTotal} examples failed.`);
 }
