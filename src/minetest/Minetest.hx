@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import minetest.audio.SoundSpec;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -11,6 +10,7 @@ import minetest.LogLevel;
 import minetest.Settings;
 import minetest.async.Future;
 import minetest.audio.SoundHandle;
+import minetest.audio.SoundSpec;
 import minetest.audio.SoundParams;
 import minetest.auth.AuthHandler;
 import minetest.chat.ChatCommandDefinition;
@@ -44,6 +44,7 @@ import minetest.player.PlayerLike;
 import minetest.player.WindowInfo;
 import minetest.privilege.PrivilegeDefinition;
 import minetest.runtime.MtBoot;
+import minetest.serialization.WriteJsonResult;
 import minetest.util.NativeArray;
 import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
@@ -82,6 +83,7 @@ using minetest.util.NativeArrayTools;
 @:partials(minetest.Minetest_EscapeSequences)
 @:partials(minetest.Minetest_FileIo)
 @:partials(minetest.Minetest_Logging)
+@:partials(minetest.Minetest_Serialization)
 extern class Minetest implements Partial {
     @:keep
     private static inline function __init__(): Void {
@@ -1417,24 +1419,6 @@ extern class Minetest implements Partial {
 
     @:native("raillike_group")
     public static function raillikeGroup(name: String): Dynamic;
-
-    @:native("parse_json")
-    public static function parseJson(
-        text: String,
-        ?nullReplacement: Any
-    ): Null<Any>;
-
-    @:native("write_json")
-    public static function writeJson(
-        data: Any,
-        fancy: Bool = false
-    ): WriteJsonResult;
-
-    @:native("serialize")
-    public static function serialize(table: AnyTable): String;
-
-    @:native("deserialize")
-    public static function deserialize(str: String, ?safe: Bool): AnyTable;
 
     @:native("compress")
     @:overload(function(data: String, method: CompressionMethod, ...args: Any): Dynamic {})
