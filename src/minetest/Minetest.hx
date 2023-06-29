@@ -262,11 +262,14 @@ extern class Minetest implements Partial {
     @:native("register_entity")
     public static function registerEntity(name: String, definition: Dynamic): Void;
 
+    /**
+        Registers an active block modifier (ABM).
+    **/
     @:native("register_abm")
-    public static function registerAbm(name: String, definition: Dynamic): Void;
+    public static function registerAbm(definition: AbmDefinition): Void;
 
     @:native("register_lbm")
-    public static function registerLbm(name: String, definition: Dynamic): Void;
+    public static function registerLbm(definition: Dynamic): Void;
 
     @:native("register_alias")
     public static function registerAlias(alias: String, original: String): Void;
@@ -691,14 +694,23 @@ extern class Minetest implements Partial {
     @:native("spawn_falling_node")
     public static function spawnFallingNode(pos: Vector): SpawnFallingNodeResult;
 
+    /**
+        Gets positions of nodes that have attached metadata within a specified region.
+    **/
     @:native("find_nodes_with_meta")
-    public static function findNodesWithMeta(pos1: Vector, pos2: Vector): AnyTable;
+    public static function findNodesWithMeta(
+        pos1: Vector<Int>,
+        pos2: Vector<Int>
+    ): NativeArray<Vector<Int>>;
 
     @:native("get_meta")
-    public static function getMeta(pos: Vector): NodeMetaRef;
+    public static function getMeta(pos: Vector<Int>): NodeMetaRef;
 
+    /**
+        Gets a timer associated with the given node position.
+    **/
     @:native("get_node_timer")
-    public static function getNodeTimer(pos: Vector): NodeTimerRef;
+    public static function getNodeTimer(pos: Vector<Int>): NodeTimerRef;
 
     @:native("add_entity")
     public static function addEntity(pos: Vector, name: String, ?staticData: Any): Null<ObjectRef>;
