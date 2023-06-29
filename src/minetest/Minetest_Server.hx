@@ -32,6 +32,12 @@ extern class Minetest_Server implements Partial {
     @:native("get_server_max_lag")
     public static function getServerMaxLag(): Null<Float>;
 
+    /**
+        Tries to remove data associated with a player, if they are not currently connected.
+
+        Does NOT remove auth data. Use `removePlayerAuth` to get rid of those.
+        @param name The player's name.
+    **/
     @:native("remove_player")
     public static function removePlayer(name: String): RemovePlayerResult;
 
