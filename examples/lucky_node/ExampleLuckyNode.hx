@@ -1,3 +1,4 @@
+import minetest.node.NodeDefinition;
 import minetest.Minetest;
 import minetest.craft.FuelRecipe;
 import minetest.data.PlayerRef;
@@ -19,11 +20,13 @@ class ExampleLuckyNode {
 
         final S = Minetest.getTranslator("lucky");
         Minetest.registerNode(NODE_NAME, {
-            description: S("Lucky Node"),
-            tiles: ["example_lucky_node_lucky_node.png"],
-            groups: ["oddly_breakable_by_hand" => 2],
-            onDestruct: onLuckyNodeDestroyed,
-            drop: "",
+            final def = new NodeDefinition();
+            def.description = S("Lucky Node");
+            def.tiles = ["example_lucky_node_lucky_node.png"];
+            def.groups = ["oddly_breakable_by_hand" => 2];
+            def.onDestruct = onLuckyNodeDestroyed;
+            def.drop = "";
+            def;
         });
 
         Minetest.registerCraft(new FuelRecipe(NODE_NAME, 128.0));
