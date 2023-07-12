@@ -1,10 +1,14 @@
+// SPDX-License-Identifier: Zlib
 package minetest.worldgen;
 
+import minetest.math.Vector;
+
+@:remove
 interface SchematicData {
     @:native("size")
-    var size: Any;
+    public var size: Vector<Int>;
     @:native("yslice_prob")
-    var ysliceProb: Null<Any>;
+    public var ysliceProb: Null<Any>;
     @:native("data")
-    var data: Any;
+    public var data: Any;
 }

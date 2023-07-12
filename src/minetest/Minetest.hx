@@ -46,6 +46,7 @@ import minetest.privilege.PrivilegeDefinition;
 import minetest.runtime.MtBoot;
 import minetest.serialization.WriteJsonResult;
 import minetest.util.NativeArray;
+import minetest.util.NativeMap;
 import minetest.util.NativeSet;
 import minetest.worldgen.BiomeDefinition;
 import minetest.worldgen.BiomeHandle;
@@ -54,9 +55,12 @@ import minetest.worldgen.EmergeStatus;
 import minetest.worldgen.Schematic;
 import minetest.worldgen.SchematicData;
 import minetest.worldgen.SchematicHandle;
-import minetest.worldgen.SchematicRotation;
-import minetest.worldgen.SchematicSerializationFormat;
 import minetest.worldgen.VoxelManipResult;
+import minetest.worldgen.schematic.DecorationPlacement;
+import minetest.worldgen.schematic.Format;
+import minetest.worldgen.schematic.Rotation;
+import minetest.worldgen.schematic.ReadOptions;
+import minetest.worldgen.schematic.SerializationOptions;
 import partials.Partial;
 #if csm
 import minetest.client.Camera;
@@ -1343,38 +1347,46 @@ extern class Minetest implements Partial {
         }>>
     ): Dynamic;
 
+    /**
+        Places a schematic.
+        @return True, if the schematic was placed.
+    **/
     @:native("place_schematic")
     public static function placeSchematic(
-        pos: Vector,
+        position: Vector<Int>,
         schematic: Schematic,
-        rotation: Null<SchematicRotation>,
-        replacements: Any,
-        forceReplacement: Bool,
-        flags: Any
-    ): Dynamic;
+        ?rotation: Rotation,
+        ?replacements: NativeMap<String, String>,
+        ?forcePlacement: Bool,
+        ?flags: Flags<DecorationPlacement>
+    ): Null<Bool>;
 
+    /**
+        Places a schematic on VoxelManip.
+        @return True, if the schematic was placed and did fit.
+    **/
     @:native("place_schematic_on_vmanip")
     public static function placeSchematicOnVManip(
         vmanip: VoxelManip,
-        pos: Vector,
+        position: Vector<Int>,
         schematic: Schematic,
-        rotation: Null<SchematicRotation>,
-        replacements: Any,
-        forceReplacement: Bool,
-        flags: Any
-    ): Dynamic;
+        ?rotation: Rotation,
+        ?replacements: NativeMap<String, String>,
+        ?forcePlacement: Bool,
+        ?flags: Flags<DecorationPlacement>
+    ): Null<Bool>;
 
     @:native("serialize_schematic")
     public static function serializeSchematic(
         schematic: Schematic,
-        format: SchematicSerializationFormat,
-        options: Any
+        format: Format,
+        options: SerializationOptions
     ): String;
 
     @:native("read_schematic")
     public static function readSchematic(
         schematicName: String,
-        options: Any
+        ?options: ReadOptions
     ): SchematicData;
 
     /**
