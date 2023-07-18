@@ -15,6 +15,7 @@ import minetest.audio.SoundParams;
 import minetest.auth.AuthHandler;
 import minetest.chat.ChatCommandDefinition;
 import minetest.colors.ColorString;
+import minetest.content.GameInfo;
 import minetest.craft.CraftResult;
 import minetest.craft.Recipe;
 import minetest.data.CompressionMethod;
@@ -155,25 +156,6 @@ extern class Minetest implements Partial {
 
     @:native("registered_privileges")
     public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
-
-    /**
-        If loading a mod, returns the currently loading mod's name.
-    **/
-    @:native("get_current_modname")
-    public static function getCurrentModName(): Null<String>;
-
-    /**
-        Returns the directory path for a mod.
-        @return The mod directory if the mod exists and is enabled, null otherwise.
-    **/
-    @:native("get_modpath")
-    public static function getModPath(modName: String): Null<String>;
-
-    /**
-        Returns a list of enabled mods, sorted alphabetically.
-    **/
-    @:native("get_modnames")
-    public static function getModNames(): NativeArray<String>;
 
     /**
         Returns a path of the currently loaded world.
