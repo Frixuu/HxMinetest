@@ -18,12 +18,15 @@ lint:
 build-examples:
     deno run --allow-run=haxe --allow-read=examples scripts/build-examples.ts
 
+serve-docs:
+    vitepress dev docs
+
 build-docs:
     haxe -p src -L partials \
         --macro "include('doctest')" --macro "include('minetest')" \
         --lua not.applicable --no-output \
-        --xml docs/hxminetest.xml
-    haxelib run dox -i docs -o docs/pages --include "[mM]inetest.*"
+        --xml docs/class-reference.xml
+    vitepress build docs
 
 submit-haxelib:
     deno run --allow-run --allow-read --allow-write scripts/submit-to-haxelib-interactive.ts

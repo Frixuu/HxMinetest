@@ -1,5 +1,4 @@
 .vscode/
-docs/
 dump/
 examples/**/*.lua
 *.zip
