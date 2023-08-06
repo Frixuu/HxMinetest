@@ -41,17 +41,17 @@ for (const clazz of document["class"]) {
   const isFinal = clazz["@final"] !== undefined;
   const isAbstract = clazz["@abstract"] !== undefined;
   const interfacePaths = mustArray(clazz["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
-
+  const documentation = clazz["haxe_doc"] ?? null;
   const superClass = clazz["extends"]?.["@path"];
 
   if (discriminator == "class") {
     context.registerClass({
-      discriminator, path, isPrivate, isExtern, isFinal, isAbstract, interfacePaths,
+      discriminator, path, isPrivate, isExtern, isFinal, isAbstract, interfacePaths, documentation,
       superClassPath: superClass ? Path.fromDotPath(superClass) : undefined,
     });
   } else {
     context.registerInterface({
-      discriminator, path, isPrivate, isExtern, isFinal, interfacePaths
+      discriminator, path, isPrivate, isExtern, isFinal, interfacePaths, documentation
     });
   }
 }

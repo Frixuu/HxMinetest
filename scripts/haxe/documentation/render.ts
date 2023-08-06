@@ -1,20 +1,24 @@
 import { path } from "../../deps.ts";
-import { Class } from "../types.ts";
+import { Class, Type } from "../types.ts";
 import { Context } from "./context.ts";
 
-export function renderClass(ctx: Context, clazz: Class): string {
+function renderH1(typ: Type): string {
   let markdown = "# <small>";
+  if (typ.isPrivate) markdown += "private ";
+  if (typ.isExtern) markdown += "extern ";
+  if (typ.isAbstract) markdown += "abstract ";
+  if (typ.isFinal) markdown += "final ";
+  markdown += typ.discriminator;
+  markdown += "</small> ";
+  markdown += typ.path.shortName();
+  markdown += "\n";
+  return markdown;
+}
 
-  if (clazz.isPrivate) markdown += "private ";
-  if (clazz.isExtern) markdown += "extern ";
-  if (clazz.isAbstract) markdown += "abstract ";
-  if (clazz.isFinal) markdown += "final ";
+export function renderClass(ctx: Context, clazz: Class): string {
 
-  markdown += "class</small> ";
-  markdown += clazz.path.shortName();
-  markdown += "\n\n";
-
-  markdown += `- package: ${clazz.path.pack.join(".")}\n`;
+  let markdown = renderH1(clazz);
+  markdown += `\n- package: ${clazz.path.pack.join(".")}\n`;
 
   const superc = clazz.superClassPath;
   if (superc) {
@@ -56,6 +60,8 @@ export function renderClass(ctx: Context, clazz: Class): string {
     }
     markdown += "\n";
   }
+
+  markdown += `\n${clazz.documentation ?? ""}\n`;
 
   return markdown;
 }

@@ -72,9 +72,17 @@ export class Path {
   }
 }
 
-export interface Type {
+export interface Documentible {
+  documentation: string | null;
+}
+
+export interface Type extends Documentible {
   discriminator: "class" | "interface" | "abstract" | "typedef";
   path: Path;
+  isPrivate?: boolean;
+  isFinal?: boolean;
+  isExtern?: boolean;
+  isAbstract?: boolean;
 }
 
 export interface Class extends Type {
@@ -94,3 +102,7 @@ export interface Interface extends Type {
   isExtern: boolean;
   interfacePaths?: Path[];
 }
+
+export interface Abstract extends Type { }
+
+export interface Typedef extends Type { }
