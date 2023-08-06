@@ -6,6 +6,9 @@ export default defineConfig({
 
   title: "HxMinetest",
   description: "Documentation",
+
+  ignoreDeadLinks: true,
+
   themeConfig: {
 
     // https://vitepress.dev/reference/default-theme-config

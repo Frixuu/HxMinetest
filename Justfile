@@ -22,10 +22,7 @@ serve-docs:
     vitepress dev docs
 
 build-docs:
-    haxe -p src -L partials \
-        --macro "include('doctest')" --macro "include('minetest')" \
-        --lua not.applicable --no-output \
-        --xml docs/class-reference.xml
+    deno run --allow-run --allow-read=docs --allow-write=docs scripts/generate-class-reference.ts
     vitepress build docs
 
 submit-haxelib:

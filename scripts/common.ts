@@ -1,8 +1,27 @@
 // SPDX-License-Identifier: Zlib
-import { semver } from "./deps.ts";
+import { path, semver } from "./deps.ts";
 
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
+const rootDir = path.join(pathFromMeta(import.meta), "..", "..");
+
+export function encodeUtf8(text: string): Uint8Array {
+  return textEncoder.encode(text);
+}
+
+export function decodeUtf8(bytes: Uint8Array): string {
+  return textDecoder.decode(bytes).trim()
+}
+
+export function mustArray<T>(o: T | T[] | null | undefined): T[] {
+  if (Array.isArray(o)) {
+    return o;
+  }
+  if (o === undefined || o === null) {
+    return [];
+  }
+  return [o];
+}
 
 /**
  * Logs an error message and exits Deno.
@@ -20,15 +39,50 @@ export function print(msg: string): void {
 }
 
 /**
+ * Invokes the Haxe compiler, assuming it exists.
+ */
+export async function invokeHaxe(opts: {
+  classpaths?: string[],
+  libraries?: string[],
+  initMacros?: string[],
+  other?: string[],
+}, cwd?: string): Promise<Deno.CommandOutput> {
+
+  const args: string[] = [];
+
+  for (const classpath of opts.classpaths ?? []) {
+    args.push("--class-path", classpath)
+  }
+
+  for (const library of opts.libraries ?? []) {
+    args.push("--library", library)
+  }
+
+  for (const macro of opts.initMacros ?? []) {
+    args.push("--macro", macro)
+  }
+
+  args.push(...opts.other ?? []);
+
+  const command = new Deno.Command("haxe", {
+    cwd: cwd ? path.join(rootDir, cwd) : rootDir,
+    stderr: "piped",
+    stdout: "piped",
+    args: args
+  });
+
+  return await command.output();
+}
+
+/**
  * Asserts that Haxe is present on the PATH and is newer than some version, otherwise quits.
  * @param minVersion The minimum version required to pass the assertion. Defaults to 4.3.0.
  */
 export async function assertHaxeExists(minVersion?: string): Promise<void> {
   minVersion = semver.valid(minVersion ?? null) ?? "4.3.0";
   try {
-    const command = new Deno.Command("haxe", { args: ["--version"], stdout: "piped" });
-    const { stdout } = await command.output();
-    const version = textDecoder.decode(stdout).trim();
+    const { stdout } = await invokeHaxe({ other: ["--version"] });
+    const version = decodeUtf8(stdout);
     if (!semver.valid(version)) {
       abort(`Haxe exists, but running --version gave unexpected output: "${version}"`, 33);
     } else if (semver.gt(minVersion, version)) {
