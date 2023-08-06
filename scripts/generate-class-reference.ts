@@ -3,7 +3,9 @@
 
 import { path, xml } from "./deps.ts";
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
-import { Class, Interface, splitPackagePath } from "./haxe/types.ts";
+import { Class, Interface, Path, Type } from "./haxe/types.ts";
+import { Context } from "./haxe/documentation/context.ts";
+import { renderClass } from "./haxe/documentation/render.ts";
 
 await assertHaxeExists();
 
@@ -21,40 +23,40 @@ if (!success) {
 
 // Then, try to read all the classes
 const root = path.join(pathFromMeta(import.meta), "..", "..");
-const referenceRoot = path.join(root, "docs", "reference");
+const docRoot = path.join(root, "docs");
+const referenceRoot = path.join(docRoot, "reference");
 const xmlPath = path.join(referenceRoot, "classes.xml");
 const documentString = decodeUtf8(await Deno.readFile(xmlPath));
 const document = xml.parse(documentString)["haxe"]! as any;
 
-const classes: Class[] = []
-const interfaces: Interface[] = []
+
+const context = new Context();
 
 for (const clazz of document["class"]) {
 
   const discriminator = clazz["@interface"] ? "interface" : "class";
-  const path = splitPackagePath(clazz["@path"]);
+  const path = Path.fromDotPath(clazz["@path"]);
   const isPrivate = clazz["@private"] !== undefined;
   const isExtern = clazz["@extern"] !== undefined;
   const isFinal = clazz["@final"] !== undefined;
   const isAbstract = clazz["@abstract"] !== undefined;
-  const interfacePaths = mustArray(clazz["implements"]).map(i => splitPackagePath(i["@path"] ?? ""));
+  const interfacePaths = mustArray(clazz["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
 
   const superClass = clazz["extends"]?.["@path"];
 
   if (discriminator == "class") {
-    classes.push({
+    context.registerClass({
       discriminator, path, isPrivate, isExtern, isFinal, isAbstract, interfacePaths,
-      superClassPath: superClass ? splitPackagePath(superClass) : undefined,
+      superClassPath: superClass ? Path.fromDotPath(superClass) : undefined,
     });
   } else {
-    interfaces.push({
+    context.registerInterface({
       discriminator, path, isPrivate, isExtern, isFinal, interfacePaths
     });
   }
 }
 
-// Finally, render to Markdown
-
+// Render to Markdown
 try {
   await Deno.remove(path.join(referenceRoot, "minetest"), { recursive: true });
 } catch (e) {
@@ -63,34 +65,72 @@ try {
   }
 }
 
-for (const clazz of classes.filter(c => (c.path.package.at(0) ?? "") == "minetest")) {
+const visitedTypes: Type[] = [];
 
-  const packDir = path.join(referenceRoot, ...clazz.path.package);
+for (const clazz of context.getClasses(["minetest"])) {
+  visitedTypes.push(clazz);
+  const packDir = path.join(referenceRoot, ...clazz.path.pack);
   await Deno.mkdir(packDir, { recursive: true });
-
-  let fileText = `# <small>class</small> ${clazz.path.name}\n\n`;
-  fileText += `- package: ${clazz.path.package.join(".")}\n`;
-
-  if (clazz.superClassPath) {
-    const superClass = clazz.superClassPath;
-    fileText += `- extends: [${superClass.name}](/${path.join("reference", ...superClass.package, superClass.name)})\n`;
-  }
-
-  const ifaces = (clazz.interfacePaths ?? []).filter(i => (i.package.at(0) ?? "") == "minetest");
-  if (ifaces.length > 0) {
-    fileText += "- implements: ";
-    for (const [i, iface] of ifaces.entries()) {
-      fileText += "[";
-      fileText += iface.name;
-      fileText += "](/";
-      fileText += path.join("reference", ...iface.package, iface.name);
-      fileText += ")";
-      if (i < ifaces.length - 1) {
-        fileText += ", ";
-      }
-    }
-    fileText += "\n";
-  }
-
-  await Deno.writeFile(path.join(packDir, `${clazz.path.name}.md`), encodeUtf8(fileText));
+  const markdown = renderClass(context, clazz);
+  await Deno.writeFile(path.join(packDir, `${clazz.path.shortName()}.md`), encodeUtf8(markdown));
 }
+
+// Generate sidebar
+
+interface PathItem {
+  pathSoFar: string[];
+  childPackages: Map<string, PathItem>;
+  types: Type[];
+}
+
+const sidebarRoot: PathItem = {
+  pathSoFar: [],
+  childPackages: new Map(),
+  types: [],
+}
+
+for (const typ of visitedTypes) {
+  let root = sidebarRoot;
+  let packRemaining = typ.path.pack;
+  const pathSoFar = [];
+  while (packRemaining.length > 0) {
+    const first = packRemaining[0];
+    pathSoFar.push(first);
+    packRemaining = packRemaining.slice(1);
+    let child = root.childPackages.get(first);
+    if (child === undefined) {
+      child = { pathSoFar, childPackages: new Map(), types: [] };
+      root.childPackages.set(first, child);
+    }
+    root = child;
+  }
+  root.types.push(typ);
+}
+
+function generateType(type: Type): { text: string, link: string } {
+  return {
+    text: type.path.shortName(),
+    link: `/${path.join("reference", ...type.path.pack, type.path.shortName())}`
+  };
+}
+
+
+function generateItems(el: PathItem): any[] {
+  const children = Array.from(el.childPackages.values()).map(p => generatePathItem(p));
+  const types = el.types.map(t => generateType(t));
+  return children.concat(types);
+}
+
+function generatePathItem(el: PathItem): any {
+  return {
+    text: el.pathSoFar[el.pathSoFar.length - 1],
+    collapsed: true,
+    items: generateItems(el),
+  };
+}
+
+
+let sidebarText = "export default ";
+sidebarText += JSON.stringify(generateItems(sidebarRoot));
+sidebarText += ";\n";
+await Deno.writeFile(path.join(docRoot, ".vitepress", "reference-sidebar.autogenerated.ts"), encodeUtf8(sidebarText));

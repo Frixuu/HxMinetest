@@ -11,7 +11,7 @@ hero:
       link: "/guide/getting-started"
     - theme: "alt"
       text: "API reference"
-      link: "/reference/"
+      link: "/reference/minetest/Minetest"
 
 features:
   - title: "You already know it"

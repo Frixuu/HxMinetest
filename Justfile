@@ -21,8 +21,10 @@ build-examples:
 serve-docs:
     vitepress dev docs
 
-build-docs:
+build-reference-markdown:
     deno run --allow-run --allow-read=docs --allow-write=docs scripts/generate-class-reference.ts
+
+build-docs: build-reference-markdown
     vitepress build docs
 
 submit-haxelib:
