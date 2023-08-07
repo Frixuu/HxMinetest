@@ -2,3 +2,4 @@
 dump/
 examples/**/*.lua
 *.zip
+.tmp-earthly-out
