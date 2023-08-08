@@ -3,13 +3,11 @@ name: "Examples"
 on:
   push:
     paths:
-      - "Justfile"
       - "**.hx"
       - "**.ts"
       - ".github/workflows/**.yml"
   pull_request:
     paths:
-      - "Justfile"
       - "**.hx"
       - "**.ts"
       - ".github/workflows/**.yml"
@@ -31,12 +29,9 @@ jobs:
       - name: "Install Deno"
         uses: "denoland/setup-deno@v1"
         with:
-          deno-version: "^1.32"
-      - name: "Install just"
-        uses: "extractions/setup-just@v1"
-        with:
-          just-version: "^1.13"
+          deno-version: "^1.35"
       - name: "Build example mods"
         run: |
-          just set-dev
-          just build-examples
+          haxelib install haxelib.json --always
+          haxelib dev hxminetest .
+          deno run --allow-run=haxe --allow-read=examples scripts/build-examples.ts
