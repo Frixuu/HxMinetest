@@ -24,4 +24,12 @@ jobs:
       - name: "Log in to Docker"
         run: docker login --username "$DOCKERHUB_USERNAME" --password "$DOCKERHUB_TOKEN"
       - name: "Build documentation"
-        run: earthly --ci --push +build-docs
+        run: earthly +build-docs
+      - name: "Deploy to Vercel"
+        uses: "amondnet/vercel-action@v25"
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: "docs/.vitepress/dist"
+          vercel-args: ${{ github.ref == 'refs/heads/trunk' && '--prod' || '' }}
