@@ -1,16 +1,16 @@
-import { Class, Interface, Path } from "../types.ts";
+import { Class, Interface, Path, Type } from "../types.ts";
 
 export class Context {
   classes: Map<string, Class>;
   interfaces: Map<string, Interface>;
-  knownSubclasses: Map<string, Class[]>;
+  knownSubtypes: Map<string, Type[]>;
   knownImplementors: Map<string, Class[]>;
 
   constructor() {
     this.classes = new Map();
     this.interfaces = new Map();
     this.knownImplementors = new Map();
-    this.knownSubclasses = new Map();
+    this.knownSubtypes = new Map();
   }
 
   getClasses(inNamespace?: string[]): Class[] {
@@ -43,15 +43,41 @@ export class Context {
 
   registerClass(clazz: Class) {
     this.classes.set(clazz.path.toString(), clazz);
-    if (clazz.superClassPath) {
-      const keySuper = clazz.superClassPath.toString();
-      const subclasses = this.knownSubclasses.get(keySuper) ?? [];
-      subclasses.push(clazz);
-      this.knownSubclasses.set(keySuper, subclasses);
+    for (const superClassPath of clazz.superTypePaths) {
+      this.registerExtends(clazz, superClassPath)
     }
+    for (const interfacePath of clazz.interfacePaths) {
+      this.registerImplements(clazz, interfacePath);
+    }
+
+  }
+
+  private registerExtends(sub: Type, superPath: Path) {
+    const key = superPath.toString();
+    const subclasses = this.knownSubtypes.get(key) ?? [];
+    subclasses.push(sub);
+    this.knownSubtypes.set(key, subclasses);
+  }
+
+  getSubTypes(superPath: Type): Type[] {
+    return this.knownSubtypes.get(superPath.path.toString()) ?? [];
+  }
+
+  private registerImplements(clazz: Class, interfacePath: Path) {
+    const key = interfacePath.toString();
+    const implementors = this.knownImplementors.get(key) ?? [];
+    implementors.push(clazz);
+    this.knownImplementors.set(key, implementors);
+  }
+
+  getImplementors(iface: Interface): Class[] {
+    return this.knownImplementors.get(iface.path.toString()) ?? [];
   }
 
   registerInterface(iface: Interface) {
     this.interfaces.set(iface.path.toString(), iface);
+    for (const superIfacePath of iface.superTypePaths) {
+      this.registerExtends(iface, superIfacePath)
+    }
   }
 }

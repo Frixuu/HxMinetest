@@ -79,6 +79,7 @@ export interface Documentible {
 export interface Type extends Documentible {
   discriminator: "class" | "interface" | "abstract" | "typedef";
   path: Path;
+  superTypePaths?: Path[];
   isPrivate?: boolean;
   isFinal?: boolean;
   isExtern?: boolean;
@@ -87,20 +88,21 @@ export interface Type extends Documentible {
 
 export interface Class extends Type {
   discriminator: "class"
+  superTypePaths: Path[];
   isPrivate: boolean;
   isFinal: boolean;
   isExtern: boolean;
   isAbstract: boolean;
-  superClassPath?: Path;
-  interfacePaths?: Path[];
+  interfacePaths: Path[];
 }
 
 export interface Interface extends Type {
   discriminator: "interface"
+  superTypePaths: Path[];
   isPrivate: boolean;
   isFinal: boolean;
   isExtern: boolean;
-  interfacePaths?: Path[];
+  interfacePaths: Path[];
 }
 
 export interface Abstract extends Type { }

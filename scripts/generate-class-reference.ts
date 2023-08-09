@@ -5,7 +5,7 @@ import { path, xml } from "./deps.ts";
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
 import { Class, Interface, Path, Type } from "./haxe/types.ts";
 import { Context } from "./haxe/documentation/context.ts";
-import { renderClass } from "./haxe/documentation/render.ts";
+import { renderType } from "./haxe/documentation/render.ts";
 
 await assertHaxeExists();
 
@@ -29,8 +29,8 @@ const xmlPath = path.join(referenceRoot, "classes.xml");
 const documentString = decodeUtf8(await Deno.readFile(xmlPath));
 const document = xml.parse(documentString)["haxe"]! as any;
 
-
 const context = new Context();
+const newLineRegex = new RegExp("\r\n|\n");
 
 for (const clazz of document["class"]) {
 
@@ -40,18 +40,24 @@ for (const clazz of document["class"]) {
   const isExtern = clazz["@extern"] !== undefined;
   const isFinal = clazz["@final"] !== undefined;
   const isAbstract = clazz["@abstract"] !== undefined;
+
   const interfacePaths = mustArray(clazz["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
-  const documentation = clazz["haxe_doc"] ?? null;
-  const superClass = clazz["extends"]?.["@path"];
+  const superTypePaths = mustArray(clazz["extends"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
+
+  let documentation: string | undefined = clazz["haxe_doc"] as string;
+  if (documentation) {
+    documentation = documentation.split(newLineRegex).map(line => line.trimStart()).join("\n");
+  }
 
   if (discriminator == "class") {
     context.registerClass({
       discriminator, path, isPrivate, isExtern, isFinal, isAbstract, interfacePaths, documentation,
-      superClassPath: superClass ? Path.fromDotPath(superClass) : undefined,
+      superTypePaths: superTypePaths,
     });
   } else {
     context.registerInterface({
-      discriminator, path, isPrivate, isExtern, isFinal, interfacePaths, documentation
+      discriminator, path, isPrivate, isExtern, isFinal, interfacePaths, documentation,
+      superTypePaths: superTypePaths,
     });
   }
 }
@@ -67,12 +73,17 @@ try {
 
 const visitedTypes: Type[] = [];
 
-for (const clazz of context.getClasses(["minetest"])) {
-  visitedTypes.push(clazz);
-  const packDir = path.join(referenceRoot, ...clazz.path.pack);
+const types: Type[] = [
+  context.getClasses(["minetest"]),
+  context.getInterfaces(["minetest"])
+].flat();
+
+for (const typ of types) {
+  visitedTypes.push(typ);
+  const packDir = path.join(referenceRoot, ...typ.path.pack);
   await Deno.mkdir(packDir, { recursive: true });
-  const markdown = renderClass(context, clazz);
-  await Deno.writeFile(path.join(packDir, `${clazz.path.shortName()}.md`), encodeUtf8(markdown));
+  const markdown = renderType(context, typ);
+  await Deno.writeFile(path.join(packDir, `${typ.path.shortName()}.md`), encodeUtf8(markdown));
 }
 
 // Generate sidebar
@@ -107,21 +118,33 @@ for (const typ of visitedTypes) {
   root.types.push(typ);
 }
 
-function generateType(type: Type): { text: string, link: string } {
+interface SidebarItemDto {
+  text: string;
+}
+
+interface TypeDto extends SidebarItemDto {
+  link: string;
+}
+
+function generateType(type: Type): TypeDto {
   return {
     text: type.path.shortName(),
     link: `/${path.join("reference", ...type.path.pack, type.path.shortName())}`
   };
 }
 
-
-function generateItems(el: PathItem): any[] {
-  const children = Array.from(el.childPackages.values()).map(p => generatePathItem(p));
-  const types = el.types.map(t => generateType(t));
+function generateItems(el: PathItem): SidebarItemDto[] {
+  const children = Array.from(el.childPackages.values()).map(p => generatePathItem(p) as SidebarItemDto);
+  const types = el.types.map(t => generateType(t) as SidebarItemDto);
   return children.concat(types);
 }
 
-function generatePathItem(el: PathItem): any {
+interface PathItemDto extends SidebarItemDto {
+  collapsed?: boolean;
+  items: SidebarItemDto[];
+}
+
+function generatePathItem(el: PathItem): PathItemDto {
   return {
     text: el.pathSoFar[el.pathSoFar.length - 1],
     collapsed: true,
