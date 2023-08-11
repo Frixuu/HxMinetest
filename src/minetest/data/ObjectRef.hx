@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Zlib
 package minetest.data;
 
+import haxe.extern.EitherType;
+import minetest.object.ObjectProperties;
 import minetest.math.Vector;
 import minetest.hud.HudDefinition;
 import minetest.hud.HudHandle;
@@ -43,4 +45,17 @@ interface ObjectRef {
 
     @:native("set_hp")
     public function setHealth(hp: UInt, reason: PlayerHealthChangeReason): Void;
+
+    /**
+        Returns a table of all object properties.
+    **/
+    @:native("get_properties")
+    public function getProperties(): ObjectProperties;
+
+    /**
+        Sets this object's properties.
+        Only properties listed in the passed object will be changed.
+    **/
+    @:native("set_properties")
+    public function setProperties(props: EitherType<ObjectProperties, Dynamic>): Void;
 }

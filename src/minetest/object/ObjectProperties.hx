@@ -1,6 +1,6 @@
 package minetest.object;
 
-class ObjectProperties {
+interface ObjectProperties {
     @:native("hp_max")
     public var hpMax: Null<Int>;
 
@@ -21,4 +21,7 @@ class ObjectProperties {
 
     @:native("mesh")
     public var mesh: Null<String>;
+
+    @:native("eye_height")
+    public var eyeHeight: Null<Float>;
 }

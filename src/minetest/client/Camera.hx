@@ -15,7 +15,7 @@ interface Camera {
     function getFov(): FovTable;
 
     @:native("get_pos")
-    function getPos(): Vector;
+    public function getPos(): Vector<Float>;
 
     @:native("get_offset")
     function getOffset(): Vector;

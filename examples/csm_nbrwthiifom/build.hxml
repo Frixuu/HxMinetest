@@ -1,0 +1,10 @@
+--class-path src
+
+--library hxminetest
+--define csm
+
+--define analyzer-optimize
+--dce full
+
+--lua init.lua
+--main Mod

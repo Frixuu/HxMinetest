@@ -74,4 +74,8 @@ abstract TableForm<E>(Table<E, Bool>) from Table<E, Bool> to Table<E, Bool> {
         }
         return cast table;
     }
+
+    public inline function isSet(key: E): Bool {
+        return this[untyped key] == true;
+    }
 }

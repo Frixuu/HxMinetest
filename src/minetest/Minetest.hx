@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
+import minetest.object.ObjectId;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -67,6 +68,7 @@ import partials.Partial;
 import minetest.client.Camera;
 import minetest.client.LocalPlayer;
 import minetest.client.ServerInfo;
+import minetest.client.CsmRestrictions;
 #end
 
 using minetest.item.InventoryLocation;
@@ -109,6 +111,13 @@ extern class Minetest implements Partial {
     @:native("features")
     public static var features(default, null): NativeSet<String>;
 
+    #if csm
+    @:native("get_node_def")
+    public static function getNodeDefinition(nodeName: String): NodeDefinition;
+
+    @:native("get_item_def")
+    public static function getItemDefinition(itemstring: String): Dynamic;
+    #else
     @:native("registered_items")
     public static var registeredItems(default, null): Table<String, Dynamic>;
 
@@ -125,7 +134,7 @@ extern class Minetest implements Partial {
     public static var registeredEntities(default, null): Table<String, Dynamic>;
 
     @:native("object_refs")
-    public static var objectRefs(default, null): Table<Dynamic, Dynamic>;
+    public static var objectRefs(default, null): Table<ObjectId, ObjectRef>;
 
     @:native("luaentities")
     public static var luaEntities(default, null): Table<Dynamic, Dynamic>;
@@ -156,6 +165,7 @@ extern class Minetest implements Partial {
 
     @:native("registered_privileges")
     public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
+    #end
 
     /**
         Returns a path of the currently loaded world.
@@ -163,8 +173,10 @@ extern class Minetest implements Partial {
     @:native("get_worldpath")
     public static function getWorldPath(): Null<String>;
 
+    #if !csm
     @:native("is_singleplayer")
     public static function isSingleplayer(): Bool;
+    #end
 
     @:native("has_feature")
     public static function hasFeature(
@@ -389,10 +401,11 @@ extern class Minetest implements Partial {
     @:native("register_on_punchnode")
     public static function registerOnNodePunched(
         callback: (
-            pos: Any,
-            node: Any,
-            puncher: Any,
-            pointedThing: Any
+            #if csm
+            pos: Vector<Int>, node: MapNode
+            #else
+            pos: Vector<Int>, node: MapNode, puncher: Any, pointedThing: Null<PointedThing>
+            #end
         ) -> Void
     ): Void;
 
@@ -653,7 +666,7 @@ extern class Minetest implements Partial {
         Can return null if the area is unloaded.
     **/
     @:native("get_node_or_nil")
-    public static function getNode(pos: Vector): Null<Dynamic>;
+    public static function getNode(pos: Vector<Int>): Null<Dynamic>;
 
     @:native("get_node_light")
     public static function getNodeLight(pos: Vector, ?timeOfDay: Float): Null<Int>;
@@ -716,6 +729,10 @@ extern class Minetest implements Partial {
     @:native("set_timeofday")
     public static function setTimeOfDay(val: Float): Void;
 
+    /**
+        Returns the current time of day as a number between 0 and 1,
+        where 0 is midnight and 0.5 is noon.
+    **/
     @:native("get_timeofday")
     public static function getTimeOfDay(): Float;
 
@@ -1254,6 +1271,13 @@ extern class Minetest implements Partial {
     @:native("after")
     @:overload(function(delay: Float, callback: Function, ...args: Any): ScheduledJobHandle {})
     public static function after(delay: Float, callback: () -> Void): ScheduledJobHandle;
+
+    /**
+        Returns a monotonic, high precision (microsecond; 10^-6 s) timestamp.
+        May or may not return wall time.
+    **/
+    @:native("get_us_time")
+    public static function getUsTime(): UInt;
 
     /**
         Runs a piece of code in the async environment.

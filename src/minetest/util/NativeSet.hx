@@ -17,6 +17,15 @@ abstract NativeSet<T>(Table<T, Bool>) to Table<T, Bool> {
         this = Table.create();
     }
 
+    @:from
+    public static function fromArray<T>(arr: Array<T>): NativeSet<T> {
+        final set = new NativeSet<T>();
+        for (element in arr) {
+            untyped set[element] = true;
+        }
+        return set;
+    }
+
     /**
      * Checks if an element already exists in the set.
      */
