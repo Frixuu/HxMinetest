@@ -1,44 +1,44 @@
 {
-    "emptyLines": {
-        "afterLeftCurly": "keep",
-        "beforeDocCommentEmptyLines": "one",
-        "maxAnywhereInFile": 1,
-        "afterFieldsWithDocComments": "ignore"
-    },
-    "indentation": {
-        "character": "    "
-    },
-    "lineEnds": {
-        "leftCurly": "after",
-        "emptyCurly": "noBreak"
-    },
-    "whitespace": {
-        "typeHintColonPolicy": "after",
-        "typeCheckColonPolicy": "after",
-        "objectFieldColonPolicy": "after",
-        "ternaryPolicy": "around",
-        "parenConfig": {
-            "anonFuncParamParens": {
-                "openingPolicy": "none",
-                "closingPolicy": "none",
-                "removeInnerWhenEmpty": true
-            },
-            "funcParamParens": {
-                "openingPolicy": "none",
-                "closingPolicy": "none",
-                "removeInnerWhenEmpty": true
-            }
-        }
-    },
-    "wrapping": {
-        "maxLineLength": 100,
-        "methodChain": {
-            "defaultWrap": "keep",
-            "defaultLocation": "afterLast"
-        },
-        "functionSignature": {
-            "defaultWrap": "keep",
-            "defaultLocation": "afterLast"
-        }
+  "emptyLines": {
+    "afterLeftCurly": "keep",
+    "beforeDocCommentEmptyLines": "one",
+    "maxAnywhereInFile": 1,
+    "afterFieldsWithDocComments": "ignore"
+  },
+  "indentation": {
+    "character": "    "
+  },
+  "lineEnds": {
+    "leftCurly": "after",
+    "emptyCurly": "noBreak"
+  },
+  "whitespace": {
+    "typeHintColonPolicy": "after",
+    "typeCheckColonPolicy": "after",
+    "objectFieldColonPolicy": "after",
+    "ternaryPolicy": "around",
+    "parenConfig": {
+      "anonFuncParamParens": {
+        "openingPolicy": "none",
+        "closingPolicy": "none",
+        "removeInnerWhenEmpty": true
+      },
+      "funcParamParens": {
+        "openingPolicy": "none",
+        "closingPolicy": "none",
+        "removeInnerWhenEmpty": true
+      }
     }
+  },
+  "wrapping": {
+    "maxLineLength": 100,
+    "methodChain": {
+      "defaultWrap": "keep",
+      "defaultLocation": "afterLast"
+    },
+    "functionSignature": {
+      "defaultWrap": "keep",
+      "defaultLocation": "afterLast"
+    }
+  }
 }

@@ -1,22 +1,22 @@
 {
-    "name": "hxminetest",
-    "url": "https://github.com/Frixuu/HxMinetest/",
-    "description": "Externs for modding of the game Minetest.",
-    "license": "Public",
-    "version": "0.6.0",
-    "classPath": "src/",
-    "releasenote": "Many changes were made to help you create even greater mods.",
-    "contributors": [
-        "frixuu"
-    ],
-    "main": "minetest.lib.Main",
-    "dependencies": {
-        "partials": "git:https://github.com/Frixuu/Partials"
-    },
-    "tags": [
-        "externs",
-        "extern",
-        "game",
-        "lua"
-    ]
+  "name": "hxminetest",
+  "url": "https://github.com/Frixuu/HxMinetest/",
+  "description": "Externs for modding of the game Minetest.",
+  "license": "Public",
+  "version": "0.6.0",
+  "classPath": "src/",
+  "releasenote": "Many changes were made to help you create even greater mods.",
+  "contributors": [
+    "frixuu"
+  ],
+  "main": "minetest.lib.Main",
+  "dependencies": {
+    "partials": "git:https://github.com/Frixuu/Partials"
+  },
+  "tags": [
+    "externs",
+    "extern",
+    "game",
+    "lua"
+  ]
 }
