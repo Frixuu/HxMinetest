@@ -5,7 +5,7 @@ import haxe.extern.EitherType;
 /**
     A structure consisting of 3 numbers.
 **/
-@:forward(x, y, z)
+@:forward(x, y, z, fromString)
 abstract Vector<T = Float>(Impl<T>) from Impl<T> to Impl<T> {
 
     /**
@@ -32,10 +32,6 @@ abstract Vector<T = Float>(Impl<T>) from Impl<T> to Impl<T> {
     **/
     public inline function copy(): Vector<T> {
         return this.copy();
-    }
-
-    public static inline function fromString<T>(s: String, ?startFrom: Int): FromStringResult<T> {
-        return Impl.fromString(s, startFrom);
     }
 
     public inline function toString(): String {
@@ -321,13 +317,13 @@ private extern final class Impl<T> {
 }
 
 @:multiReturn
-class FromStringResult<T> {
+extern class FromStringResult<T> {
     public var vector: Null<Vector<T>>;
     public var nextPos: Null<Int>;
 }
 
 @:multiReturn
-class SortResult<T> {
+extern class SortResult<T> {
     public var minp: Vector<T>;
     public var maxp: Vector<T>;
 }

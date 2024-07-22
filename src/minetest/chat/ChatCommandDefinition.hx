@@ -1,15 +1,27 @@
 package minetest.chat;
 
-import lua.Table;
+import minetest.util.NativeSet;
 
 @:structInit
 class ChatCommandDefinition {
     @:native("params")
-    @:optional public var paramDescription: Null<String>;
+    public var paramDescription: Null<String>;
     @:native("description")
-    @:optional public var description: Null<String>;
+    public var description: Null<String>;
     @:native("privs")
-    @:optional public var privs: Null<Table<String, Bool>>;
+    public var requiredPrivs: Null<NativeSet<String>>;
     @:native("func")
-    public var func: Dynamic;
+    public var handler: (String, String) -> Bool;
+
+    private inline function new(
+        handler: (playerName: String, args: String) -> Bool,
+        ?privs: NativeSet<String>,
+        ?description: String,
+        ?paramDescription: String,
+    ) {
+        this.handler = handler;
+        this.description = description;
+        this.paramDescription = paramDescription;
+        this.requiredPrivs = privs;
+    }
 }

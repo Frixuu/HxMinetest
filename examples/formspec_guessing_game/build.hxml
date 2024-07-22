@@ -1,0 +1,9 @@
+--class-path src
+
+--library hxminetest
+
+--define analyzer-optimize
+--dce full
+
+--lua init.lua
+--main Mod

@@ -1,7 +1,7 @@
 package minetest.formspec;
 
 abstract Pixel(Float) {
-    public function new(amount: Float) {
+    public inline function new(amount: Float) {
         this = amount;
     }
 

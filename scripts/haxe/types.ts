@@ -73,7 +73,7 @@ export class Path {
 }
 
 export interface Documentible {
-  documentation: string | null;
+  documentation?: string;
 }
 
 export interface Type extends Documentible {
@@ -105,6 +105,8 @@ export interface Interface extends Type {
   interfacePaths: Path[];
 }
 
-export interface Abstract extends Type { }
+export interface Abstract extends Type {
+  isEnum: boolean;
+}
 
 export interface Typedef extends Type { }

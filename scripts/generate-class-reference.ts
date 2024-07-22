@@ -44,7 +44,7 @@ for (const clazz of document["class"]) {
   const interfacePaths = mustArray(clazz["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
   const superTypePaths = mustArray(clazz["extends"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
 
-  let documentation: string | undefined = clazz["haxe_doc"] as string;
+  let documentation: string | undefined = clazz["haxe_doc"];
   if (documentation) {
     documentation = documentation.split(newLineRegex).map(line => line.trimStart()).join("\n");
   }
@@ -60,6 +60,11 @@ for (const clazz of document["class"]) {
       superTypePaths: superTypePaths,
     });
   }
+}
+
+for (const abstract of document["abstract"]) {
+  const path = Path.fromDotPath(abstract["@path"]);
+
 }
 
 // Render to Markdown

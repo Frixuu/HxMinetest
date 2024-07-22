@@ -4,6 +4,7 @@ import { path, semver } from "./deps.ts";
 const textDecoder = new TextDecoder();
 const textEncoder = new TextEncoder();
 const rootDir = path.join(pathFromMeta(import.meta), "..", "..");
+export const newLineRegex = new RegExp("\r\n|\n");
 
 export function encodeUtf8(text: string): Uint8Array {
   return textEncoder.encode(text);
@@ -13,12 +14,12 @@ export function decodeUtf8(bytes: Uint8Array): string {
   return textDecoder.decode(bytes).trim()
 }
 
-export function mustArray<T>(o: T | T[] | null | undefined): T[] {
-  if (Array.isArray(o)) {
-    return o;
-  }
+export function mustArray<T>(o: T[] | T | null | undefined): T[] {
   if (o === undefined || o === null) {
     return [];
+  }
+  if (Array.isArray(o)) {
+    return o;
   }
   return [o];
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import minetest.object.ObjectId;
+import haxe.DynamicAccess;
 import haxe.Constraints.Function;
 import haxe.Rest;
 import haxe.extern.EitherType;
@@ -15,6 +15,7 @@ import minetest.audio.SoundSpec;
 import minetest.audio.SoundParams;
 import minetest.auth.AuthHandler;
 import minetest.chat.ChatCommandDefinition;
+import minetest.channel.ModChannel;
 import minetest.colors.ColorString;
 import minetest.content.GameInfo;
 import minetest.craft.CraftResult;
@@ -23,6 +24,7 @@ import minetest.data.CompressionMethod;
 import minetest.data.ObjectRef;
 import minetest.data.PlayerHealthChangeReason;
 import minetest.data.PlayerRef;
+import minetest.formspec.FormspecString;
 import minetest.hud.HudDefinition;
 import minetest.insecure.InsecureEnvironment;
 import minetest.insecure.http.HttpApi;
@@ -41,6 +43,7 @@ import minetest.node.ContentId;
 import minetest.node.NodeDefinition;
 import minetest.node.PlaceResult;
 import minetest.node.RevertActionsResult;
+import minetest.object.ObjectId;
 import minetest.pathfinding.PathAlgorithm;
 import minetest.player.PlayerLike;
 import minetest.player.WindowInfo;
@@ -507,7 +510,7 @@ extern class Minetest implements Partial {
 
     @:native("register_on_player_receive_fields")
     public static function registerOnPlayerReceiveFields(
-        callback: (player: Any, formName: Any, fields: Any) -> Bool
+        callback: (player: PlayerRef, formName: String, fields: DynamicAccess<Dynamic>) -> Void
     ): Void;
 
     @:native("register_on_craft")
@@ -609,9 +612,9 @@ extern class Minetest implements Partial {
     @:native("register_on_modchannel_message")
     public static function registerOnModChannelMessage(
         callback: (
-            channelName: Any,
-            sender: Null<Any>,
-            message: Any
+            channelName: String,
+            sender: String,
+            message: String
         ) -> Void
     ): Void;
 
@@ -997,12 +1000,10 @@ extern class Minetest implements Partial {
     ): Null<Float>;
 
     /**
-        The server joins channel named `name`, creating it if necessary.
+        Joins a mod channel named `name`. If it does not exist yet, creates it.
     **/
     @:native("mod_channel_join")
-    public static function modChannelJoin(
-        name: String
-    ): Void;
+    public static function modChannelJoin(name: String): ModChannel;
 
     @:native("get_inventory")
     private static function getInventoryRaw(location: Table<String, Any>): InventoryRef;
@@ -1049,7 +1050,7 @@ extern class Minetest implements Partial {
     public static function showFormspec(
         playerName: String,
         formName: String,
-        formSpec: String
+        formSpec: FormspecString
     ): Void;
 
     @:native("close_formspec")

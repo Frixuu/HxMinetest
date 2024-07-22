@@ -1,14 +1,16 @@
-import { Class, Interface, Path, Type } from "../types.ts";
+import { Abstract, Class, Interface, Path, Type } from "../types.ts";
 
 export class Context {
   classes: Map<string, Class>;
   interfaces: Map<string, Interface>;
+  abstracts: Map<string, Abstract>;
   knownSubtypes: Map<string, Type[]>;
   knownImplementors: Map<string, Class[]>;
 
   constructor() {
     this.classes = new Map();
     this.interfaces = new Map();
+    this.abstracts = new Map();
     this.knownImplementors = new Map();
     this.knownSubtypes = new Map();
   }
@@ -79,5 +81,9 @@ export class Context {
     for (const superIfacePath of iface.superTypePaths) {
       this.registerExtends(iface, superIfacePath)
     }
+  }
+
+  registerAbstract(abstract: Abstract) {
+    this.abstracts.set(abstract.path.toString(), abstract);
   }
 }
