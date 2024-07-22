@@ -1,6 +1,6 @@
-VERSION 0.7
+VERSION 0.8
 
-FROM haxe:4.3.1-bullseye
+FROM haxe:4.3.4-bullseye
 WORKDIR /hxminetest
 RUN haxelib dev hxminetest .
 
@@ -55,7 +55,7 @@ build-docs-generate-reference:
 
 build-docs-static-html:
 
-    FROM node:20-alpine3.18
+    FROM node:22-alpine
     WORKDIR /docs
 
     # Install pnpm
