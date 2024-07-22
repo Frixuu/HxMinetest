@@ -1,17 +1,14 @@
 VERSION 0.8
 
-FROM haxe:4.3.4-bullseye
+FROM haxe:4.3.4-alpine3.20
 WORKDIR /hxminetest
+
 RUN haxelib dev hxminetest .
 
-deps:
+ENV DENO_FUTURE 1
+RUN apk add --no-cache git wget deno
 
-    # Install Deno
-    RUN apt-get update && \
-        apt-get install -y unzip && \
-        curl -fsSL https://deno.land/x/install/install.sh | sh
-    ENV DENO_INSTALL /root/.deno
-    ENV PATH $DENO_INSTALL/bin:$PATH
+deps:
 
     # Cache Deno deps
     COPY scripts/deps.ts scripts/deps.ts
@@ -23,6 +20,8 @@ deps:
     RUN haxelib install haxelib.json --always
 
 lint:
+
+    FROM +deps
 
     COPY hxformat.json .
     COPY examples examples
@@ -55,7 +54,7 @@ build-docs-generate-reference:
 
 build-docs-static-html:
 
-    FROM node:22-alpine
+    RUN apk add --no-cache nodejs
     WORKDIR /docs
 
     # Install pnpm
