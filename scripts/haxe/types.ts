@@ -72,6 +72,16 @@ export class Path {
   }
 }
 
+export class RuntimeType {
+  constructor() { }
+}
+
+export class GenericRuntimeType extends RuntimeType {
+  constructor(public path: Path, public typeParams: RuntimeType[]) {
+    super();
+  }
+}
+
 export interface Documentible {
   documentation?: string;
 }
@@ -167,9 +177,10 @@ export abstract class Member implements Documentible {
 }
 
 export class Property extends Member {
-  type?: Path;
-  constructor(name: string) {
+  type: RuntimeType;
+  constructor(name: string, type: RuntimeType) {
     super(name);
+    this.type = type;
   }
 }
 

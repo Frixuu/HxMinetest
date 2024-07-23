@@ -4,7 +4,7 @@ import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray,
 import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
 import { renderType } from "./haxe/documentation/render.ts";
-import { Class, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
+import { Class, GenericRuntimeType, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
 
 await assertHaxeExists();
 
@@ -89,11 +89,21 @@ for (const typeNode of document["~children"] as XmlNode[]) {
         const method = new Method(memberName);
         member = method;
       } else {
-        const property = new Property(memberName);
-        const typeNode = (memberNode["~children"] as XmlNode[]).find(child => child["~name"].length == 1);
-        if (typeNode && typeNode["@path"]) {
-          property.type = Path.fromDotPath(typeNode["@path"]! as string);
+
+        function selectTypeNodes(node: XmlNode): XmlNode[] {
+          return (node["~children"] as XmlNode[]).filter(child => child["~name"].length == 1);
         }
+
+        function buildType(node: XmlNode): GenericRuntimeType {
+          const path = Path.fromDotPath(node["@path"] as string || "Dynamic");
+          const type = new GenericRuntimeType(path, []);
+          for (const childNode of selectTypeNodes(node)) {
+            type.typeParams.push(buildType(childNode));
+          }
+          return type;
+        }
+
+        const property = new Property(memberName, buildType(selectTypeNodes(memberNode).at(0)!));
         member = property;
       }
     }

@@ -1,12 +1,16 @@
 <script setup lang="ts">
-  const props = defineProps(["name", "typeParams", "args", "returnType"]);
+
+  import TypeRef from './TypeRef.vue';
+  const props = defineProps<{name: string, returnType: any}>();
+
 </script>
 
 <template>
   <span>
     <slot name="pre"></slot>
     <span class="code">
-      <strong class="name">{{ name }}</strong>: <span class="type">{{ returnType }}</span>
+      <strong class="name">{{ name }}</strong>:
+      <span class="type" v-if="returnType"><TypeRef :type="returnType" /></span>
       <slot></slot>
     </span>
     <slot name="post"></slot>
