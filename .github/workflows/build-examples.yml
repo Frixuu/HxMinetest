@@ -21,7 +21,7 @@ jobs:
         haxe-version: ["4.3.0", "latest"]
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Install Haxe"
         uses: "krdlab/setup-haxe@v1"
         with:
@@ -29,7 +29,7 @@ jobs:
       - name: "Install Deno"
         uses: "denoland/setup-deno@v1"
         with:
-          deno-version: "^1.35"
+          deno-version: "v1.x"
       - name: "Build example mods"
         run: |
           haxelib install haxelib.json --always
