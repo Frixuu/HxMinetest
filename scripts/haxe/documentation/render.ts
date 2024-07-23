@@ -1,5 +1,5 @@
 import { path } from "../../deps.ts";
-import { Class, Interface, Path, Type } from "../types.ts";
+import { Class, Interface, Member, Method, Path, Property, Type } from "../types.ts";
 import { Context } from "./context.ts";
 
 function renderH1(typ: Type): string {
@@ -105,27 +105,66 @@ function renderInterfaceTypeInfo(ctx: Context, iface: Interface): string {
   return markdown;
 }
 
-export function renderType(ctx: Context, t: Type): string {
+function renderPropertySignature(property: Property): string {
+  let markdown = `<Signature name="${property.name}">`;
+  markdown += "</Signature>";
+  return markdown;
+}
 
-  let markdown = renderH1(t);
+function renderMethodSignature(method: Method): string {
+  let markdown = `<Signature name="${method.name}">`;
+  markdown += "(fn)</Signature>";
+  return markdown;
+}
+
+function renderMember(ctx: Context, member: Member): string {
+  let markdown = "";
+  markdown += `#### {#${member.name}}\n`;
+  if (member instanceof Property) {
+    markdown += renderPropertySignature(member);
+  } else if (member instanceof Method) {
+    markdown += renderMethodSignature(member);
+  } else {
+    console.error(`Invalid member: ${member}`);
+  }
+  markdown += "  \n";
+  markdown += `${member.documentation ?? ""}  \n`;
+  return markdown;
+}
+
+export function renderType(ctx: Context, typ: Type): string {
+
+  let markdown = renderH1(typ);
   markdown += "\n";
-  markdown += `- package: ${t.path.pack.join(".")}\n`;
+  markdown += `- package: ${typ.path.pack.join(".")}\n`;
 
-  switch (t.discriminator) {
-    case "class": {
-      markdown += renderClassTypeInfo(ctx, t as Class);
-      break;
-    }
-    case "interface": {
-      markdown += renderInterfaceTypeInfo(ctx, t as Interface);
-      break;
-    }
-    default: {
-      console.error(`Invalid type discriminator: ${t.discriminator}`);
-    }
+  if (typ instanceof Class) {
+    markdown += renderClassTypeInfo(ctx, typ);
+  } else if (typ instanceof Interface) {
+    markdown += renderInterfaceTypeInfo(ctx, typ);
+  } else {
+    console.error(`Invalid type: ${typ}`);
   }
 
-  markdown += `\n${t.documentation ?? ""}\n`;
+  markdown += `\n${typ.documentation ?? ""}\n`;
+
+  const collator = new Intl.Collator("en");
+
+  if (typ.typeMembers.length > 0) {
+    markdown += "## Static members\n";
+    for (const member of typ.typeMembers.sort((a, b) => collator.compare(a.name, b.name))) {
+      markdown += renderMember(ctx, member);
+    }
+    markdown += "\n";
+  }
+
+  if (typ.instanceMembers.length > 0) {
+    markdown += "## Instance members\n";
+    for (const member of typ.instanceMembers.sort((a, b) => collator.compare(a.name, b.name))) {
+      markdown += renderMember(ctx, member);
+    }
+    markdown += "\n";
+  }
 
   return markdown;
 }

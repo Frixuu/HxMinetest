@@ -86,4 +86,16 @@ export class Context {
   registerAbstract(abstract: Abstract) {
     this.abstracts.set(abstract.path.toString(), abstract);
   }
+
+  registerType(typ: Type) {
+    if (typ instanceof Class) {
+      this.registerClass(typ);
+    } else if (typ instanceof Interface) {
+      this.registerInterface(typ);
+    } else if (typ instanceof Abstract) {
+      this.registerAbstract(typ);
+    } else {
+      throw new Error(`Invalid type: ${typ}`);
+    }
+  }
 }

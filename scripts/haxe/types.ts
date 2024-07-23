@@ -76,37 +76,105 @@ export interface Documentible {
   documentation?: string;
 }
 
-export interface Type extends Documentible {
-  discriminator: "class" | "interface" | "abstract" | "typedef";
+type TypeDiscriminator = "class" | "interface" | "abstract" | "typedef";
+
+export abstract class Type implements Documentible {
+
+  discriminator: TypeDiscriminator;
   path: Path;
-  superTypePaths?: Path[];
+  documentation?: string;
   isPrivate?: boolean;
   isFinal?: boolean;
   isExtern?: boolean;
   isAbstract?: boolean;
+  superTypePaths?: Path[];
+  interfacePaths?: Path[];
+  typeMembers: Member[];
+  instanceMembers: Member[];
+
+  constructor(path: Path, kind: TypeDiscriminator) {
+    this.path = path;
+    this.discriminator = kind;
+    this.typeMembers = [];
+    this.instanceMembers = [];
+  }
 }
 
-export interface Class extends Type {
-  discriminator: "class"
-  superTypePaths: Path[];
+export class Class extends Type {
+
   isPrivate: boolean;
   isFinal: boolean;
   isExtern: boolean;
   isAbstract: boolean;
+  superTypePaths: Path[];
   interfacePaths: Path[];
+
+  constructor(path: Path) {
+    super(path, "class");
+    this.isPrivate = false;
+    this.isFinal = false;
+    this.isExtern = false;
+    this.isAbstract = false;
+    this.superTypePaths = [];
+    this.interfacePaths = [];
+  }
 }
 
-export interface Interface extends Type {
-  discriminator: "interface"
-  superTypePaths: Path[];
+export class Interface extends Type {
+
   isPrivate: boolean;
   isFinal: boolean;
   isExtern: boolean;
+  superTypePaths: Path[];
   interfacePaths: Path[];
+
+  constructor(path: Path) {
+    super(path, "interface");
+    this.isPrivate = false;
+    this.isFinal = false;
+    this.isExtern = false;
+    this.superTypePaths = [];
+    this.interfacePaths = [];
+  }
 }
 
-export interface Abstract extends Type {
+export class Abstract extends Type {
+
   isEnum: boolean;
+
+  constructor(path: Path) {
+    super(path, "abstract");
+    this.isEnum = false;
+  }
 }
 
 export interface Typedef extends Type { }
+
+export abstract class Member implements Documentible {
+
+  name: string;
+  documentation?: string;
+  isPrivate: boolean;
+  isFinal: boolean;
+  isOverride: boolean;
+
+  constructor(name: string) {
+    this.name = name;
+    this.isPrivate = false;
+    this.isFinal = false;
+    this.isOverride = false;
+  }
+}
+
+export class Property extends Member {
+  type?: Path;
+  constructor(name: string) {
+    super(name);
+  }
+}
+
+export class Method extends Member {
+  constructor(name: string) {
+    super(name);
+  }
+}

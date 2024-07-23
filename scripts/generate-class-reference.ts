@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Zlib
 // deno-lint-ignore-file no-explicit-any
 
-import { path, xml } from "./deps.ts";
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
-import { Class, Interface, Path, Type } from "./haxe/types.ts";
+import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
 import { renderType } from "./haxe/documentation/render.ts";
+import { Class, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
 
 await assertHaxeExists();
 
@@ -32,38 +32,65 @@ const document = xml.parse(documentString)["haxe"]! as any;
 const context = new Context();
 const newLineRegex = new RegExp("\r\n|\n");
 
-for (const clazz of document["class"]) {
+for (const typeNode of document["class"]) {
 
-  const discriminator = clazz["@interface"] ? "interface" : "class";
-  const path = Path.fromDotPath(clazz["@path"]);
-  const isPrivate = clazz["@private"] !== undefined;
-  const isExtern = clazz["@extern"] !== undefined;
-  const isFinal = clazz["@final"] !== undefined;
-  const isAbstract = clazz["@abstract"] !== undefined;
+  const path = Path.fromDotPath(typeNode["@path"]);
+  const typ = typeNode["@interface"] ? new Interface(path) : new Class(path);
 
-  const interfacePaths = mustArray(clazz["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
-  const superTypePaths = mustArray(clazz["extends"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
-
-  let documentation: string | undefined = clazz["haxe_doc"];
-  if (documentation) {
-    documentation = documentation.split(newLineRegex).map(line => line.trimStart()).join("\n");
+  const doc: string | undefined = typeNode["haxe_doc"];
+  if (doc) {
+    typ.documentation = doc.split(newLineRegex).map(line => line.trimStart()).join("\n");
   }
 
-  if (discriminator == "class") {
-    context.registerClass({
-      discriminator, path, isPrivate, isExtern, isFinal, isAbstract, interfacePaths, documentation,
-      superTypePaths: superTypePaths,
-    });
-  } else {
-    context.registerInterface({
-      discriminator, path, isPrivate, isExtern, isFinal, interfacePaths, documentation,
-      superTypePaths: superTypePaths,
-    });
+  typ.isPrivate = typeNode["@private"] !== undefined;
+  typ.isExtern = typeNode["@extern"] !== undefined;
+  typ.isFinal = typeNode["@final"] !== undefined;
+  typ.isAbstract = typeNode["@abstract"] !== undefined;
+
+  typ.interfacePaths = mustArray(typeNode["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
+  typ.superTypePaths = mustArray(typeNode["extends"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
+
+  const memberNames = Object.keys(typeNode)
+    .filter(k => !k.startsWith("@") && !k.startsWith("#") && !k.startsWith("~"))
+    .filter(k => !new Set(["haxe_doc", "extends", "implements", "haxe_dynamic", "meta"]).has(k));
+
+  for (const name of memberNames) {
+
+    const memberNode = typeNode[name];
+    const signatureNode = mustArray(memberNode["f"]).at(0);
+    let member;
+    {
+      if (signatureNode) {
+        //const paramNames = (signatureNode["@a"] ?? "").split(":");
+        const method = new Method(name);
+        member = method;
+      } else {
+        const property = new Property(name);
+        member = property;
+      }
+    }
+
+    const doc: string | undefined = memberNode["haxe_doc"];
+    if (doc) {
+      member.documentation = doc.split(newLineRegex).map(line => line.trimStart()).join("\n");
+    }
+
+    member.isPrivate = memberNode["@public"] === undefined;
+    member.isFinal = memberNode["@final"] !== undefined;
+    member.isOverride = memberNode["@override"] !== undefined;
+
+    if (memberNode["@static"]) {
+      typ.typeMembers.push(member);
+    } else {
+      typ.instanceMembers.push(member);
+    }
   }
+
+  context.registerType(typ);
 }
 
 for (const abstract of document["abstract"]) {
-  const path = Path.fromDotPath(abstract["@path"]);
+  //const path = Path.fromDotPath(abstract["@path"]);
 
 }
 
