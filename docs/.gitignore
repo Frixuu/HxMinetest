@@ -4,3 +4,4 @@
 node_modules/
 reference/classes.xml
 reference/minetest/
+pnpm-lock.yaml
