@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: Zlib
-// deno-lint-ignore-file no-explicit-any
 
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
 import { path, xml } from "./deps.ts";
@@ -26,53 +25,85 @@ const root = path.join(pathFromMeta(import.meta), "..", "..");
 const docRoot = path.join(root, "docs");
 const referenceRoot = path.join(docRoot, "reference");
 const xmlPath = path.join(referenceRoot, "classes.xml");
-const documentString = decodeUtf8(await Deno.readFile(xmlPath));
-const document = xml.parse(documentString)["haxe"]! as any;
+const documentString = await Deno.readTextFile(xmlPath);
+
+type XmlNode = xml.xml_node;
+const parseOptions: xml.parse_options = {
+  mode: "xml",
+  clean: { attributes: false, comments: true, doctype: true, instructions: true },
+  flatten: { attributes: false, empty: false, text: false }
+};
+const document = xml.parse(documentString, parseOptions)["haxe"]! as XmlNode;
 
 const context = new Context();
 const newLineRegex = new RegExp("\r\n|\n");
+const xmlSpecialRegex = new RegExp("^(~|@|$)");
+const reservedNodeNames = new Set(["haxe_doc", "extends", "implements", "haxe_dynamic", "meta"]);
 
-for (const typeNode of document["class"]) {
+for (const typeNode of document["~children"] as XmlNode[]) {
 
-  const path = Path.fromDotPath(typeNode["@path"]);
-  const typ = typeNode["@interface"] ? new Interface(path) : new Class(path);
-
-  const doc: string | undefined = typeNode["haxe_doc"];
-  if (doc) {
-    typ.documentation = doc.split(newLineRegex).map(line => line.trimStart()).join("\n");
+  const path = Path.fromDotPath(typeNode["@path"]! as string);
+  let type: Type;
+  switch (typeNode["~name"]) {
+    case "class":
+      type = new Class(path);
+      break;
+    case "interface":
+      type = new Interface(path);
+      break;
+    // TODO: abstracts and typedefs
+    default:
+      continue;
   }
 
-  typ.isPrivate = typeNode["@private"] !== undefined;
-  typ.isExtern = typeNode["@extern"] !== undefined;
-  typ.isFinal = typeNode["@final"] !== undefined;
-  typ.isAbstract = typeNode["@abstract"] !== undefined;
+  const docNode = typeNode["haxe_doc"] as XmlNode;
+  if (docNode) {
+    type.documentation = docNode["#text"]
+      .split(newLineRegex)
+      .map(line => line.trimStart())
+      .join("\n");
+  }
 
-  typ.interfacePaths = mustArray(typeNode["implements"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
-  typ.superTypePaths = mustArray(typeNode["extends"]).map(i => Path.fromDotPath(i["@path"] ?? ""));
+  type.isPrivate = typeNode["@private"] !== undefined;
+  type.isExtern = typeNode["@extern"] !== undefined;
+  type.isFinal = typeNode["@final"] !== undefined;
+  type.isAbstract = typeNode["@abstract"] !== undefined;
 
-  const memberNames = Object.keys(typeNode)
-    .filter(k => !k.startsWith("@") && !k.startsWith("#") && !k.startsWith("~"))
-    .filter(k => !new Set(["haxe_doc", "extends", "implements", "haxe_dynamic", "meta"]).has(k));
+  type.interfacePaths = (mustArray(typeNode["implements"]) as XmlNode[])
+    .map(n => Path.fromDotPath(n["@path"]! as string));
+  type.superTypePaths = (mustArray(typeNode["extends"]) as XmlNode[])
+    .map(n => Path.fromDotPath(n["@path"]! as string));
 
-  for (const name of memberNames) {
+  const memberNodes = (typeNode["~children"] as XmlNode[])
+    .filter(child => !xmlSpecialRegex.test(child["~name"]))
+    .filter(child => !reservedNodeNames.has(child["~name"]));
 
-    const memberNode = typeNode[name];
-    const signatureNode = mustArray(memberNode["f"]).at(0);
+  for (const memberNode of memberNodes) {
+
+    const memberName = memberNode["~name"];
+    const signatureNode = (mustArray(memberNode["f"]) as XmlNode[]).at(0);
     let member;
     {
       if (signatureNode) {
         //const paramNames = (signatureNode["@a"] ?? "").split(":");
-        const method = new Method(name);
+        const method = new Method(memberName);
         member = method;
       } else {
-        const property = new Property(name);
+        const property = new Property(memberName);
+        const typeNode = (memberNode["~children"] as XmlNode[]).find(child => child["~name"].length == 1);
+        if (typeNode && typeNode["@path"]) {
+          property.type = Path.fromDotPath(typeNode["@path"]! as string);
+        }
         member = property;
       }
     }
 
-    const doc: string | undefined = memberNode["haxe_doc"];
-    if (doc) {
-      member.documentation = doc.split(newLineRegex).map(line => line.trimStart()).join("\n");
+    const docNode = memberNode["haxe_doc"] as XmlNode;
+    if (docNode) {
+      member.documentation = docNode["#text"]
+        .split(newLineRegex)
+        .map(line => line.trimStart())
+        .join("\n");
     }
 
     member.isPrivate = memberNode["@public"] === undefined;
@@ -80,18 +111,13 @@ for (const typeNode of document["class"]) {
     member.isOverride = memberNode["@override"] !== undefined;
 
     if (memberNode["@static"]) {
-      typ.typeMembers.push(member);
+      type.typeMembers.push(member);
     } else {
-      typ.instanceMembers.push(member);
+      type.instanceMembers.push(member);
     }
   }
 
-  context.registerType(typ);
-}
-
-for (const abstract of document["abstract"]) {
-  //const path = Path.fromDotPath(abstract["@path"]);
-
+  context.registerType(type);
 }
 
 // Render to Markdown

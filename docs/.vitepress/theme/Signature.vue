@@ -6,7 +6,7 @@
   <span>
     <slot name="pre"></slot>
     <span class="code">
-      <strong>{{ name }}</strong>
+      <strong class="name">{{ name }}</strong>: <span class="type">{{ returnType }}</span>
       <slot></slot>
     </span>
     <slot name="post"></slot>

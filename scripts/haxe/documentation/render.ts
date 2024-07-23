@@ -106,7 +106,7 @@ function renderInterfaceTypeInfo(ctx: Context, iface: Interface): string {
 }
 
 function renderPropertySignature(property: Property): string {
-  let markdown = `<Signature name="${property.name}">`;
+  let markdown = `<Signature name="${property.name}" returnType="${property.type}">`;
   markdown += "</Signature>";
   return markdown;
 }
