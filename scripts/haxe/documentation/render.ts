@@ -117,6 +117,13 @@ function renderMethodSignature(method: Method): string {
   return markdown;
 }
 
+function renderDoc(doc: string | undefined): string {
+  if (!doc) return "\n";
+  return doc.split("\n")
+    .reduce((s, line) => line.startsWith("@") ? `${s}  \n${line}` : `${s}\n${line}`)
+    + "\n";
+}
+
 function renderMember(ctx: Context, member: Member): string {
   let markdown = "";
   markdown += `#### {#${member.name}}\n`;
@@ -128,7 +135,7 @@ function renderMember(ctx: Context, member: Member): string {
     console.error(`Invalid member: ${member}`);
   }
   markdown += "  \n";
-  markdown += `${member.documentation ?? ""}  \n`;
+  markdown += renderDoc(member.documentation);
   return markdown;
 }
 
@@ -146,7 +153,7 @@ export function renderType(ctx: Context, typ: Type): string {
     console.error(`Invalid type: ${typ}`);
   }
 
-  markdown += `\n${typ.documentation ?? ""}\n`;
+  markdown += renderDoc(typ.documentation);
 
   const collator = new Intl.Collator("en");
 

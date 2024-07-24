@@ -3,6 +3,7 @@
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
 import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
+import { applyDocIfExists } from "./haxe/documentation/parse.ts";
 import { renderType } from "./haxe/documentation/render.ts";
 import { Class, GenericRuntimeType, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
 
@@ -36,7 +37,6 @@ const parseOptions: xml.parse_options = {
 const document = xml.parse(documentString, parseOptions)["haxe"]! as XmlNode;
 
 const context = new Context();
-const newLineRegex = new RegExp("\r\n|\n");
 const xmlSpecialRegex = new RegExp("^(~|@|$)");
 const reservedNodeNames = new Set(["haxe_doc", "extends", "implements", "haxe_dynamic", "meta"]);
 
@@ -56,13 +56,7 @@ for (const typeNode of document["~children"] as XmlNode[]) {
       continue;
   }
 
-  const docNode = typeNode["haxe_doc"] as XmlNode;
-  if (docNode) {
-    type.documentation = docNode["#text"]
-      .split(newLineRegex)
-      .map(line => line.trimStart())
-      .join("\n");
-  }
+  applyDocIfExists(typeNode, type);
 
   type.isPrivate = typeNode["@private"] !== undefined;
   type.isExtern = typeNode["@extern"] !== undefined;
@@ -108,13 +102,7 @@ for (const typeNode of document["~children"] as XmlNode[]) {
       }
     }
 
-    const docNode = memberNode["haxe_doc"] as XmlNode;
-    if (docNode) {
-      member.documentation = docNode["#text"]
-        .split(newLineRegex)
-        .map(line => line.trimStart())
-        .join("\n");
-    }
+    applyDocIfExists(memberNode, member);
 
     member.isPrivate = memberNode["@public"] === undefined;
     member.isFinal = memberNode["@final"] !== undefined;

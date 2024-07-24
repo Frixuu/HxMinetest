@@ -1,27 +1,14 @@
-import { xml } from "../../deps.ts";
-import { Context } from "./context.ts";
+import { Documentible } from "../types.ts";
+import { XmlNode } from "./schema.ts";
 
-export function parse(documentString: string): Context {
-  const document = xml.parse(documentString);
-  const root = document["haxe"]!;
-  const ctx = new Context();
-  parseAllClassesAndInterfaces(root, ctx);
-  parseAllAbstracts(root, ctx);
-  parseAllTypedefs(root, ctx);
-  return ctx;
-}
+const newLineRegex = new RegExp("\r\n|\n");
 
-function parseAllClassesAndInterfaces(root: any, ctx: Context) {
-  for (const clazz of root["class"]) {
-  }
-}
-
-function parseAllAbstracts(root: any, ctx: Context) {
-  for (const clazz of root["class"]) {
-  }
-}
-
-function parseAllTypedefs(root: any, ctx: Context) {
-  for (const clazz of root["class"]) {
+export function applyDocIfExists(elementNode: XmlNode, element: Documentible) {
+  const docNode = elementNode["haxe_doc"] as XmlNode | undefined;
+  if (docNode) {
+    element.documentation = docNode["#text"]
+      .split(newLineRegex)
+      .map(line => line.trimStart())
+      .join("\n");
   }
 }
