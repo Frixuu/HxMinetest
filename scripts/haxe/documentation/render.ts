@@ -106,14 +106,16 @@ function renderInterfaceTypeInfo(ctx: Context, iface: Interface): string {
 }
 
 function renderPropertySignature(property: Property): string {
-  let markdown = `<Signature name="${property.name}" :returnType='${JSON.stringify(property.type)}'>`;
-  markdown += "</Signature>";
+  let markdown = `<PropertySignature name="${property.name}" :type='${JSON.stringify(property.type)}'>`;
+  markdown += "</PropertySignature>";
   return markdown;
 }
 
 function renderMethodSignature(method: Method): string {
-  let markdown = `<Signature name="${method.name}">`;
-  markdown += "(fn)</Signature>";
+  let markdown = `<MethodSignature name="${method.name}" `;
+  markdown += `:args='${JSON.stringify(method.args)}' `;
+  markdown += `:returnType='${JSON.stringify(method.returnType)}'`;
+  markdown += "></MethodSignature>";
   return markdown;
 }
 

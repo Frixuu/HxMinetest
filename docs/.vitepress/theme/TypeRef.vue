@@ -1,19 +1,9 @@
 <script setup lang="ts">
 
-  import { withBase } from 'vitepress';
+import { withBase } from 'vitepress';
+import { RuntimeType } from './haxe-types';
 
-  interface Path {
-    pack: string[];
-    module: string;
-    name: string;
-  }
-
-  interface RuntimeType {
-    path: Path;
-    typeParams: RuntimeType[];
-  }
-
-  const props = defineProps<{type: RuntimeType}>();
+defineProps<{type: RuntimeType}>();
 
 </script>
 

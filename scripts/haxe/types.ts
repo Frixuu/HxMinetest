@@ -73,13 +73,17 @@ export class Path {
 }
 
 export class RuntimeType {
-  constructor() { }
+  constructor(
+    public path: Path,
+    public typeParams: RuntimeType[]) { }
 }
 
-export class GenericRuntimeType extends RuntimeType {
-  constructor(public path: Path, public typeParams: RuntimeType[]) {
-    super();
-  }
+export class FunctionArgument {
+  constructor(
+    public name: string,
+    public optional: boolean,
+    public type: RuntimeType,
+    public defaultValue?: string) { }
 }
 
 export interface Documentible {
@@ -177,15 +181,13 @@ export abstract class Member implements Documentible {
 }
 
 export class Property extends Member {
-  type: RuntimeType;
-  constructor(name: string, type: RuntimeType) {
+  constructor(name: string, public type: RuntimeType) {
     super(name);
-    this.type = type;
   }
 }
 
 export class Method extends Member {
-  constructor(name: string) {
+  constructor(name: string, public args: FunctionArgument[], public returnType: RuntimeType) {
     super(name);
   }
 }

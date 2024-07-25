@@ -1,8 +1,9 @@
 // https://vitepress.dev/guide/custom-theme
-import Theme from 'vitepress/theme'
-import { h } from 'vue'
-import Signature from './Signature.vue'
-import './style.css'
+import Theme from 'vitepress/theme';
+import { h } from 'vue';
+import MethodSignature from './MethodSignature.vue';
+import PropertySignature from './PropertySignature.vue';
+import './style.css';
 
 export default {
   extends: Theme,
@@ -12,6 +13,7 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    app.component('Signature', Signature)
+    app.component('MethodSignature', MethodSignature);
+    app.component('PropertySignature', PropertySignature);
   }
 }

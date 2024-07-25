@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
-  import TypeRef from './TypeRef.vue';
-  const props = defineProps<{name: string, returnType: any}>();
+import TypeRef from './TypeRef.vue';
+import { RuntimeType } from './haxe-types';
+
+defineProps<{name: string, type: RuntimeType}>();
 
 </script>
 
@@ -10,7 +12,7 @@
     <slot name="pre"></slot>
     <span class="code">
       <strong class="name">{{ name }}</strong>:
-      <span class="type" v-if="returnType"><TypeRef :type="returnType" /></span>
+      <span class="type"><TypeRef :type="type" /></span>
       <slot></slot>
     </span>
     <slot name="post"></slot>

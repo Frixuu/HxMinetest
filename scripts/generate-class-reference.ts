@@ -3,9 +3,9 @@
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
 import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
-import { applyDocIfExists } from "./haxe/documentation/parse.ts";
+import { applyDocIfExists, getTypeParams } from "./haxe/documentation/parse.ts";
 import { renderType } from "./haxe/documentation/render.ts";
-import { Class, GenericRuntimeType, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
+import { Class, FunctionArgument, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
 
 await assertHaxeExists();
 
@@ -79,25 +79,27 @@ for (const typeNode of document["~children"] as XmlNode[]) {
     let member;
     {
       if (signatureNode) {
-        //const paramNames = (signatureNode["@a"] ?? "").split(":");
-        const method = new Method(memberName);
+        const paramNames = (signatureNode["@a"] as string ?? "").split(":");
+        const paramDefaultValues = (signatureNode["@v"] as string ?? "").split(":");
+        const typeParams = getTypeParams(signatureNode);
+        const returnType = typeParams.pop()!;
+        const args = typeParams.map((p, i) => {
+          const name = paramNames[i];
+          let defaultValue: string | undefined = paramDefaultValues[i];
+          const optional = defaultValue != undefined && defaultValue.startsWith("?");
+          if (optional) {
+            defaultValue = defaultValue.slice(1);
+          }
+          else if (defaultValue == "") {
+            defaultValue = undefined;
+          }
+          return new FunctionArgument(name, optional, p, defaultValue);
+        });
+        const method = new Method(memberName, args, returnType);
         member = method;
       } else {
 
-        function selectTypeNodes(node: XmlNode): XmlNode[] {
-          return (node["~children"] as XmlNode[]).filter(child => child["~name"].length == 1);
-        }
-
-        function buildType(node: XmlNode): GenericRuntimeType {
-          const path = Path.fromDotPath(node["@path"] as string || "Dynamic");
-          const type = new GenericRuntimeType(path, []);
-          for (const childNode of selectTypeNodes(node)) {
-            type.typeParams.push(buildType(childNode));
-          }
-          return type;
-        }
-
-        const property = new Property(memberName, buildType(selectTypeNodes(memberNode).at(0)!));
+        const property = new Property(memberName, getTypeParams(memberNode).at(0)!);
         member = property;
       }
     }
