@@ -33,7 +33,8 @@ export function getRuntimeTypeOfNode(node: XmlNode): RuntimeType | null {
       return new RuntimeType(path, getTypeParams(node));
     }
     case "f": { // function
-      return dynamicType();
+      // TODO
+      return new RuntimeType(Path.fromDotPath("Function"), []);
     }
     case "a": { // anonymous
       return new RuntimeType(Path.fromDotPath("&#123;anon&#125;"), []);
