@@ -13,10 +13,6 @@ export function applyDocIfExists(elementNode: XmlNode, element: Documentible) {
   }
 }
 
-function dynamicType(): RuntimeType {
-  return new RuntimeType(Path.fromDotPath("Dynamic"), []);
-}
-
 export function getTypeParams(node: XmlNode): RuntimeType[] {
   return (node["~children"] as XmlNode[])
     .map(getRuntimeTypeOfNode)

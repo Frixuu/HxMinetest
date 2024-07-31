@@ -5,7 +5,8 @@ import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
 import { applyDocIfExists, getTypeParams } from "./haxe/documentation/parse.ts";
 import { renderType } from "./haxe/documentation/render.ts";
-import { Class, FunctionArgument, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
+import { XmlNode, XmlParseOptions } from "./haxe/documentation/schema.ts";
+import { Abstract, Class, FunctionArgument, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
 
 await assertHaxeExists();
 
@@ -28,8 +29,7 @@ const referenceRoot = path.join(docRoot, "reference");
 const xmlPath = path.join(referenceRoot, "classes.xml");
 const documentString = await Deno.readTextFile(xmlPath);
 
-type XmlNode = xml.xml_node;
-const parseOptions: xml.parse_options = {
+const parseOptions: XmlParseOptions = {
   mode: "xml",
   clean: { attributes: false, comments: true, doctype: true, instructions: true },
   flatten: { attributes: false, empty: false, text: false }
@@ -40,7 +40,7 @@ const context = new Context();
 const xmlSpecialRegex = new RegExp("^(~|@|$)");
 const reservedNodeNames = new Set(["haxe_doc", "extends", "implements", "haxe_dynamic", "meta"]);
 
-for (const typeNode of document["~children"] as XmlNode[]) {
+for (let typeNode of document["~children"] as XmlNode[]) {
 
   const path = Path.fromDotPath(typeNode["@path"]! as string);
   let type: Type;
@@ -50,6 +50,9 @@ for (const typeNode of document["~children"] as XmlNode[]) {
       break;
     case "interface":
       type = new Interface(path);
+      break;
+    case "abstract":
+      type = new Abstract(path);
       break;
     // TODO: abstracts and typedefs
     default:
@@ -62,6 +65,12 @@ for (const typeNode of document["~children"] as XmlNode[]) {
   type.isExtern = typeNode["@extern"] !== undefined;
   type.isFinal = typeNode["@final"] !== undefined;
   type.isAbstract = typeNode["@abstract"] !== undefined;
+
+  if (type instanceof Abstract) {
+    const implNode = typeNode["impl"] as XmlNode | undefined;
+    const implClassNode = implNode?.["~children"]?.at(0) as XmlNode | undefined;
+    typeNode = implClassNode ?? typeNode;
+  }
 
   type.interfacePaths = (mustArray(typeNode["implements"]) as XmlNode[])
     .map(n => Path.fromDotPath(n["@path"]! as string));
@@ -133,7 +142,8 @@ const visitedTypes: Type[] = [];
 
 const types: Type[] = [
   context.getClasses(["minetest"]),
-  context.getInterfaces(["minetest"])
+  context.getInterfaces(["minetest"]),
+  context.getAbstracts(["minetest"]),
 ].flat();
 
 for (const typ of types) {

@@ -43,6 +43,20 @@ export class Context {
     return results;
   }
 
+  getAbstracts(inNamespace?: string[]): Abstract[] {
+
+    if (inNamespace === undefined || inNamespace.length == 0) {
+      return Array.from(this.abstracts.values());
+    }
+
+    const results: Abstract[] = [];
+    this.abstracts.forEach(a => {
+      if (a.path.isInPackage(inNamespace))
+        results.push(a);
+    });
+    return results;
+  }
+
   registerClass(clazz: Class) {
     this.classes.set(clazz.path.toString(), clazz);
     for (const superClassPath of clazz.superTypePaths) {

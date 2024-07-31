@@ -1,5 +1,5 @@
 import { path } from "../../deps.ts";
-import { Class, Interface, Member, Method, Path, Property, Type } from "../types.ts";
+import { Abstract, Class, Interface, Member, Method, Path, Property, Type } from "../types.ts";
 import { Context } from "./context.ts";
 
 function renderH1(typ: Type): string {
@@ -105,16 +105,21 @@ function renderInterfaceTypeInfo(ctx: Context, iface: Interface): string {
   return markdown;
 }
 
+function renderAbstractTypeInfo(ctx: Context, a: Abstract): string {
+  return "";
+}
+
 function renderPropertySignature(property: Property): string {
-  let markdown = `<PropertySignature name="${property.name}" :type='${JSON.stringify(property.type)}'>`;
-  markdown += "</PropertySignature>";
+  let markdown = `<PropertySignature name="${property.name}" `;
+  markdown += `:type='${JSON.stringify(property.type)}' `;
+  markdown += "></PropertySignature>";
   return markdown;
 }
 
 function renderMethodSignature(method: Method): string {
   let markdown = `<MethodSignature name="${method.name}" `;
   markdown += `:args='${JSON.stringify(method.args)}' `;
-  markdown += `:returnType='${JSON.stringify(method.returnType)}'`;
+  markdown += `:returnType='${JSON.stringify(method.returnType)}' `;
   markdown += "></MethodSignature>";
   return markdown;
 }
@@ -151,10 +156,13 @@ export function renderType(ctx: Context, typ: Type): string {
     markdown += renderClassTypeInfo(ctx, typ);
   } else if (typ instanceof Interface) {
     markdown += renderInterfaceTypeInfo(ctx, typ);
+  } else if (typ instanceof Abstract) {
+    markdown += renderAbstractTypeInfo(ctx, typ);
   } else {
     console.error(`Invalid type: ${typ}`);
   }
 
+  markdown += "\n\n";
   markdown += renderDoc(typ.documentation);
 
   const collator = new Intl.Collator("en");
