@@ -1,4 +1,5 @@
-import { Abstract, Class, Interface, Path, Type } from "../types.ts";
+import { Path } from "../../../docs/reference/generation/path.ts";
+import { Abstract, Class, Interface, Type } from "../types.ts";
 
 export class Context {
   classes: Map<string, Class>;

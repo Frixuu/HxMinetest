@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: Zlib
 
+import { Path } from "../docs/reference/generation/path.ts";
 import { abort, assertHaxeExists, decodeUtf8, encodeUtf8, invokeHaxe, mustArray, pathFromMeta } from "./common.ts";
 import { path, xml } from "./deps.ts";
 import { Context } from "./haxe/documentation/context.ts";
 import { applyDocIfExists, getTypeParams } from "./haxe/documentation/parse.ts";
 import { renderType } from "./haxe/documentation/render.ts";
 import { XmlNode, XmlParseOptions } from "./haxe/documentation/schema.ts";
-import { Abstract, Class, FunctionArgument, Interface, Method, Path, Property, Type } from "./haxe/types.ts";
+import { Abstract, Class, FunctionArgument, Interface, Method, Property, Type } from "./haxe/types.ts";
 
 await assertHaxeExists();
 

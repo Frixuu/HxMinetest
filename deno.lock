@@ -5,6 +5,7 @@
       "jsr:@libs/xml@^5.4.12": "jsr:@libs/xml@5.4.12",
       "jsr:@std/datetime@^0.224.3": "jsr:@std/datetime@0.224.3",
       "jsr:@std/path@^1.0.1": "jsr:@std/path@1.0.1",
+      "npm:@lowlighter/xml@^5.4.12": "npm:@lowlighter/xml@5.4.12",
       "npm:sass@^1.77.8": "npm:sass@1.77.8",
       "npm:vitepress@^1.3.1": "npm:vitepress@1.3.1_vite@5.3.4_vue@3.4.33_focus-trap@7.5.4",
       "npm:vue@^3.4.33": "npm:vue@3.4.33"
@@ -274,6 +275,10 @@
       },
       "@jridgewell/sourcemap-codec@1.5.0": {
         "integrity": "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==",
+        "dependencies": {}
+      },
+      "@lowlighter/xml@5.4.12": {
+        "integrity": "sha512-JC2wDuP5QvFpxA7sJIKgfQKf+Bh5eP4/fwUM2BGR0abK1CLcNSP88oDJAnkv2ZbOrQyWZRlKFNKqWAWmyr042w==",
         "dependencies": {}
       },
       "@rollup/rollup-android-arm-eabi@4.19.0": {
@@ -882,6 +887,7 @@
       "docs": {
         "packageJson": {
           "dependencies": [
+            "npm:@lowlighter/xml@^5.4.12",
             "npm:sass@^1.77.8",
             "npm:vitepress@^1.3.1",
             "npm:vue@^3.4.33"

@@ -1,4 +1,5 @@
-import { Documentible, Path, RuntimeType } from "../types.ts";
+import { Path } from "../../../docs/reference/generation/path.ts";
+import { Documentible, RuntimeType } from "../types.ts";
 import { XmlNode } from "./schema.ts";
 
 const newLineRegex = new RegExp("\r\n|\n");

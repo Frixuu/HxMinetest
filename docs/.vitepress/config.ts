@@ -10,6 +10,9 @@ export default defineConfig({
 
   ignoreDeadLinks: true,
 
+  srcDir: ".",
+  srcExclude: ["./reference/generation"],
+
   themeConfig: {
 
     // https://vitepress.dev/reference/default-theme-config
@@ -41,10 +44,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      {
-        icon: 'github',
-        link: 'https://github.com/frixuu/hxminetest/',
-      }
+      { icon: 'github', link: 'https://github.com/frixuu/hxminetest/' }
     ]
   }
 })
