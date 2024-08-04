@@ -1,14 +1,18 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { defineLoader } from "vitepress";
 import { Definition } from "./definition";
 import { parseRttiXml } from "./parse";
 
-declare const data: Definition[];
+const RTTI_PATH = join(import.meta.dirname, "classes.xml");
+const READ_OPTS = { encoding: "utf-8" } as const;
+
+const data: Definition[] = parseRttiXml(await readFile(RTTI_PATH, READ_OPTS));
 export { data };
 
 export default defineLoader({
-  watch: ["../classes.xml"],
+  watch: [RTTI_PATH],
   async load(watchedFiles): Promise<Definition[]> {
-    const file = await Deno.readTextFile(watchedFiles[0]);
-    return parseRttiXml(file);
+    return parseRttiXml(await readFile(watchedFiles[0], READ_OPTS));
   }
 });
