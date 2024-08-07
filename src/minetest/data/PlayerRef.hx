@@ -4,9 +4,9 @@ package minetest.data;
 /**
     An `ObjectRef` that is known to represent a player.
 **/
-@:remove
+@:forward
 @:using(minetest.data.PlayerTools)
-interface PlayerRef extends ObjectRef {
+abstract PlayerRef(ObjectRef) to ObjectRef {
 
     /**
         Overrides the player's field of view.
@@ -14,10 +14,11 @@ interface PlayerRef extends ObjectRef {
         @param isMultiplier Is the value a multiplier?
         @param transitionTime Time (in seconds)
     **/
-    @:native("set_fov")
-    public function setFov(
+    public inline function setFov(
         fov: Float,
         isMultiplier: Bool = false,
         transitionTime: Float = 0.0
-    ): Void;
+    ): Void {
+        untyped this.set_fov(fov, isMultiplier, transitionTime);
+    }
 }
