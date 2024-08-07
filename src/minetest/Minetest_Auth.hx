@@ -20,7 +20,7 @@ extern class Minetest_Auth implements Partial {
     **/
     @:native("privs_to_string")
     public static function privsToString(
-        privs: Table<String, Bool>,
+        privs: NativeSet<String>,
         delimiter: String = ","
     ): String;
 
@@ -35,7 +35,7 @@ extern class Minetest_Auth implements Partial {
     @:native("check_player_privs")
     public static function checkPlayerPrivs(
         player: PlayerLike,
-        privs: EitherType<Rest<String>, Table<String, Bool>>
+        privs: EitherType<Rest<String>, NativeSet<String>>
     ): CheckPlayerPrivsResult;
 
     /**

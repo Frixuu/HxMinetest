@@ -1,10 +1,10 @@
 package minetest;
 
 import haxe.extern.EitherType;
-import lua.Table;
+import minetest.util.NativeArray;
 
 @:multiReturn
 extern class CheckPlayerPrivsResult {
-    var success: Bool;
-    var missing: EitherType<String, Table<Int, String>>;
+    public var success: Bool;
+    public var missing: EitherType<String, NativeArray<String>>;
 }

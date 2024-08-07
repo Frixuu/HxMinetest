@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import haxe.DynamicAccess;
 import haxe.Constraints.Function;
+import haxe.DynamicAccess;
 import haxe.Rest;
 import haxe.extern.EitherType;
 import lua.Table;
@@ -11,11 +11,11 @@ import minetest.LogLevel;
 import minetest.Settings;
 import minetest.async.Future;
 import minetest.audio.SoundHandle;
-import minetest.audio.SoundSpec;
 import minetest.audio.SoundParams;
+import minetest.audio.SoundSpec;
 import minetest.auth.AuthHandler;
-import minetest.chat.ChatCommandDefinition;
 import minetest.channel.ModChannel;
+import minetest.chat.ChatCommandDefinition;
 import minetest.colors.ColorString;
 import minetest.content.GameInfo;
 import minetest.craft.CraftResult;
@@ -63,19 +63,20 @@ import minetest.worldgen.SchematicHandle;
 import minetest.worldgen.VoxelManipResult;
 import minetest.worldgen.schematic.DecorationPlacement;
 import minetest.worldgen.schematic.Format;
-import minetest.worldgen.schematic.Rotation;
 import minetest.worldgen.schematic.ReadOptions;
+import minetest.worldgen.schematic.Rotation;
 import minetest.worldgen.schematic.SerializationOptions;
 import partials.Partial;
-#if csm
-import minetest.client.Camera;
-import minetest.client.LocalPlayer;
-import minetest.client.ServerInfo;
-import minetest.client.CsmRestrictions;
-#end
 
 using minetest.item.InventoryLocation;
 using minetest.util.NativeArrayTools;
+
+#if csm
+import minetest.client.Camera;
+import minetest.client.CsmRestrictions;
+import minetest.client.LocalPlayer;
+import minetest.client.ServerInfo;
+#end
 
 /**
     The main namespace of the Minetest game engine.
@@ -122,52 +123,52 @@ extern class Minetest implements Partial {
     public static function getItemDefinition(itemstring: String): Dynamic;
     #else
     @:native("registered_items")
-    public static var registeredItems(default, null): Table<String, Dynamic>;
+    public static var registeredItems(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_nodes")
-    public static var registeredNodes(default, null): Table<String, Dynamic>;
+    public static var registeredNodes(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_craftitems")
-    public static var registeredCraftitems(default, null): Table<String, Dynamic>;
+    public static var registeredCraftitems(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_tools")
-    public static var registeredTools(default, null): Table<String, Dynamic>;
+    public static var registeredTools(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_entities")
-    public static var registeredEntities(default, null): Table<String, Dynamic>;
+    public static var registeredEntities(default, null): NativeMap<String, Dynamic>;
 
     @:native("object_refs")
-    public static var objectRefs(default, null): Table<ObjectId, ObjectRef>;
+    public static var objectRefs(default, null): NativeMap<ObjectId, ObjectRef>;
 
     @:native("luaentities")
-    public static var luaEntities(default, null): Table<Dynamic, Dynamic>;
+    public static var luaEntities(default, null): NativeMap<Dynamic, Dynamic>;
 
     @:native("registered_abms")
-    public static var registeredAbms(default, null): Dynamic;
+    public static var registeredAbms(default, null): NativeArray<Dynamic>;
 
     @:native("registered_lbms")
-    public static var registeredLbms(default, null): Dynamic;
+    public static var registeredLbms(default, null): NativeArray<Dynamic>;
 
     @:native("registered_aliases")
-    public static var registeredAliases(default, null): Table<String, Dynamic>;
+    public static var registeredAliases(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_ores")
-    public static var registeredOres(default, null): Table<String, Dynamic>;
+    public static var registeredOres(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_biomes")
-    public static var registeredBiomes(default, null): Table<String, Dynamic>;
+    public static var registeredBiomes(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_decorations")
-    public static var registeredDecorations(default, null): Table<String, Dynamic>;
+    public static var registeredDecorations(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_schematics")
-    public static var registeredSchematics(default, null): Table<String, Dynamic>;
+    public static var registeredSchematics(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_chatcommands")
-    public static var registeredChatCommands(default, null): Table<String, Dynamic>;
+    public static var registeredChatCommands(default, null): NativeMap<String, Dynamic>;
 
     @:native("registered_privileges")
-    public static var registeredPrivileges(default, null): Table<String, PrivilegeDefinition>;
+    public static var registeredPrivileges(default, null): NativeMap<String, PrivilegeDefinition>;
     #end
 
     /**
