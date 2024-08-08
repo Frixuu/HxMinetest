@@ -24,12 +24,18 @@ abstract NativeArray<T>(Table<Int, T>) from Table<Int, T> to Table<Int, T> {
         this = Table.create();
     }
 
+    /**
+        Gets 1-indexed element of this array.
+    **/
     @:op([])
     @:pure
     public inline function get(index: Int): Null<T> {
         return this[index];
     }
 
+    /**
+        Sets 1-indexed element of this array.
+    **/
     @:op([])
     public inline function set(index: Int, value: T): T {
         return this[index] = value;

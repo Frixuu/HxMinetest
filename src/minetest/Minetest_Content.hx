@@ -8,17 +8,17 @@ extern class Minetest_Content implements Partial {
     /**
         Content ID for the built-in "unknown" nodes.
     **/
-    public static inline final CONTENT_UNKNOWN: ContentId = 125;
+    public static inline final CONTENT_UNKNOWN: ContentId = cast 125;
 
     /**
         Content ID for the built-in "air" nodes.
     **/
-    public static inline final CONTENT_AIR: ContentId = 126;
+    public static inline final CONTENT_AIR: ContentId = cast 126;
 
     /**
         Content ID for the built-in "ignore" nodes.
     **/
-    public static inline final CONTENT_IGNORE: ContentId = 127;
+    public static inline final CONTENT_IGNORE: ContentId = cast 127;
 
     /**
         Returns the internal content identifier of a node type with a given name.

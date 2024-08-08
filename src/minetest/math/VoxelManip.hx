@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: Zlib
 package minetest.math;
 
-import minetest.worldgen.NodeContentBuffer;
-import lua.Table.AnyTable;
+import minetest.node.ContentId;
+import minetest.util.NativeArray;
 
 @:native("VoxelManip")
 extern final class VoxelManip {
@@ -19,10 +19,11 @@ extern final class VoxelManip {
     public function updateLiquids(): Void;
 
     @:native("get_data")
-    public function getData(?intoBuffer: AnyTable): Null<Dynamic>;
+    @:overload(function(): NativeArray<ContentId> {})
+    public function getData(intoBuffer: NativeArray<ContentId>): Void;
 
     @:native("set_data")
-    public function setData(buffer: NodeContentBuffer): Void;
+    public function setData(buffer: NativeArray<ContentId>): Void;
 
     @:native("calc_lighting")
     public function calcLighting(

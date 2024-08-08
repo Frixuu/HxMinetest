@@ -5,9 +5,7 @@ import lua.Lua;
 import lua.Table;
 
 /**
-    An interface for a regular Lua table/map with native semantics:
-    - no integer keys,
-    - no null values.
+    An interface for a regular Lua table/map with native semantics (no null values).
 **/
 abstract NativeMap<K, V>(Table<K, V>) from Table<K, V> to Table<K, V> {
 

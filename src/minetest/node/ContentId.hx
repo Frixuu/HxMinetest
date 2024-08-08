@@ -11,10 +11,18 @@ package minetest.node;
 abstract ContentId(Int) to Int {
 
     /**
-        Casts an integer to a `ContentId`.
+        Implicitly looks up the ID for a given node name.
     **/
     @:from
-    private static inline function fromInt(i: Int): ContentId {
-        return cast i;
+    private static inline function fromName(name: String): ContentId {
+        return Minetest.getContentId(name);
+    }
+
+    /**
+        Implicitly looks up the node name for a given ID.
+    **/
+    @:to
+    private inline function toName(): String {
+        return Minetest.getNameFromContentId(abstract);
     }
 }

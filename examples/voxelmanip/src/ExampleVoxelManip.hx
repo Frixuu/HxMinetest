@@ -5,7 +5,8 @@ import minetest.math.NoiseParams;
 import minetest.math.PerlinNoiseMap;
 import minetest.math.Vector;
 import minetest.math.VoxelArea;
-import minetest.worldgen.NodeContentBuffer;
+import minetest.node.ContentId;
+import minetest.util.NativeArray;
 
 /**
     Adapted from https://github.com/paramat/lvm_example/
@@ -39,10 +40,11 @@ class ExampleVoxelManip {
         Minetest.setMapgenSetting("flags", "nolight");
 
         var noiseMap: PerlinNoiseMap = null;
-        final noiseBuffer: AnyTable = Table.create();
-        final dataBuffer = new NodeContentBuffer();
+        final noiseBuffer = new NativeArray<Float>();
+        final dataBuffer = new NativeArray<ContentId>();
 
         Minetest.registerOnGenerated((minp, maxp, _) -> {
+
             final t0 = Os.clock();
             final sideLength = maxp.x - minp.x + 1;
             final dimensions = new Vector(sideLength, sideLength, sideLength);
@@ -62,9 +64,9 @@ class ExampleVoxelManip {
                         final densityNoise = noiseBuffer[noiseIndex];
                         final densityGradient = (1 - y) / 128.0;
                         if (densityNoise + densityGradient > 0) {
-                            dataBuffer.set(vmIndex, SANDSTONE);
+                            dataBuffer[vmIndex] = SANDSTONE;
                         } else if (y <= 1) {
-                            dataBuffer.set(vmIndex, WATER);
+                            dataBuffer[vmIndex] = WATER;
                         }
                         noiseIndex += 1;
                         vmIndex += 1;
