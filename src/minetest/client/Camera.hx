@@ -1,6 +1,6 @@
 package minetest.client;
 
-#if csm
+#if hxminetest._clientside
 import lua.Table;
 import minetest.math.Vector;
 

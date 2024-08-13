@@ -1,11 +1,11 @@
 package minetest.client;
 
-import minetest.hud.HudHandle;
-import minetest.hud.HudDefinition;
-import minetest.math.Vector;
 import minetest.SimpleResult;
+import minetest.hud.HudDefinition;
+import minetest.hud.HudHandle;
+import minetest.math.Vector;
 
-#if csm
+#if hxminetest._clientside
 interface LocalPlayer {
     @:native("get_name")
     public function getName(): String;

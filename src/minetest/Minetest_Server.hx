@@ -1,6 +1,6 @@
 package minetest;
 
-#if !csm
+#if hxminetest._serverside
 import partials.Partial;
 
 @:noCompletion

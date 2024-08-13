@@ -71,7 +71,7 @@ import partials.Partial;
 using minetest.item.InventoryLocation;
 using minetest.util.NativeArrayTools;
 
-#if csm
+#if hxminetest._clientside
 import minetest.client.Camera;
 import minetest.client.CsmRestrictions;
 import minetest.client.LocalPlayer;
@@ -82,9 +82,10 @@ import minetest.client.ServerInfo;
     The main namespace of the Minetest game engine.
 **/
 @:native("minetest")
-#if csm
+#if hxminetest._clientside
 @:partials(minetest.Minetest_Client)
-#else
+#end
+#if hxminetest._serverside
 @:partials(minetest.Minetest_Server)
 #end
 @:partials(minetest.Minetest_Audio)
@@ -115,13 +116,15 @@ extern class Minetest implements Partial {
     @:native("features")
     public static var features(default, null): NativeSet<String>;
 
-    #if csm
+    #if hxminetest._clientside
     @:native("get_node_def")
     public static function getNodeDefinition(nodeName: String): NodeDefinition;
 
     @:native("get_item_def")
     public static function getItemDefinition(itemstring: String): Dynamic;
-    #else
+    #end
+
+    #if hxminetest._serverside
     @:native("registered_items")
     public static var registeredItems(default, null): NativeMap<String, Dynamic>;
 
@@ -177,7 +180,7 @@ extern class Minetest implements Partial {
     @:native("get_worldpath")
     public static function getWorldPath(): Null<String>;
 
-    #if !csm
+    #if hxminetest._serverside
     @:native("is_singleplayer")
     public static function isSingleplayer(): Bool;
     #end
@@ -405,7 +408,7 @@ extern class Minetest implements Partial {
     @:native("register_on_punchnode")
     public static function registerOnNodePunched(
         callback: (
-            #if csm
+            #if hxminetest._clientside
             pos: Vector<Int>, node: MapNode
             #else
             pos: Vector<Int>, node: MapNode, puncher: Any, pointedThing: Null<PointedThing>
@@ -627,7 +630,7 @@ extern class Minetest implements Partial {
         ) -> Void
     ): Void;
 
-    #if csm
+    #if hxminetest._clientside
     /**
         Registers an event handler to be called when server modifies the player's health.
         @param callback The event handler. Return true to short circuit event handling.

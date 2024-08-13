@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Zlib
 package minetest.data;
 
-#if !csm
-import minetest.audio.SoundSpec;
-import minetest.audio.SoundParams;
+#if hxminetest._serverside
 import minetest.audio.SoundHandle;
+import minetest.audio.SoundParams;
+import minetest.audio.SoundSpec;
 
 /**
     These extensions provide easy-to-use helpers for the player object.

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Zlib
 package minetest;
 
-import minetest.util.NativeArray;
 import lua.Table;
 import minetest.math.NoiseParams;
+import minetest.util.NativeArray;
 import minetest.util.NativeSet;
 
 using minetest.util.NativeArrayTools;
@@ -98,7 +98,7 @@ extern class Settings {
     @:native("to_table")
     public function toTable(): Table<String, Dynamic>;
 
-    #if !csm
+    #if hxminetest._serverside
     @:native("get_np_group")
     public function getNoiseParamsGroup(key: String): Null<NoiseParams>;
     @:native("set_np_group")

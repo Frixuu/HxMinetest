@@ -1,9 +1,9 @@
 package minetest.client;
 
-#if csm
+#if hxminetest._clientside
 enum abstract CameraMode(Int) {
-    var FirstPerson = 0;
-    var ThirdPerson = 1;
-    var ThirdPersonFront = 2;
+    public var FirstPerson = 0;
+    public var ThirdPerson = 1;
+    public var ThirdPersonFront = 2;
 }
 #end

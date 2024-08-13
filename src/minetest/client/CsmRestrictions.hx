@@ -1,6 +1,6 @@
 package minetest.client;
 
-#if csm
+#if hxminetest._clientside
 enum abstract CsmRestrictions(String) {
     public var LoadClientMods = "load_client_mods";
     public var ChatMessages = "chat_messages";

@@ -44,6 +44,7 @@ export function print(msg: string): void {
  */
 export async function invokeHaxe(opts: {
   classpaths?: string[],
+  defines?: string[],
   libraries?: string[],
   initMacros?: string[],
   other?: string[],
@@ -53,6 +54,10 @@ export async function invokeHaxe(opts: {
 
   for (const classpath of opts.classpaths ?? []) {
     args.push("--class-path", classpath)
+  }
+
+  for (const define of opts.defines ?? []) {
+    args.push("--define", define)
   }
 
   for (const library of opts.libraries ?? []) {

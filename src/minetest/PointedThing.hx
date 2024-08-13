@@ -1,8 +1,8 @@
 package minetest;
 
-import minetest.object.ObjectId;
-import minetest.math.Vector;
 import minetest.data.ObjectRef;
+import minetest.math.Vector;
+import minetest.object.ObjectId;
 
 interface PointedThing extends Node extends Object {
     @:native("type")
@@ -23,7 +23,7 @@ interface Node {
 }
 
 interface Object {
-    #if csm
+    #if hxminetest._clientside
     @:native("id")
     public var objectId: ObjectId;
     #else

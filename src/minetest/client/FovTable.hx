@@ -1,6 +1,6 @@
 package minetest.client;
 
-#if csm
+#if hxminetest._clientside
 interface FovTable {
     @:native("x")
     var x: Float;

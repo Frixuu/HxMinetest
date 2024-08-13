@@ -69,7 +69,7 @@ Minetest.registerOnPlayerJoin((player, _) -> {
 ## Client-side modding
 
 You can switch HxMinetest to client-side mode.  
-To do that, add ```--define csm``` to your ```build.hxml``` file.
+To do that, add ```--define hxminetest.clientside``` to your ```build.hxml``` file.
 
 ```haxe
 Minetest.registerOnDamageTaken(_ -> Minetest.disconnect());
