@@ -2,7 +2,8 @@
 --library partials:git:https://github.com/Frixuu/Partials
 --define lua-ver=5.1
 --define lua-vanilla
---macro minetest.macro.CustomHelp.register()
+--macro minetest.macro.Defines.registerCustom()
+--macro minetest.macro.Defines.applyEnv()
 --macro nullSafety("minetest", StrictThreaded)
 --lua not.applicable
 --no-output
