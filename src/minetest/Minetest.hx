@@ -417,11 +417,19 @@ extern class Minetest implements Partial {
     ): Void;
 
     /**
+        Registers a path to a Lua file to be imported
+        when a mapgen worker environment is initialized.
+    **/
+    @:native("register_mapgen_script")
+    public static function registerMapgenScript(path: String): Void;
+
+    /**
         Called after generating a piece of world.
     **/
     @:native("register_on_generated")
     public static function registerOnGenerated(
         callback: (
+            #if hxminetest._env_mapgen vm: VoxelManip, #end
             minp: Vector<Int>,
             maxp: Vector<Int>,
             blockSeed: UInt
@@ -782,10 +790,26 @@ extern class Minetest implements Partial {
     public static function getVoxelManip(pos1: Any, pos2: Any): VoxelManip;
 
     @:native("set_gen_notify")
-    public static function setGenNotify(flags: Any, decorationIds: Any): Void;
+    public static function setGenNotify(
+        flags: Any,
+        ?decorationIds: NativeArray<UInt>,
+        ?customIds: NativeArray<String>
+    ): Void;
 
     @:native("get_gen_notify")
-    public static function getGenNotify(): Dynamic;
+    public static function getGenNotify(): GetGenNotifyResult;
+
+    #if hxminetest._env_mapgen
+    /**
+        Saves data for retrieval.
+        @param id User-defined identifier.
+        By convention this should be "modname" or "modname:specifier".
+        @param data Arbitrary data. WILL BE SERIALIZED.
+        @return True if the data was remembered.
+    **/
+    @:native("save_gen_notify")
+    public static function saveGenNotify(id: String, data: Any): Bool;
+    #end
 
     @:native("get_decoration_id")
     public static function getDecorationId(name: String): Null<Dynamic>;
